@@ -5,6 +5,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.io.PrintWriter;
 
 /**
@@ -32,9 +34,22 @@ public class Servlet1 extends HttpServlet
 
 		response.setContentType("text/html");
 
-		PrintWriter out = response.getWriter();
 
-		out.println("<HTML><BODY>");
+		PrintWriter stream = response.getWriter();
+
+
+		for(int i = 0; i < 20; i++)
+		{
+			stream.println(i);
+			stream.flush();
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+
+		/*out.println("<HTML><BODY>");
 		out.println("<HEAD><TITLE>Servlet 1 response </TITLE></HEAD>");
 
 		out.println("<P>" + "THIS IS SERVLET1" + "</P>");
@@ -49,7 +64,7 @@ public class Servlet1 extends HttpServlet
 
 		out.println("<P> Translated path: " + request.getPathTranslated() + "</P>");
 
-		out.println("</HTML></BODY>");
+		out.println("</HTML></BODY>");*/
 	}
 
 	/**

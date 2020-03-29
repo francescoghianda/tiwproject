@@ -3,28 +3,49 @@
  "http://java.sun.com/dtd/web-app_2_3.dtd" >
 
 <web-app>
-  <display-name>TIW Project</display-name>
+    <display-name>TIW Project</display-name>
 
 
-  <context-param>
-    <param-name>dbUrl</param-name>
-    <param-value>jdbc:postgresql://ec2-46-137-177-160.eu-west-1.compute.amazonaws.com:5432/deocok8frj9l3j</param-value>
-  </context-param>
-  <context-param>
-    <param-name>dbUser</param-name>
-    <param-value>kwbtptcjzrfefz</param-value>
-  </context-param>
-  <context-param>
-    <param-name>dbPassword</param-name>
-    <param-value>245fbfe423b42b88e37163b95b2938c81ce30705a95d1c4f82c2eaab66efa627</param-value>
-  </context-param>
-  <context-param>
-    <param-name>dbDriver</param-name>
-    <param-value>org.postgresql.Driver</param-value>
-  </context-param>
+    <context-param>
+        <param-name>dbUrl</param-name>
+        <param-value>jdbc:postgresql://ec2-46-137-177-160.eu-west-1.compute.amazonaws.com:5432/deocok8frj9l3j</param-value>
+    </context-param>
+    <context-param>
+        <param-name>dbUser</param-name>
+        <param-value>kwbtptcjzrfefz</param-value>
+    </context-param>
+    <context-param>
+        <param-name>dbPassword</param-name>
+        <param-value>245fbfe423b42b88e37163b95b2938c81ce30705a95d1c4f82c2eaab66efa627</param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>dbDriver</param-name>
+        <param-value>org.postgresql.Driver</param-value>
+    </context-param>
 
 
-  <welcome-file-list>
-    <welcome-file>index.jsp</welcome-file>
-  </welcome-file-list>
+    <welcome-file-list>
+        <welcome-file>index.jsp</welcome-file>
+    </welcome-file-list>
+
+    <servlet>
+        <servlet-name>serv3</servlet-name>
+        <servlet-class>it.polimi.tiw.mapping.Servlet3</servlet-class>
+    </servlet>
+
+    <servlet>
+        <servlet-name>serv4</servlet-name>
+        <servlet-class>it.polimi.tiw.mapping.Servlet4</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>serv3</servlet-name>
+        <url-pattern>/forward/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>serv4</servlet-name>
+        <url-pattern>/forward/serv4</url-pattern>
+    </servlet-mapping>
 </web-app>
