@@ -1,19 +1,27 @@
 package it.polimi.tiw.beans;
 
-public class User
+import java.io.Serializable;
+
+public class User implements Serializable
 {
+    private static final long serialVersionUID = 1L;
+
+    public enum Role
+    {
+        MANAGER, WORKER
+    }
 
     private String username;
     private String email;
-    private String role;
     private String password;
+    private Role role;
 
-    public User(String username, String email, String role, String password)
+    public User(String username, String email, String password, Role role)
     {
+        this.username = username;
         this.email = email;
         this.password = password;
         this.role = role;
-        this.username = username;
     }
 
     public User()
@@ -37,11 +45,11 @@ public class User
         this.email = email;
     }
 
-    public String getRole() {
+    public Role getRole() {
         return role;
     }
 
-    public void setRole(String role) {
+    public void setRole(Role role) {
         this.role = role;
     }
 
@@ -52,4 +60,5 @@ public class User
     public void setPassword(String password) {
         this.password = password;
     }
+
 }

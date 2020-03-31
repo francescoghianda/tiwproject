@@ -24,28 +24,13 @@
         <param-value>org.postgresql.Driver</param-value>
     </context-param>
 
+    <context-param>
+        <param-name>loginFilterExclusions</param-name>
+        <param-value>/login,/signin,/assets</param-value>
+    </context-param>
 
     <welcome-file-list>
-        <welcome-file>index.jsp</welcome-file>
+        <welcome-file></welcome-file>
     </welcome-file-list>
 
-    <servlet>
-        <servlet-name>serv3</servlet-name>
-        <servlet-class>it.polimi.tiw.mapping.Servlet3</servlet-class>
-    </servlet>
-
-    <servlet>
-        <servlet-name>serv4</servlet-name>
-        <servlet-class>it.polimi.tiw.mapping.Servlet4</servlet-class>
-    </servlet>
-
-    <servlet-mapping>
-        <servlet-name>serv3</servlet-name>
-        <url-pattern>/forward/*</url-pattern>
-    </servlet-mapping>
-
-    <servlet-mapping>
-        <servlet-name>serv4</servlet-name>
-        <url-pattern>/forward/serv4</url-pattern>
-    </servlet-mapping>
 </web-app>

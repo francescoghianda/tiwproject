@@ -57,6 +57,7 @@ public class UserListController extends HttpServlet
         }
         catch (SQLException e)
         {
+            e.printStackTrace();
             resp.sendError(500, "Database connection error!");
         }
     }
