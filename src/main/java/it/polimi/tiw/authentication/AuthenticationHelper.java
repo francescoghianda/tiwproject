@@ -2,7 +2,7 @@ package it.polimi.tiw.authentication;
 
 import it.polimi.tiw.beans.User;
 import it.polimi.tiw.dao.UserDAO;
-import it.polimi.tiw.utils.DBConnectionFactory;
+import it.polimi.tiw.Application;
 
 import javax.servlet.UnavailableException;
 import javax.servlet.http.HttpServletRequest;
@@ -31,7 +31,7 @@ public class AuthenticationHelper
 
     public static boolean authenticate(HttpServletRequest request, String username, String password) throws UnavailableException, SQLException
     {
-        try(Connection connection = DBConnectionFactory.getConnection(request.getServletContext()))
+        try(Connection connection = Application.getDBConnection())
         {
             UserDAO dao = new UserDAO(connection);
             User user = dao.findUserByUsername(username);

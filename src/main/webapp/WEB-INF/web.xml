@@ -26,11 +26,45 @@
 
     <context-param>
         <param-name>loginFilterExclusions</param-name>
-        <param-value>/login,/signin,/assets</param-value>
+        <param-value>/login,/logout,/signin,/assets</param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>i18n</param-name>
+        <param-value>/WEB-INF/i18n/</param-value>
     </context-param>
 
     <welcome-file-list>
         <welcome-file></welcome-file>
     </welcome-file-list>
+
+    <error-page>
+        <error-code>404</error-code>
+        <location>/error</location>
+    </error-page>
+
+    <error-page>
+        <error-code>500</error-code>
+        <location>/error</location>
+    </error-page>
+
+    <!--
+    <servlet>
+        <servlet-name>Jersey REST Service</servlet-name>
+        <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
+        <init-param>
+            <param-name>jersey.config.server.provider.packages</param-name>
+            <param-value>it.polimi.tiw.api</param-value>
+        </init-param>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    -->
+
+    <!--
+    <servlet-mapping>
+        <servlet-name>Jersey REST Service</servlet-name>
+        <url-pattern>/api/*</url-pattern>
+    </servlet-mapping>
+    -->
 
 </web-app>

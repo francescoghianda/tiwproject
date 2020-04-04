@@ -1,6 +1,7 @@
 package it.polimi.tiw.dao;
 
 import it.polimi.tiw.beans.User;
+import it.polimi.tiw.beans.validation.InvalidBeanException;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -46,7 +47,7 @@ public class UserDAO
         }
     }
 
-    public void insertUser(String username, String email, String password, User.Role role) throws SQLException
+    private void insertUser(String username, String email, String password, User.Role role) throws SQLException
     {
         try (PreparedStatement query = connection.prepareStatement("INSERT INTO users (username, email, password, role) VALUES (?, ?, ?, ?)"))
         {
@@ -59,8 +60,9 @@ public class UserDAO
         }
     }
 
-    public void insertUser(User user) throws SQLException
+    public void insertUser(User user) throws SQLException, InvalidBeanException
     {
+        if(!user.isValid())throw new InvalidBeanException();
         insertUser(user.getUsername(), user.getEmail(), user.getPassword(), user.getRole());
     }
 

@@ -1,9 +1,7 @@
 package it.polimi.tiw.mapping;
 
-import it.polimi.tiw.utils.TemplateEngineFactory;
-import org.thymeleaf.TemplateEngine;
+import it.polimi.tiw.Application;
 import org.thymeleaf.context.WebContext;
-import org.thymeleaf.templatemode.TemplateMode;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -16,7 +14,6 @@ import java.io.IOException;
 @WebServlet("")
 public class Welcome extends HttpServlet
 {
-    private TemplateEngine templateEngine;
 
     public Welcome()
     {
@@ -26,16 +23,17 @@ public class Welcome extends HttpServlet
     @Override
     public void init() throws ServletException
     {
-        templateEngine = TemplateEngineFactory.getTemplateEngine(getServletContext(), TemplateMode.HTML);
+
     }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
     {
-        HttpSession session = req.getSession(false);
+        HttpSession session = req.getSession();
+
         WebContext webContext = new WebContext(req, resp, getServletContext());
         webContext.setVariable("user", session.getAttribute("user"));
-        templateEngine.process("index.html", webContext, resp.getWriter());
+        Application.getTemplateEngine().process("index", webContext, resp.getWriter());
     }
 
     @Override

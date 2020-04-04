@@ -1,8 +1,12 @@
 package it.polimi.tiw.beans;
 
+import it.polimi.tiw.beans.validation.annotations.Email;
+import it.polimi.tiw.beans.validation.annotations.NotNull;
+import it.polimi.tiw.beans.validation.annotations.Size;
+
 import java.io.Serializable;
 
-public class User implements Serializable
+public class User extends Bean implements Serializable
 {
     private static final long serialVersionUID = 1L;
 
@@ -11,9 +15,16 @@ public class User implements Serializable
         MANAGER, WORKER
     }
 
+    @Size(min = 4, max = 20)
     private String username;
+
+    @Email
     private String email;
+
+    @Size(min = 6)
     private String password;
+
+    @NotNull
     private Role role;
 
     public User(String username, String email, String password, Role role)

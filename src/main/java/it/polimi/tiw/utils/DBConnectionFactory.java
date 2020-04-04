@@ -8,28 +8,25 @@ import java.sql.SQLException;
 
 public class DBConnectionFactory
 {
+    private String url;
+    private String user;
+    private String password;
 
-    private DBConnectionFactory()
+    public DBConnectionFactory(ServletContext context) throws ClassNotFoundException
     {
+        String driver = context.getInitParameter("dbDriver");
+        url = context.getInitParameter("dbUrl");
+        user = context.getInitParameter("dbUser");
+        password = context.getInitParameter("dbPassword");
 
+        Class.forName(driver);
     }
 
-
-    public static Connection getConnection(ServletContext context) throws UnavailableException
+    public Connection getConnection() throws UnavailableException
     {
         try
         {
-            String driver = context.getInitParameter("dbDriver");
-            String url = context.getInitParameter("dbUrl");
-            String user = context.getInitParameter("dbUser");
-            String password = context.getInitParameter("dbPassword");
-            Class.forName(driver);
             return DriverManager.getConnection(url, user, password);
-        }
-        catch (ClassNotFoundException e)
-        {
-            e.printStackTrace();
-            throw new UnavailableException("Database driver not found!");
         }
         catch (SQLException e)
         {
