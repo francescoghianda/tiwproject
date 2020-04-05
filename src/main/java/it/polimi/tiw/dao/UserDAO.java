@@ -1,12 +1,11 @@
 package it.polimi.tiw.dao;
 
 import it.polimi.tiw.beans.User;
+import it.polimi.tiw.beans.Worker;
 import it.polimi.tiw.beans.validation.InvalidBeanException;
+import it.polimi.tiw.utils.dao.AtomicTransaction;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,23 +46,53 @@ public class UserDAO
         }
     }
 
-    private void insertUser(String username, String email, String password, User.Role role) throws SQLException
+    private int insertUser(Connection connection, User user) throws SQLException
     {
-        try (PreparedStatement query = connection.prepareStatement("INSERT INTO users (username, email, password, role) VALUES (?, ?, ?, ?)"))
+        try (PreparedStatement query = connection.prepareStatement("INSERT INTO users (username, email, password, role) VALUES (?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS))
         {
-            query.setString(1, username);
-            query.setString(2, email);
-            query.setString(3, password);
-            query.setString(4, role.toString());
+            query.setString(1, user.getUsername());
+            query.setString(2, user.getEmail());
+            query.setString(3, user.getPassword());
+            query.setObject(4, user.getRole(), Types.OTHER);
 
-            query.executeUpdate();
+            int affectedRows = query.executeUpdate();
+            if (affectedRows == 0) throw new SQLException("User creation failed!");
+
+            try (ResultSet generatedKeys = query.getGeneratedKeys())
+            {
+                if (generatedKeys.next()) return generatedKeys.getInt(1);
+                else throw new SQLException("User creation failed!");
+            }
         }
     }
 
-    public void insertUser(User user) throws SQLException, InvalidBeanException
+
+    public int insertManager(User user) throws SQLException, InvalidBeanException
     {
         if(!user.isValid())throw new InvalidBeanException();
-        insertUser(user.getUsername(), user.getEmail(), user.getPassword(), user.getRole());
+        return insertUser(connection, user);
+    }
+
+    public void insertWorker(User user, Worker worker)throws SQLException, InvalidBeanException
+    {
+        if(!worker.isValid() || !user.isValid())throw new InvalidBeanException();
+
+        AtomicTransaction transaction = new AtomicTransaction(connection);
+        transaction.execute(con ->
+        {
+            int userId = insertUser(con, user);
+            worker.setUserId(userId);
+
+            try(PreparedStatement query = con.prepareStatement("INSERT INTO worker (user_id, experience, photo) VALUES (?, ?, ?)"))
+            {
+                query.setInt(1, worker.getUserId());
+                query.setObject(2, worker.getExpLvl(), Types.OTHER);
+                query.setString(3, worker.getPhoto());
+
+                int affectedRows = query.executeUpdate();
+                if (affectedRows == 0) throw new SQLException("Worker creation failed!");
+            }
+        });
     }
 
     private User createUser(ResultSet result) throws SQLException
@@ -75,4 +104,6 @@ public class UserDAO
         user.setRole(User.Role.valueOf(result.getString("role")));
         return user;
     }
+
+
 }

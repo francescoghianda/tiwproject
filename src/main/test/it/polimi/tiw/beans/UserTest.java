@@ -3,12 +3,10 @@ package it.polimi.tiw.beans;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.lang.annotation.Target;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;

@@ -22,16 +22,11 @@ public class LoginController extends HttpServlet
         super();
     }
 
-    @Override
-    public void init()
-    {
-
-    }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)throws IOException
     {
-        WebContext webContext = new WebContext(req, resp, getServletContext());
+        WebContext webContext = new WebContext(req, resp, getServletContext(), req.getLocale());
 
         webContext.setVariable("invalid", req.getAttribute("invalid-credentials"));
 
@@ -65,9 +60,4 @@ public class LoginController extends HttpServlet
         }
     }
 
-    @Override
-    public void destroy()
-    {
-
-    }
 }

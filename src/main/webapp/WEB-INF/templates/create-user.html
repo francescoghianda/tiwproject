@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="#{title}">Create new user</title>
+    <link rel="stylesheet" href="/assets/css/main.css" th:href="@{/assets/css/main.css}"/>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="/assets/js/create-user.js" type="module" th:src="@{/assets/js/create-user.js}"></script>
+</head>
+<body>
+    <header></header>
+    <div class="centered-content-container">
+        <div class="form-container">
+            <div class="form-header"></div>
+            <form id="registration-form" action="/create-user" th:action="@{/create-user}" method="post">
+                <div class="form-section">
+                    <label for="username-input">Username:</label>
+                    <input id="username-input" type="text" name="username" required>
+                </div>
+                <div class="form-section">
+                    <label for="email-input">Email:</label>
+                    <input id="email-input" type="email" name="email" required>
+                </div>
+                <div class="form-section">
+                    <label for="password-input">Password:</label>
+                    <input id="password-input" type="password" name="password" required>
+                </div>
+                <div class="form-section">
+                    <label for="role-input" th:text="#{role}">Role:</label>
+                    <select id="role-input" name="role">
+                        <option value="WORKER" th:text="#{role.worker}">Worker</option>
+                        <option value="MANAGER" th:text="#{role.manager}">Manager</option>
+                    </select>
+                </div>
+                <div id="worker-section" style="width: 100%">
+                    <div class="form-section">
+                        <label for="exp-lvl-radio-group" th:text="#{exp-lvl}">Experience level:</label>
+                        <div class="radio-group" id="exp-lvl-radio-group">
+                            <div>
+                                <input id="exp-lvl-low-input" type="radio" name="exp-lvl" value="low">
+                                <label for="exp-lvl-low-input" th:text="#{exp-lvl.low}">Low</label>
+                            </div>
+                            <div>
+                                <input id="exp-lvl-medium-input" type="radio" name="exp-lvl" value="medium" checked>
+                                <label for="exp-lvl-medium-input" th:text="#{exp-lvl.medium}">Medium</label>
+                            </div>
+                            <div>
+                                <input id="exp-lvl-good-input" type="radio" name="exp-lvl" value="good">
+                                <label for="exp-lvl-good-input" th:text="#{exp-lvl.good}">Good</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-section">
+                        <label for="photo-input" th:text="#{photo}">Photo:</label>
+                        <div class="photo-selector">
+                            <input id="photo-hidden" type="hidden" name="photo-base64" value="">
+                            <input id="photo-input" type="file" accept="image/*" name="photo" required>
+                            <label for="photo-input">Select</label>
+                            <img alt="preview" th:alt="#{preview}" style="display: none" class="photo-selector-preview" src="">
+                        </div>
+
+                    </div>
+                </div>
+                <input id="form-submit-btn" type="submit" value="Create user" th:value="#{submit-btn}">
+                <a class="form-bottom-link" href="/login" th:href="@{/login}" th:text="#{login}">Login</a>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
