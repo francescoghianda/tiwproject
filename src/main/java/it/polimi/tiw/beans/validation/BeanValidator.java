@@ -9,7 +9,9 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class BeanValidator
 {
@@ -40,6 +42,16 @@ public class BeanValidator
 
         if(invalidFields.isEmpty())return Validation.valid();
         return Validation.invalid(invalidFields);
+    }
+
+    public static List<Validation> validate(List<Bean> beans)
+    {
+        return beans.stream().map(BeanValidator::validate).collect(Collectors.toList());
+    }
+
+    public static List<Validation> validate(Bean... beans)
+    {
+        return Arrays.stream(beans).map(BeanValidator::validate).collect(Collectors.toList());
     }
 
     private static Validator getValidator(Annotation annotation) throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException

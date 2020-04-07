@@ -36,7 +36,7 @@ public class UserTest
     @Test
     public void validUserTest()
     {
-        user = new User("francesco.ghianda", "francesco.ghianda@mail.polimi.it", "qwerty", User.Role.MANAGER);
+        user = new User("francesco.ghianda", "francesco.ghianda@mail.polimi.it", "qwerty", "MANAGER");
         assertTrue(user.isValid());
     }
 

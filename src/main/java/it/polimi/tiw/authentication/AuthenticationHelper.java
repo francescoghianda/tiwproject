@@ -1,5 +1,6 @@
 package it.polimi.tiw.authentication;
 
+import it.polimi.tiw.authentication.security.PBKDF2WithHmacSHA512;
 import it.polimi.tiw.beans.User;
 import it.polimi.tiw.dao.UserDAO;
 import it.polimi.tiw.Application;
@@ -35,7 +36,7 @@ public class AuthenticationHelper
         {
             UserDAO dao = new UserDAO(connection);
             User user = dao.findUserByUsername(username);
-            if(user == null || !user.getPassword().equals(password))return false;
+            if(user == null || !PBKDF2WithHmacSHA512.getInstance().validate(password, user.getPassword()))return false;
 
             HttpSession session = request.getSession();
             session.setAttribute(AUTH_ATTRIBUTE, true);

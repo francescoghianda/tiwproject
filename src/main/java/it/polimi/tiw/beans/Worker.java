@@ -1,17 +1,18 @@
 package it.polimi.tiw.beans;
 
+import it.polimi.tiw.beans.validation.annotations.Enum;
 import it.polimi.tiw.beans.validation.annotations.IntRange;
-import it.polimi.tiw.beans.validation.annotations.NotNull;
+import it.polimi.tiw.beans.validation.annotations.Size;
 
 public class Worker extends Bean
 {
     @IntRange(min = 0)
     private int userId;
 
-    @NotNull
+    @Enum({"GOOD", "MEDIUM", "LOW"})
     private String expLvl;
 
-    @NotNull
+    @Size(min = 1)
     private String photo;
 
     public Worker(int userId, String expLvl, String photo)

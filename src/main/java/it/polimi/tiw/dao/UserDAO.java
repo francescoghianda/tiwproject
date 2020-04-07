@@ -1,13 +1,17 @@
 package it.polimi.tiw.dao;
 
+import it.polimi.tiw.authentication.security.PBKDF2WithHmacSHA512;
 import it.polimi.tiw.beans.User;
 import it.polimi.tiw.beans.Worker;
+import it.polimi.tiw.beans.validation.BeanValidator;
 import it.polimi.tiw.beans.validation.InvalidBeanException;
+import it.polimi.tiw.beans.validation.Validation;
 import it.polimi.tiw.utils.dao.AtomicTransaction;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class UserDAO
 {
@@ -31,6 +35,30 @@ public class UserDAO
         return users;
     }
 
+    public boolean usernameExist(String username) throws SQLException
+    {
+        try(PreparedStatement statement = connection.prepareStatement("SELECT username FROM users WHERE username = ?"))
+        {
+            statement.setString(1, username);
+            try(ResultSet result = statement.executeQuery())
+            {
+                return result.next();
+            }
+        }
+    }
+
+    public boolean emailExist(String email) throws SQLException
+    {
+        try(PreparedStatement statement = connection.prepareStatement("SELECT email FROM users WHERE email = ?"))
+        {
+            statement.setString(1, email);
+            try(ResultSet result = statement.executeQuery())
+            {
+                return result.next();
+            }
+        }
+    }
+
     public User findUserByUsername(String username) throws SQLException
     {
         try (PreparedStatement query = connection.prepareStatement("SELECT * FROM users WHERE username = ?"))
@@ -52,7 +80,7 @@ public class UserDAO
         {
             query.setString(1, user.getUsername());
             query.setString(2, user.getEmail());
-            query.setString(3, user.getPassword());
+            query.setString(3, PBKDF2WithHmacSHA512.getInstance().hashPassword(user.getPassword()));
             query.setObject(4, user.getRole(), Types.OTHER);
 
             int affectedRows = query.executeUpdate();
@@ -69,13 +97,16 @@ public class UserDAO
 
     public int insertManager(User user) throws SQLException, InvalidBeanException
     {
-        if(!user.isValid())throw new InvalidBeanException();
+        Validation validation = BeanValidator.validate(user);
+        if(!validation.isValid())throw new InvalidBeanException(validation);
         return insertUser(connection, user);
     }
 
     public void insertWorker(User user, Worker worker)throws SQLException, InvalidBeanException
     {
-        if(!worker.isValid() || !user.isValid())throw new InvalidBeanException();
+        List<Validation> validations = BeanValidator.validate(user, worker);
+        validations = validations.stream().filter(Validation::isInvalid).collect(Collectors.toList());
+        if(!validations.isEmpty())throw new InvalidBeanException(validations);
 
         AtomicTransaction transaction = new AtomicTransaction(connection);
         transaction.execute(con ->
@@ -98,10 +129,11 @@ public class UserDAO
     private User createUser(ResultSet result) throws SQLException
     {
         User user = new User();
+        user.setId(result.getInt("id"));
         user.setUsername(result.getString("username"));
         user.setEmail(result.getString("email"));
         user.setPassword(result.getString("password"));
-        user.setRole(User.Role.valueOf(result.getString("role")));
+        user.setRole(result.getString("role"));
         return user;
     }
 

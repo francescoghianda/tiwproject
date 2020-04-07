@@ -85,9 +85,18 @@ a:visited:hover{
     margin: auto;
 }
 
+.blue-container{
+    width: 100%;
+    height: 100%;
+    background: rgb(0,5,255);
+    background: linear-gradient(to right bottom, #5ed9ff, #4dd0ff, #3fc6ff, #36bcff, #36b2ff);
+}
+
 .form-container{
-    box-shadow: 0 0 15px 0 rgba(55, 55, 55, 0.56);
+    box-shadow: 6px 6px 16px 1px rgba(55, 55, 55, 0.56);
     width: 35%;
+    max-width: 450px;
+    background-color: var(--background-color);
 }
 
 form{
@@ -101,14 +110,22 @@ form{
 }
 
 .form-header{
+    box-sizing: border-box;
     width: 100%;
-    height: .5rem;
+    min-height: .5rem;
     background-color: var(--header-color);
+}
+
+.form-header span{
+    display: inline-block;
+    font-size: 1.8rem;
+    padding: .5rem .5rem .5rem .8rem;
+    color: var(--font-color-light);
 }
 
 .form-section{
     display: flex;
-    margin-top: 1rem;
+    margin-bottom: 1.2rem;
     width: 100%;
     flex-direction: column;
     justify-content: center;
@@ -116,6 +133,22 @@ form{
 
 .form-section label{
     padding-left: 5px;
+}
+
+.form-section .form-input-error, .form-section .form-input-error-online{
+    display: none;
+    font-size: .8rem;
+    line-height: .8rem;
+    margin-top: .2rem;
+    color: #e11600;
+}
+
+.form-section.invalid .form-input-error{
+    display: inline-block;
+}
+
+.form-section.online-invalid .form-input-error-online{
+    display: inline-block;
 }
 
 .form-bottom-link{
@@ -139,17 +172,29 @@ input[type=text],input[type=password], input[type=email], select{
     width: 100%;
     margin-top: 0.2rem;
     padding: 5px;
-    min-height: 35px;
+    height: 45px;
     background-color: var(--ui-color);
     border: 1px solid var(--tertiary-color);
     border-radius: 5px;
     font-size: 1rem;
 }
 
+input[type=text].invalid,input[type=password].invalid, input[type=email].invalid, select.invalid{
+    border: 2px solid #cd2725;
+}
+
+input[type=text].online-invalid,input[type=password].online-invalid, input[type=email].online-invalid, select.invalid{
+    border: 2px solid #cd2725;
+}
+
+input[type=text]:focus::placeholder,input[type=password]:focus::placeholder, input[type=email]:focus::placeholder{
+    opacity: 0;
+}
+
 input[type=submit], input[type=button]{
     background-color: var(--primary-color);
-    margin-top: 1rem;
     border: none;
+    margin-bottom: 1.5rem;
     border-radius: 5px;
     color: var(--font-color-light);
     padding: 16px 32px;
@@ -163,29 +208,35 @@ input[type=submit]:hover, input[type=button]:hover{
     background-color: var(--tertiary-color);
 }
 
-.photo-selector input[type=file]{
-    width: 1px;
-    height: 1px;
+.photo-selector input[type=file] {
+    width: 0.1px;
+    height: 0.1px;
     opacity: 0.1%;
     user-select: none;
 }
 
-.photo-selector{
+.photo-selector {
     display: flex;
-    align-items: center;
+    justify-content: center;
+    flex-direction: column;
     width: 100%;
-    height: 8.5rem;
+    height: 10rem;
     margin-top: .2rem;
-    border: 1px solid var(--primary-color);
-    border-radius: 4px;
+    border: 1px solid var(--tertiary-color);
+    border-radius: 5px;
 }
 
-.photo-selector label{
+.form-section.invalid .photo-selector{
+    border: 2px solid #cd2725;
+}
+
+.photo-selector label {
     display: inline-block;
     padding: 0;
-    width: 100px;
-    height: 50px;
-    border-radius: 4px;
+    width: 100%;
+    height: 3rem;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
     text-align: center;
     line-height: 50px;
     color: var(--font-color-light);
@@ -197,10 +248,18 @@ input[type=submit]:hover, input[type=button]:hover{
     background-color: var(--tertiary-color);
 }
 
-.photo-selector-preview{
-    height: 100%;
+.photo-selector-preview-container{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 7rem;
+    width: 100%;
+}
+
+.photo-selector-preview {
+    height: 7rem;
     margin: auto;
-    clip-path: circle(4rem at center);
+    clip-path: circle(3.2rem at center);
 }
 
 .error-message{
@@ -222,6 +281,29 @@ input[type=submit]:hover, input[type=button]:hover{
     font-size: 10rem;
     line-height: 10rem;
     user-select: none;
+}
+
+.error-box{
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 5rem;
+    top: -5rem;
+    background-color: rgb(255, 101, 104);
+    border-bottom: 2px solid #a90000;
+    font-size: 2rem;
+    z-index: 1;
+    transition: top .4s;
+}
+
+.error-box.show{
+    top: 0;
+}
+
+.error-box span{
+    font-size: 1.2rem;
 }
 
 svg{

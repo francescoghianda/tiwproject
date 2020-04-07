@@ -1,7 +1,8 @@
 package it.polimi.tiw.beans;
 
 import it.polimi.tiw.beans.validation.annotations.Email;
-import it.polimi.tiw.beans.validation.annotations.NotNull;
+import it.polimi.tiw.beans.validation.annotations.Enum;
+import it.polimi.tiw.beans.validation.annotations.IntRange;
 import it.polimi.tiw.beans.validation.annotations.Size;
 
 import java.io.Serializable;
@@ -10,10 +11,8 @@ public class User extends Bean implements Serializable
 {
     private static final long serialVersionUID = 1L;
 
-    public enum Role
-    {
-        MANAGER, WORKER
-    }
+    @IntRange(min = 0)
+    private int id;
 
     @Size(min = 4, max = 20)
     private String username;
@@ -24,11 +23,21 @@ public class User extends Bean implements Serializable
     @Size(min = 6)
     private String password;
 
-    @NotNull
-    private Role role;
+    @Enum({"MANAGER", "WORKER"})
+    private String role;
 
-    public User(String username, String email, String password, Role role)
+    public User(String username, String email, String password, String role)
     {
+        this.id = 0;
+        this.username = username;
+        this.email = email;
+        this.password = password;
+        this.role = role;
+    }
+
+    public User(int id, String username, String email, String password, String role)
+    {
+        this.id = id;
         this.username = username;
         this.email = email;
         this.password = password;
@@ -38,6 +47,16 @@ public class User extends Bean implements Serializable
     public User()
     {
 
+    }
+
+    public int getId()
+    {
+        return this.id;
+    }
+
+    public void setId(int id)
+    {
+        this.id = id;
     }
 
     public String getUsername() {
@@ -56,11 +75,11 @@ public class User extends Bean implements Serializable
         this.email = email;
     }
 
-    public Role getRole() {
+    public String getRole() {
         return role;
     }
 
-    public void setRole(Role role) {
+    public void setRole(String role) {
         this.role = role;
     }
 

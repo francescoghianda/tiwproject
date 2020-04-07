@@ -4,6 +4,7 @@ import it.polimi.tiw.Application;
 import org.thymeleaf.context.WebContext;
 
 import javax.servlet.DispatcherType;
+import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -14,6 +15,7 @@ import java.io.IOException;
 public class ErrorsController extends HttpServlet
 {
 
+    @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException
     {
         if(request.getDispatcherType() != DispatcherType.ERROR)
@@ -28,5 +30,11 @@ public class ErrorsController extends HttpServlet
         webContext.setVariable("errorCode", errorCode);
 
         Application.getTemplateEngine().process("error/error", webContext, response.getWriter());
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
+    {
+
     }
 }

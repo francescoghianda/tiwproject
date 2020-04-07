@@ -32,6 +32,6 @@ public class PathMessageResolver extends StandardMessageResolver
     {
         if(path == null)super.resolveMessagesForTemplate(template, templateResource, locale);
         String messagesPath = path+template+Application.getTemplateResolver().getSuffix();
-        return super.resolveMessagesForTemplate(messagesPath, new ServletContextTemplateResource(context, messagesPath, null), locale);
+        return super.resolveMessagesForTemplate(messagesPath, new ServletContextTemplateResource(context, messagesPath, "UTF-8"), locale);
     }
 }

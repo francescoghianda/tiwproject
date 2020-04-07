@@ -20,6 +20,11 @@ public class Validation
         return valid;
     }
 
+    public boolean isInvalid()
+    {
+        return !valid;
+    }
+
     public List<Field> getInvalidFields()
     {
         return invalidFields;

@@ -2,6 +2,18 @@ import * as Utils from './utils.js'
 
 $(() =>
 {
+    $('#registration-form')[0].querySelectorAll('input, select').forEach(element => {
+        /*element.addEventListener('invalid', () => {
+            element.classList.add('invalid')
+        });*/
+        element.addEventListener('blur', () => {
+            Utils.checkElementValidity(element);
+        });
+    });
+
+
+
+
     $('#role-input').on('change', function ()
     {
         if(this.value === 'MANAGER')
@@ -25,11 +37,30 @@ $(() =>
 
         let reader = new FileReader();
         reader.onloadend = function () {
-            inputFileElem.parent(".photo-selector").children(".photo-selector-preview").attr("src", reader.result).css("display", "block")
+            inputFileElem.parent(".photo-selector").find(".photo-selector-preview").attr("src", reader.result).css("display", "block")
             $("#photo-hidden").val(reader.result);
         };
         reader.readAsDataURL(this.files[0]);
     });
+
+    $('#form-submit-btn').on('click', function ()
+    {
+        let form = $('#registration-form');
+
+        let validForm = Utils.checkFormValidity(form[0]);
+
+        if(validForm)
+        {
+            Utils.postForm('/create-user', form).then(response =>
+            {
+                if(response.status >= 400) Utils.showError($('#user-creation-error'));
+                else location.replace('/');
+            });
+
+            return;
+        }
+
+    })
 });
 
 

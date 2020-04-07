@@ -1,16 +1,29 @@
 package it.polimi.tiw.beans.validation;
 
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 public class InvalidBeanException extends Exception
 {
-    public InvalidBeanException(){}
+    private List<Validation> validations;
 
-    public InvalidBeanException(String message)
+    public InvalidBeanException(List<Validation> validations)
     {
-        super(message);
+        super();
+        this.validations = validations;
     }
 
-    public InvalidBeanException(String message, Throwable throwable)
+    public InvalidBeanException(Validation validation)
     {
-        super(message, throwable);
+        super();
+        this.validations = new ArrayList<>();
+        this.validations.add(validation);
+    }
+
+    public List<String> getInvalidFieldNames()
+    {
+        return validations.stream().map(Validation::getInvalidFields).flatMap(List::stream).map(Field::getName).collect(Collectors.toList());
     }
 }

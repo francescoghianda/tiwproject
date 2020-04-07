@@ -10,7 +10,7 @@ public class EmailValidator implements Validator
     @Override
     public boolean validate(Annotation annotation, Object obj)
     {
-        if(obj == null)return false;
+        if(obj == null || obj.toString().isEmpty())return false;
         return emailPattern.matcher(obj.toString()).matches();
     }
 }
