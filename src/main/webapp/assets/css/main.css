@@ -86,10 +86,24 @@ a:visited:hover{
 }
 
 .blue-container{
+    position: fixed;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     width: 100%;
     height: 100%;
     background: rgb(0,5,255);
     background: linear-gradient(to right bottom, #5ed9ff, #4dd0ff, #3fc6ff, #36bcff, #36b2ff);
+    overflow: hidden;
+}
+
+.scrollable-y{
+    width: 100%;
+    height: 300px;
+    padding-top: 50px;
+    padding-bottom: 50px;
+    overflow-y: scroll;
+    overflow-x: hidden;
 }
 
 .form-container{
@@ -107,6 +121,27 @@ form{
     align-items: center;
     padding: 20px 40px;
     border-radius: 4px;
+}
+
+@media (max-width: 900px) {
+    .form-container{
+        width: 50%;
+        max-width: unset;
+    }
+}
+
+@media (max-width: 650px) {
+    .form-container{
+        width: 80%;
+        max-width: unset;
+    }
+}
+
+@media (max-width: 400px) {
+    .form-container{
+        width: 95%;
+        max-width: unset;
+    }
 }
 
 .form-header{
@@ -268,7 +303,9 @@ input[type=submit]:hover, input[type=button]:hover{
 }
 
 .error-image{
+    position: relative;
     width: 35%;
+    max-width: 600px;
 }
 
 .error-code{
@@ -277,10 +314,16 @@ input[type=submit]:hover, input[type=button]:hover{
     width: 100%;
     left: 0;
     text-align: center;
-    top: calc(45% - 5rem);
-    font-size: 10rem;
+    top: calc(54% - 5rem);
+    font-size: 10vw;
     line-height: 10rem;
     user-select: none;
+}
+
+@media (min-width: 1800px) {
+    .error-code{
+        font-size: 180px;
+    }
 }
 
 .error-box{

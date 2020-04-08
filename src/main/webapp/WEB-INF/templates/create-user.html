@@ -11,65 +11,67 @@
 <body>
 
     <div class="blue-container">
-        <div id="user-creation-error" class="error-box">
-            <span th:text="#{error.user-creation}">An error occurred while creating the user</span>
-        </div>
-        <div class="centered-content-container">
-            <div class="form-container">
-                <div class="form-header">
-                    <span th:text="#{form-header}">Create a new user</span>
-                </div>
-                <form id="registration-form" action="/create-user" th:action="@{/create-user}" method="post">
-                    <div class="form-section">
-                        <input id="username-input" type="text" placeholder="Username" th:placeholder="#{username}" name="username" data-validation="/validate_data" minlength="4" maxlength="20" required>
-                        <label class="form-input-error" for="username-input" th:text="#{error.username-invalid}">Invalid username (min length: 4)</label>
-                        <label class="form-input-error-online" for="username-input" th:text="#{error.username-unavailable}">Username not available</label>
+        <div class="scrollable-y">
+            <div id="user-creation-error" class="error-box">
+                <span th:text="#{error.user-creation}">An error occurred while creating the user</span>
+            </div>
+            <div class="centered-content-container">
+                <div class="form-container">
+                    <div class="form-header">
+                        <span th:text="#{form-header}">Create a new user</span>
                     </div>
-                    <div class="form-section">
-                        <input id="email-input" type="email" placeholder="Email" name="email" data-validation="/validate_data" required>
-                        <label class="form-input-error" for="email-input" th:text="#{error.email-invalid}">Invalid email</label>
-                        <label class="form-input-error-online" for="email-input" th:text="#{error.email-unavailable}">Email not available</label>
-                    </div>
-                    <div class="form-section">
-                        <input id="password-input" type="password" placeholder="Password" name="password" minlength="6" required>
-                        <label class="form-input-error" for="password-input" th:text="#{error.password-invalid}">Invalid password (min length: 6)</label>
-                    </div>
-                    <!--<div class="form-section">
-                        <input id="password-confirm-input" type="password" placeholder="Confirm password" th:placeholder="#{confirm}" required>
-                    </div>-->
-                    <div class="form-section">
-                        <select id="role-input" name="role" required>
-                            <option value="" th:text="#{role}" disabled selected>Role</option>
-                            <option value="WORKER" th:text="#{role.worker}">Worker</option>
-                            <option value="MANAGER" th:text="#{role.manager}">Manager</option>
-                        </select>
-                        <label class="form-input-error" for="role-input" th:text="#{error.role-invalid}">Select a role</label>
-                    </div>
-                    <div id="worker-section" style="width: 100%; display: none;">
+                    <form id="registration-form" action="/create-user" th:action="@{/create-user}" method="post">
                         <div class="form-section">
-                            <select id="exp-lvl-input" name="exp-lvl" required>
-                                <option value="" th:text="#{exp-lvl}" disabled selected>Experience level</option>
-                                <option value="GOOD" th:text="#{exp-lvl.good}">Good</option>
-                                <option value="MEDIUM" th:text="#{exp-lvl.medium}">Medium</option>
-                                <option value="LOW" th:text="#{exp-lvl.low}">Low</option>
+                            <input id="username-input" type="text" placeholder="Username" th:placeholder="#{username}" name="username" data-validation="/validate_data" minlength="4" maxlength="20" required>
+                            <label class="form-input-error" for="username-input" th:text="#{error.username-invalid}">Invalid username (min length: 4)</label>
+                            <label class="form-input-error-online" for="username-input" th:text="#{error.username-unavailable}">Username not available</label>
+                        </div>
+                        <div class="form-section">
+                            <input id="email-input" type="email" placeholder="Email" name="email" data-validation="/validate_data" required>
+                            <label class="form-input-error" for="email-input" th:text="#{error.email-invalid}">Invalid email</label>
+                            <label class="form-input-error-online" for="email-input" th:text="#{error.email-unavailable}">Email not available</label>
+                        </div>
+                        <div class="form-section">
+                            <input id="password-input" type="password" placeholder="Password" name="password" minlength="6" required>
+                            <label class="form-input-error" for="password-input" th:text="#{error.password-invalid}">Invalid password (min length: 6)</label>
+                        </div>
+                        <!--<div class="form-section">
+                            <input id="password-confirm-input" type="password" placeholder="Confirm password" th:placeholder="#{confirm}" required>
+                        </div>-->
+                        <div class="form-section">
+                            <select id="role-input" name="role" required>
+                                <option value="" th:text="#{role}" disabled selected>Role</option>
+                                <option value="WORKER" th:text="#{role.worker}">Worker</option>
+                                <option value="MANAGER" th:text="#{role.manager}">Manager</option>
                             </select>
-                            <label class="form-input-error" for="exp-lvl-input" th:text="#{error.exp-lvl-invalid}">Select an experience level</label>
+                            <label class="form-input-error" for="role-input" th:text="#{error.role-invalid}">Select a role</label>
                         </div>
-                        <div class="form-section">
-                            <div class="photo-selector">
-                                <input id="photo-hidden" type="hidden" name="photo-base64" value="">
-                                <input id="photo-input" type="file" accept="image/*" name="photo" required>
-                                <label for="photo-input" th:text="#{select-photo}">Select a photo</label>
-                                <div class="photo-selector-preview-container">
-                                    <img alt="preview" th:alt="#{preview}" style="display: none" class="photo-selector-preview" src="">
-                                </div>
+                        <div id="worker-section" style="width: 100%; display: none;">
+                            <div class="form-section">
+                                <select id="exp-lvl-input" name="exp-lvl" required>
+                                    <option value="" th:text="#{exp-lvl}" disabled selected>Experience level</option>
+                                    <option value="GOOD" th:text="#{exp-lvl.good}">Good</option>
+                                    <option value="MEDIUM" th:text="#{exp-lvl.medium}">Medium</option>
+                                    <option value="LOW" th:text="#{exp-lvl.low}">Low</option>
+                                </select>
+                                <label class="form-input-error" for="exp-lvl-input" th:text="#{error.exp-lvl-invalid}">Select an experience level</label>
                             </div>
-                            <label class="form-input-error" for="photo-input" th:text="#{error.photo-invalid}">Choose a photo</label>
+                            <div class="form-section">
+                                <div class="photo-selector">
+                                    <input id="photo-hidden" type="hidden" name="photo-base64" value="">
+                                    <input id="photo-input" type="file" accept="image/*" name="photo" required>
+                                    <label for="photo-input" th:text="#{select-photo}">Select a photo</label>
+                                    <div class="photo-selector-preview-container">
+                                        <img alt="preview" th:alt="#{preview}" style="display: none" class="photo-selector-preview" src="">
+                                    </div>
+                                </div>
+                                <label class="form-input-error" for="photo-input" th:text="#{error.photo-invalid}">Choose a photo</label>
+                            </div>
                         </div>
-                    </div>
-                    <input id="form-submit-btn" type="button" value="Create user" th:value="#{submit-btn}">
-                    <a class="form-bottom-link" href="/login" th:href="@{/login}" th:text="#{login}">Login</a>
-                </form>
+                        <input id="form-submit-btn" type="button" value="Create user" th:value="#{submit-btn}">
+                        <a class="form-bottom-link" href="/login" th:href="@{/login}" th:text="#{login}">Login</a>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
