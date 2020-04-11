@@ -38,40 +38,39 @@ function post(input, jsonData)
 
 function checkElementValidity(element)
 {
-    let localValidity = checkLocalValidity(element);
-    let onlineValidation = element.dataset.validation;
-    if(localValidity && onlineValidation)
+    return new Promise((resolve, reject) =>
     {
-        setValidity(element, true, false);
-        let name = element.getAttribute('name');
-        let request = new XMLHttpRequest();
-        request.onreadystatechange = function () {
-            if(this.readyState === 4 && this.status === 200)
+        let localValidity = checkLocalValidity(element);
+        let onlineValidation = element.dataset.validation;
+        if(localValidity && onlineValidation)
+        {
+            setValidity(element, true, false);
+            let name = element.getAttribute('name');
+
+            fetch(`${onlineValidation}?${name}=${element.value}`).then(async response =>
             {
-                let json = JSON.parse(this.responseText);
-                let onlineValidity = json[`valid-${name}`];
-                if(onlineValidity)setValidity(element, true, true);
-                else setValidity(element, false, true);
-            }
-        };
-        request.open('GET', `${onlineValidation}?${name}=${element.value}`, true);
-        request.send();
-    }
-    else
-    {
-        setValidity(element, true, true);
-        if(localValidity) setValidity(element, true, false);
-        else setValidity(element, false, false);
-    }
+                if(response.status === 200)
+                {
+                    let json = await response.json();
+                    let onlineValidity = json[`valid-${name}`];
+                    setValidity(element, onlineValidity, true);
+                    resolve({local: localValidity, online: onlineValidity});
+                }
+                else if(response.status !== 200) resolve({local: localValidity, online: undefined});
+            });
+        }
+        else
+        {
+            setValidity(element, true, true);
+            setValidity(element, localValidity, false);
+            resolve({local: localValidity, online: undefined});
+        }
+    });
 }
 
 function checkLocalValidity(element)
 {
-    if(element.tagName.toLowerCase() === 'select')
-    {
-        console.log(element + " "+element.options[element.selectedIndex].disabled);
-        return element.checkValidity() && !element.options[element.selectedIndex].disabled
-    }
+    if(element.tagName.toLowerCase() === 'select') return element.checkValidity() && !element.options[element.selectedIndex].disabled;
     else return element.checkValidity();
 }
 
@@ -94,14 +93,17 @@ function setValidity(element, valid, online)
 
 function checkFormValidity(form)
 {
-    let validForm = true;
-    form.querySelectorAll('input, select').forEach(element =>
+    return new Promise((resolve, reject) =>
     {
-        let valid = checkLocalValidity(element);
-        setValidity(element, valid, false);
-        validForm = validForm && valid;
+        let promises = [];
+        Array.from(form.querySelectorAll('input, select')).filter(element => !element.disabled).forEach(element => promises.push(checkElementValidity(element)));
+        Promise.all(promises).then(values =>
+            resolve(values.reduce((result, validity) =>
+            {
+                if(typeof validity.online !== "undefined") return result && validity.online;
+                return result && validity.local;
+            }, true)));
     });
-    return validForm;
 }
 
 export {serializeJson, post, postForm, showError, checkFormValidity, checkElementValidity}

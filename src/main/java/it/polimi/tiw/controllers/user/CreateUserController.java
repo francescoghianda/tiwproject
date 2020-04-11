@@ -1,12 +1,10 @@
 package it.polimi.tiw.controllers.user;
 
 import it.polimi.tiw.Application;
-import it.polimi.tiw.authentication.security.PBKDF2WithHmacSHA512;
 import it.polimi.tiw.beans.User;
 import it.polimi.tiw.beans.Worker;
 import it.polimi.tiw.beans.validation.InvalidBeanException;
 import it.polimi.tiw.dao.UserDAO;
-import org.postgresql.util.PSQLException;
 import org.thymeleaf.context.WebContext;
 
 import javax.servlet.ServletException;
@@ -15,14 +13,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Objects;
 
-@WebServlet("/create-user")
+@WebServlet("/create_user")
 public class CreateUserController extends HttpServlet
 {
-    private Connection connection;
     private UserDAO dao;
 
     public CreateUserController()
@@ -33,28 +29,14 @@ public class CreateUserController extends HttpServlet
     @Override
     public void init() throws ServletException
     {
-        connection = Application.getDBConnection();
-        dao = new UserDAO(connection);
-    }
-
-    @Override
-    public void destroy()
-    {
-        try
-        {
-            connection.close();
-        }
-        catch (SQLException e)
-        {
-            e.printStackTrace();
-        }
+        dao = new UserDAO();
     }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
     {
         WebContext webContext = new WebContext(req, resp, getServletContext(), req.getLocale());
-        Application.getTemplateEngine().process("create-user", webContext, resp.getWriter());
+        Application.getTemplateEngine().process("create_user", webContext, resp.getWriter());
     }
 
     @Override

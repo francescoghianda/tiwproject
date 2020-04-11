@@ -1,7 +1,6 @@
 package it.polimi.tiw.filters;
 
 import it.polimi.tiw.authentication.AuthenticationHelper;
-import it.polimi.tiw.Application;
 
 import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
@@ -13,14 +12,13 @@ import java.util.Arrays;
 import java.util.List;
 
 @WebFilter("/*")
-public class AppFilter extends HttpFilter
+public class AuthenticationFilter extends HttpFilter
 {
     private List<String> exclusions;
 
     @Override
-    public void init() throws ServletException
+    public void init()
     {
-        Application.init(getServletContext());
         String exclusionsParameter = getServletContext().getInitParameter("loginFilterExclusions");
         exclusions = Arrays.asList(exclusionsParameter.split(","));
     }

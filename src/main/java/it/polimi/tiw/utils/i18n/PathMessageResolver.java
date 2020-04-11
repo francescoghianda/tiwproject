@@ -1,4 +1,4 @@
-package it.polimi.tiw.utils;
+package it.polimi.tiw.utils.i18n;
 
 import it.polimi.tiw.Application;
 import org.thymeleaf.messageresolver.StandardMessageResolver;

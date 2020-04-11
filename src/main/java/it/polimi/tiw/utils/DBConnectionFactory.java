@@ -6,6 +6,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+@Deprecated
 public class DBConnectionFactory
 {
     private String url;

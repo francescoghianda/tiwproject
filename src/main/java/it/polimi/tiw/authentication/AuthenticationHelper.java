@@ -3,12 +3,10 @@ package it.polimi.tiw.authentication;
 import it.polimi.tiw.authentication.security.PBKDF2WithHmacSHA512;
 import it.polimi.tiw.beans.User;
 import it.polimi.tiw.dao.UserDAO;
-import it.polimi.tiw.Application;
 
 import javax.servlet.UnavailableException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.sql.Connection;
 import java.sql.SQLException;
 
 public class AuthenticationHelper
@@ -25,26 +23,20 @@ public class AuthenticationHelper
 
     public static void invalidateAuthentication(HttpServletRequest request)
     {
-        HttpSession session = request.getSession();
-        session.setAttribute(AUTH_ATTRIBUTE, false);
-        session.setAttribute(USER_ATTRIBUTE, null);
+        request.getSession().invalidate();
     }
 
     public static boolean authenticate(HttpServletRequest request, String username, String password) throws UnavailableException, SQLException
     {
-        try(Connection connection = Application.getDBConnection())
-        {
-            UserDAO dao = new UserDAO(connection);
-            User user = dao.findUserByUsername(username);
-            if(user == null || !PBKDF2WithHmacSHA512.getInstance().validate(password, user.getPassword()))return false;
+        UserDAO dao = new UserDAO();
+        User user = dao.findUserByUsername(username);
+        if(user == null || !PBKDF2WithHmacSHA512.getInstance().validate(password, user.getPassword()))return false;
 
-            HttpSession session = request.getSession();
-            session.setAttribute(AUTH_ATTRIBUTE, true);
-            session.setAttribute(USER_ATTRIBUTE, user);
+        HttpSession session = request.getSession();
+        session.setAttribute(AUTH_ATTRIBUTE, true);
+        session.setAttribute(USER_ATTRIBUTE, user);
 
-            return true;
-        }
-
+        return true;
     }
 
 }

@@ -26,7 +26,7 @@ public class ValidateDataController extends HttpServlet
     @Override
     public void init() throws ServletException
     {
-        dao = new UserDAO(Application.getDBConnection());
+        dao = new UserDAO();
     }
 
     @Override

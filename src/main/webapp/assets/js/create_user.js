@@ -3,16 +3,10 @@ import * as Utils from './utils.js'
 $(() =>
 {
     $('#registration-form')[0].querySelectorAll('input, select').forEach(element => {
-        /*element.addEventListener('invalid', () => {
-            element.classList.add('invalid')
-        });*/
         element.addEventListener('blur', () => {
             Utils.checkElementValidity(element);
         });
     });
-
-
-
 
     $('#role-input').on('change', function ()
     {
@@ -20,13 +14,13 @@ $(() =>
         {
             $('#worker-section').slideUp();
             $('#photo-input').prop("required", false);
-            $('#worker-section').find('input').prop("disabled", true);
+            $('#worker-section').find('input, select').prop("disabled", true);
         }
         else
         {
             $('#worker-section').slideDown();
             $('#photo-input').prop("required", true);
-            $('#worker-section').find('input').prop("disabled", false);
+            $('#worker-section').find('input, select').prop("disabled", false);
         }
     });
 
@@ -47,18 +41,17 @@ $(() =>
     {
         let form = $('#registration-form');
 
-        let validForm = Utils.checkFormValidity(form[0]);
-
-        if(validForm)
+        Utils.checkFormValidity(form[0]).then(valid =>
         {
-            Utils.postForm('/create-user', form).then(response =>
+            if(valid)
             {
-                if(response.status >= 400) Utils.showError($('#user-creation-error'));
-                else location.replace('/');
-            });
-
-            return;
-        }
+                Utils.postForm('/create-user', form).then(response =>
+                {
+                    if(response.status >= 400) Utils.showError($('#user-creation-error'));
+                    else location.replace('/');
+                });
+            }
+        });
 
     })
 });

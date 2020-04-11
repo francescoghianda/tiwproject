@@ -1,13 +1,13 @@
 package it.polimi.tiw;
 
 import it.polimi.tiw.utils.DBConnectionFactory;
-import it.polimi.tiw.utils.PathMessageResolver;
+import it.polimi.tiw.utils.i18n.PathMessageResolver;
+import it.polimi.tiw.utils.sql.ConnectionManager;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
 import javax.servlet.ServletContext;
 import javax.servlet.UnavailableException;
-import javax.servlet.annotation.WebInitParam;
 import java.sql.Connection;
 
 public class Application
@@ -36,6 +36,7 @@ public class Application
 
         try
         {
+            ConnectionManager.newInstance(servletContext);
             connectionFactory = new DBConnectionFactory(servletContext);
         }
         catch (ClassNotFoundException e)
@@ -63,6 +64,7 @@ public class Application
         return templateResolver;
     }
 
+    @Deprecated
     public static Connection getDBConnection() throws UnavailableException
     {
         checkInitialization();

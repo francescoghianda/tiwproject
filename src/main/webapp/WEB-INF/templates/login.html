@@ -10,24 +10,22 @@
 <body>
 
     <div class="blue-container">
-        <div class="centered-content-container">
-            <div class="form-container">
-                <div class="form-header">
-                    <span th:text="#{login}">Login</span>
-                </div>
-                <form action="login" th:action="'login?redirect='+${redirect}" method="post">
-                    <div class="form-section">
-                        <!--<label for="username-input" th:text="#{username}">Username:</label>-->
-                        <input id="username-input" type="text" placeholder="Username" th:placeholder="#{username}" name="username" required>
-                    </div>
-                    <div class="form-section">
-                        <!--<label for="password-input">Password:</label>-->
-                        <input id="password-input" type="password" placeholder="Password" name="password" required>
-                    </div>
-                    <input type="submit" value="Login" th:value="#{login}">
-                    <a class="form-bottom-link" href="/create-user" th:href="@{/create-user}" th:text="#{create-new-user}">Create a new user</a>
-                </form>
+        <div class="form-container" id="login-form">
+            <div class="form-header">
+                <span th:text="#{login}">Login</span>
             </div>
+            <form action="login" th:action="'login?redirect='+${redirect}" method="post">
+                <div class="form-section">
+                    <!--<label for="username-input" th:text="#{username}">Username:</label>-->
+                    <input id="username-input" type="text" placeholder="Username" th:placeholder="#{username}" name="username" required>
+                </div>
+                <div class="form-section">
+                    <!--<label for="password-input">Password:</label>-->
+                    <input id="password-input" type="password" placeholder="Password" name="password" required>
+                </div>
+                <input type="submit" value="Login" th:value="#{login}">
+                <a class="form-bottom-link" href="/create_user" th:href="@{/create_user}" th:text="#{create-new-user}">Create a new user</a>
+            </form>
         </div>
     </div>
 

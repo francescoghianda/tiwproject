@@ -26,7 +26,7 @@
 
     <context-param>
         <param-name>loginFilterExclusions</param-name>
-        <param-value>/login,/logout,/create-user,/assets,/validate_data</param-value>
+        <param-value>/login,/logout,/create_user,/assets,/validate_data</param-value>
     </context-param>
 
     <context-param>

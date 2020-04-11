@@ -6,38 +6,46 @@ import it.polimi.tiw.beans.Worker;
 import it.polimi.tiw.beans.validation.BeanValidator;
 import it.polimi.tiw.beans.validation.InvalidBeanException;
 import it.polimi.tiw.beans.validation.Validation;
-import it.polimi.tiw.utils.dao.AtomicTransaction;
+import it.polimi.tiw.utils.beans.BeanFactory;
+import it.polimi.tiw.utils.beans.UserBeanFactory;
+import it.polimi.tiw.utils.beans.WorkerBeanFactory;
+import it.polimi.tiw.utils.dao.DAO;
+import it.polimi.tiw.utils.sql.ConnectionManager;
+import it.polimi.tiw.utils.sql.PooledConnection;
 
+import javax.servlet.UnavailableException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class UserDAO
+public class UserDAO extends DAO
 {
-    private final Connection connection;
-
-    public UserDAO(Connection connection)
+    public UserDAO() throws UnavailableException
     {
-        this.connection = connection;
+        super();
     }
 
     public List<User> getAllUsers() throws SQLException
     {
         List<User> users = new ArrayList<>();
 
-        try (PreparedStatement query = connection.prepareStatement("SELECT * FROM users");
-             ResultSet result = query.executeQuery())
+        transaction(connection ->
         {
-            while (result.next()) users.add(createUser(result));
-        }
+            try (PreparedStatement query = connection.prepareStatement("SELECT * FROM users");
+                 ResultSet result = query.executeQuery())
+            {
+                while (result.next()) users.add(BeanFactory.getBeanInstance(new UserBeanFactory(), result));
+            }
+        });
 
         return users;
     }
 
     public boolean usernameExist(String username) throws SQLException
     {
-        try(PreparedStatement statement = connection.prepareStatement("SELECT username FROM users WHERE username = ?"))
+        try(PooledConnection connection = ConnectionManager.getInstance().getConnection();
+            PreparedStatement statement = connection.getConnection().prepareStatement("SELECT username FROM users WHERE username = ?"))
         {
             statement.setString(1, username);
             try(ResultSet result = statement.executeQuery())
@@ -49,7 +57,8 @@ public class UserDAO
 
     public boolean emailExist(String email) throws SQLException
     {
-        try(PreparedStatement statement = connection.prepareStatement("SELECT email FROM users WHERE email = ?"))
+        try(PooledConnection connection = ConnectionManager.getInstance().getConnection();
+            PreparedStatement statement = connection.getConnection().prepareStatement("SELECT email FROM users WHERE email = ?"))
         {
             statement.setString(1, email);
             try(ResultSet result = statement.executeQuery())
@@ -61,22 +70,39 @@ public class UserDAO
 
     public User findUserByUsername(String username) throws SQLException
     {
-        try (PreparedStatement query = connection.prepareStatement("SELECT * FROM users WHERE username = ?"))
+        try (PooledConnection connection = ConnectionManager.getInstance().getConnection();
+             PreparedStatement query = connection.getConnection().prepareStatement("SELECT * FROM users WHERE username = ?"))
         {
             query.setString(1, username);
 
             try(ResultSet result = query.executeQuery())
             {
                 if(!result.next())return null;
-                return createUser(result);
+                return BeanFactory.getBeanInstance(new UserBeanFactory(), result);
             }
 
         }
     }
 
-    private int insertUser(Connection connection, User user) throws SQLException
+    public Worker findWorkerById(int userId) throws SQLException
     {
-        try (PreparedStatement query = connection.prepareStatement("INSERT INTO users (username, email, password, role) VALUES (?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS))
+        try(PooledConnection connection = ConnectionManager.getInstance().getConnection();
+            PreparedStatement statement = connection.getConnection().prepareStatement("SELECT * FROM worker WHERE user_id = ?"))
+        {
+            statement.setInt(1, userId);
+
+            try(ResultSet result = statement.executeQuery())
+            {
+                if(!result.next())return null;
+                return BeanFactory.getBeanInstance(new WorkerBeanFactory(), result);
+            }
+        }
+    }
+
+    private int insertUser(User user) throws SQLException
+    {
+        try (PooledConnection connection = ConnectionManager.getInstance().getConnection();
+             PreparedStatement query = connection.getConnection().prepareStatement("INSERT INTO users (username, email, password, role) VALUES (?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS))
         {
             query.setString(1, user.getUsername());
             query.setString(2, user.getEmail());
@@ -99,7 +125,7 @@ public class UserDAO
     {
         Validation validation = BeanValidator.validate(user);
         if(!validation.isValid())throw new InvalidBeanException(validation);
-        return insertUser(connection, user);
+        return insertUser(user);
     }
 
     public void insertWorker(User user, Worker worker)throws SQLException, InvalidBeanException
@@ -108,13 +134,12 @@ public class UserDAO
         validations = validations.stream().filter(Validation::isInvalid).collect(Collectors.toList());
         if(!validations.isEmpty())throw new InvalidBeanException(validations);
 
-        AtomicTransaction transaction = new AtomicTransaction(connection);
-        transaction.execute(con ->
+        atomicTransaction(connection ->
         {
-            int userId = insertUser(con, user);
+            int userId = insertUser(user);
             worker.setUserId(userId);
 
-            try(PreparedStatement query = con.prepareStatement("INSERT INTO worker (user_id, experience, photo) VALUES (?, ?, ?)"))
+            try(PreparedStatement query = connection.prepareStatement("INSERT INTO worker (user_id, experience, photo) VALUES (?, ?, ?)"))
             {
                 query.setInt(1, worker.getUserId());
                 query.setObject(2, worker.getExpLvl(), Types.OTHER);
@@ -124,17 +149,6 @@ public class UserDAO
                 if (affectedRows == 0) throw new SQLException("Worker creation failed!");
             }
         });
-    }
-
-    private User createUser(ResultSet result) throws SQLException
-    {
-        User user = new User();
-        user.setId(result.getInt("id"));
-        user.setUsername(result.getString("username"));
-        user.setEmail(result.getString("email"));
-        user.setPassword(result.getString("password"));
-        user.setRole(result.getString("role"));
-        return user;
     }
 
 
