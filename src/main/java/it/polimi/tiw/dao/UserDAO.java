@@ -13,7 +13,6 @@ import it.polimi.tiw.utils.dao.DAO;
 import it.polimi.tiw.utils.sql.ConnectionManager;
 import it.polimi.tiw.utils.sql.PooledConnection;
 
-import javax.servlet.UnavailableException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,23 +20,16 @@ import java.util.stream.Collectors;
 
 public class UserDAO extends DAO
 {
-    public UserDAO() throws UnavailableException
-    {
-        super();
-    }
-
     public List<User> getAllUsers() throws SQLException
     {
         List<User> users = new ArrayList<>();
 
-        transaction(connection ->
+        try (PooledConnection connection = ConnectionManager.getInstance().getConnection();
+             PreparedStatement query = connection.getConnection().prepareStatement("SELECT * FROM users");
+             ResultSet result = query.executeQuery())
         {
-            try (PreparedStatement query = connection.prepareStatement("SELECT * FROM users");
-                 ResultSet result = query.executeQuery())
-            {
-                while (result.next()) users.add(BeanFactory.getBeanInstance(new UserBeanFactory(), result));
-            }
-        });
+            while (result.next()) users.add(BeanFactory.getBeanInstance(new UserBeanFactory(), result));
+        }
 
         return users;
     }

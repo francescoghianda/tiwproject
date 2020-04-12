@@ -2,66 +2,57 @@ package it.polimi.tiw.utils.dao;
 
 import it.polimi.tiw.utils.sql.ConnectionManager;
 import it.polimi.tiw.utils.sql.PooledConnection;
-import javax.servlet.UnavailableException;
 import java.sql.Connection;
 import java.sql.SQLException;
 
 public class DAO
 {
-    private final Object lock;
-    private boolean rollback;
-
-    public DAO() throws UnavailableException
+    public DAO()
     {
-        lock = new Object();
+
     }
 
-    protected void rollback()
-    {
-        synchronized (lock)
-        {
-            rollback = true;
-        }
-    }
 
-    protected final void transaction(TransactionConsumer<Connection> transaction) throws SQLException
+    protected final void rollback() throws RollbackException
     {
-        try(PooledConnection pooledConnection = ConnectionManager.getInstance().getConnection())
-        {
-            transaction.accept(pooledConnection.getConnection());
-        }
+        throw new RollbackException();
     }
 
     protected final boolean atomicTransaction(TransactionConsumer<Connection> transaction) throws SQLException
     {
-        synchronized (lock)
+        Connection connection = null;
+        try(PooledConnection pooledConnection = ConnectionManager.getInstance().getConnection())
         {
-            Connection connection = null;
-            try(PooledConnection pooledConnection = ConnectionManager.getInstance().getConnection())
+            connection = pooledConnection.getConnection();
+            connection.setAutoCommit(false);
+            transaction.accept(connection);
+            connection.commit();
+            connection.setAutoCommit(true);
+            return true;
+        }
+        catch (RollbackException e)
+        {
+            try
             {
-                connection = pooledConnection.getConnection();
-                rollback = false;
-                connection.setAutoCommit(false);
-                transaction.accept(connection);
-
-                if(rollback) connection.rollback();
-                else connection.commit();
-
-                connection.setAutoCommit(true);
-                return !rollback;
+                connection.rollback();
             }
-            catch (SQLException e)
+            catch (SQLException ex)
             {
-                try
-                {
-                    connection.rollback();
-                }
-                catch (SQLException ex)
-                {
-                    ex.printStackTrace();
-                }
-                throw e;
+                ex.printStackTrace();
             }
+            return false;
+        }
+        catch (SQLException e)
+        {
+            try
+            {
+                if(connection != null)connection.rollback();
+            }
+            catch (SQLException ex)
+            {
+                ex.printStackTrace();
+            }
+            throw e;
         }
     }
 }

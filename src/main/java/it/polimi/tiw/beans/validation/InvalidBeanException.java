@@ -9,6 +9,11 @@ public class InvalidBeanException extends Exception
 {
     private List<Validation> validations;
 
+    public InvalidBeanException()
+    {
+        validations = new ArrayList<>();
+    }
+
     public InvalidBeanException(List<Validation> validations)
     {
         super();

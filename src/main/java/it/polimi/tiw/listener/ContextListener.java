@@ -14,4 +14,10 @@ public class ContextListener implements ServletContextListener
     {
         Application.init(event.getServletContext());
     }
+
+    @Override
+    public void contextDestroyed(ServletContextEvent sce)
+    {
+        Application.stop();
+    }
 }

@@ -4,5 +4,5 @@ import java.sql.SQLException;
 
 public interface TransactionConsumer<T>
 {
-    void accept(T object) throws SQLException;
+    void accept(T object) throws SQLException, RollbackException;
 }

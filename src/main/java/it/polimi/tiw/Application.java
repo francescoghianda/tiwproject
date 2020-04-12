@@ -18,6 +18,7 @@ public class Application
     private static TemplateEngine templateEngine;
     private static ServletContextTemplateResolver templateResolver;
     private static DBConnectionFactory connectionFactory;
+    private static ConnectionManager connectionManager;
 
     private Application() {}
 
@@ -36,7 +37,7 @@ public class Application
 
         try
         {
-            ConnectionManager.newInstance(servletContext);
+            connectionManager = ConnectionManager.newInstance(servletContext);
             connectionFactory = new DBConnectionFactory(servletContext);
         }
         catch (ClassNotFoundException e)
@@ -76,6 +77,11 @@ public class Application
     private static void checkInitialization()
     {
         if(!initialized)throw new IllegalStateException("Application must be initialized!");
+    }
+
+    public static void stop()
+    {
+        connectionManager.stop();
     }
 
 }

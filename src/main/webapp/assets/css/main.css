@@ -391,6 +391,7 @@ svg{
     border-bottom: 1px solid var(--sidebar-light);
     padding-top: 1.5rem;
     padding-bottom: 1.5rem;
+    height: 8rem;
 }
 
 .sidebar-footer{
@@ -560,6 +561,26 @@ svg{
     height: 100vh;
     width: 100vw;
     padding-left: 22rem;
-    padding-top: 20px;
+    padding-top: 0;
     padding-bottom: 20px;
+}
+
+.content-pane-header{
+    position: relative;
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-end;
+    padding-bottom: 1rem;
+    width: 100%;
+    height: 8rem;
+    background: linear-gradient(to right bottom, #5ed9ff, #4dd0ff, #3fc6ff, #36bcff, #36b2ff);
+}
+
+.content-pane-header span{
+    display: inline-block;
+    color: var(--font-color-light);
+    alignment-baseline: bottom;
+    font-size: 2.4rem;
+    font-weight: bold;
+    padding-left: 3rem;
 }

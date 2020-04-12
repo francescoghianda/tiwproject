@@ -118,8 +118,14 @@ public class ConnectionManager
                     Logger.out.log("Connection Manager monitor interrupted!", LogType.WARNING);
                 }
             }
+            Logger.out.log("Connection Manager monitor has stopped.");
         });
         poolMonitor.setDaemon(true);
         poolMonitor.start();
+    }
+
+    public void stop()
+    {
+        stopMonitor();
     }
 }
