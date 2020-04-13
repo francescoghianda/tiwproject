@@ -4,7 +4,7 @@ import it.polimi.tiw.Application;
 import it.polimi.tiw.beans.User;
 import it.polimi.tiw.beans.Worker;
 import it.polimi.tiw.beans.validation.InvalidBeanException;
-import it.polimi.tiw.dao.UserDAO;
+import it.polimi.tiw.dao.UserDao;
 import org.thymeleaf.context.WebContext;
 
 import javax.servlet.ServletException;
@@ -19,7 +19,7 @@ import java.util.Objects;
 @WebServlet("/create_user")
 public class CreateUserController extends HttpServlet
 {
-    private UserDAO dao;
+    private UserDao dao;
 
     public CreateUserController()
     {
@@ -29,7 +29,7 @@ public class CreateUserController extends HttpServlet
     @Override
     public void init() throws ServletException
     {
-        dao = new UserDAO();
+        dao = new UserDao();
     }
 
     @Override
@@ -55,9 +55,8 @@ public class CreateUserController extends HttpServlet
 
         try
         {
-            if(worker == null)dao.insertManager(user);
-            else dao.insertWorker(user, worker);
-            resp.sendRedirect("/");
+            if(!dao.insertUser(user, worker)) resp.sendError(500);
+            else resp.sendRedirect("/");
         }
         catch (SQLException e)
         {

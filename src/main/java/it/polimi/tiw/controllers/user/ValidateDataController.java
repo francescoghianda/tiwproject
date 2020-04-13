@@ -1,7 +1,6 @@
 package it.polimi.tiw.controllers.user;
 
-import it.polimi.tiw.Application;
-import it.polimi.tiw.dao.UserDAO;
+import it.polimi.tiw.dao.UserDao;
 
 import javax.json.Json;
 import javax.json.stream.JsonGenerator;
@@ -16,7 +15,7 @@ import java.sql.SQLException;
 @WebServlet("/validate_data")
 public class ValidateDataController extends HttpServlet
 {
-    private UserDAO dao;
+    private UserDao dao;
 
     public ValidateDataController()
     {
@@ -26,7 +25,7 @@ public class ValidateDataController extends HttpServlet
     @Override
     public void init() throws ServletException
     {
-        dao = new UserDAO();
+        dao = new UserDao();
     }
 
     @Override

@@ -2,12 +2,13 @@ package it.polimi.tiw.authentication;
 
 import it.polimi.tiw.authentication.security.PBKDF2WithHmacSHA512;
 import it.polimi.tiw.beans.User;
-import it.polimi.tiw.dao.UserDAO;
+import it.polimi.tiw.dao.UserDao;
 
 import javax.servlet.UnavailableException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.sql.SQLException;
+import java.util.Optional;
 
 public class AuthenticationHelper
 {
@@ -28,13 +29,13 @@ public class AuthenticationHelper
 
     public static boolean authenticate(HttpServletRequest request, String username, String password) throws UnavailableException, SQLException
     {
-        UserDAO dao = new UserDAO();
-        User user = dao.findUserByUsername(username);
-        if(user == null || !PBKDF2WithHmacSHA512.getInstance().validate(password, user.getPassword()))return false;
+        UserDao dao = new UserDao();
+        Optional<User> user = dao.findUserByUsername(username);
+        if(!user.isPresent() || !PBKDF2WithHmacSHA512.getInstance().validate(password, user.get().getPassword()))return false;
 
         HttpSession session = request.getSession();
         session.setAttribute(AUTH_ATTRIBUTE, true);
-        session.setAttribute(USER_ATTRIBUTE, user);
+        session.setAttribute(USER_ATTRIBUTE, user.get());
 
         return true;
     }

@@ -1,14 +1,11 @@
 package it.polimi.tiw;
 
-import it.polimi.tiw.utils.DBConnectionFactory;
 import it.polimi.tiw.utils.i18n.PathMessageResolver;
 import it.polimi.tiw.utils.sql.ConnectionManager;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
 import javax.servlet.ServletContext;
-import javax.servlet.UnavailableException;
-import java.sql.Connection;
 
 public class Application
 {
@@ -17,7 +14,6 @@ public class Application
     private static String templatesPath = "/WEB-INF/templates/";
     private static TemplateEngine templateEngine;
     private static ServletContextTemplateResolver templateResolver;
-    private static DBConnectionFactory connectionFactory;
     private static ConnectionManager connectionManager;
 
     private Application() {}
@@ -38,7 +34,6 @@ public class Application
         try
         {
             connectionManager = ConnectionManager.newInstance(servletContext);
-            connectionFactory = new DBConnectionFactory(servletContext);
         }
         catch (ClassNotFoundException e)
         {
@@ -65,15 +60,6 @@ public class Application
         return templateResolver;
     }
 
-    @Deprecated
-    public static Connection getDBConnection() throws UnavailableException
-    {
-        checkInitialization();
-        if(connectionFactory == null) throw  new UnavailableException("JDBC driver not found!");
-
-        return connectionFactory.getConnection();
-    }
-
     private static void checkInitialization()
     {
         if(!initialized)throw new IllegalStateException("Application must be initialized!");
@@ -82,6 +68,7 @@ public class Application
     public static void stop()
     {
         connectionManager.stop();
+
     }
 
 }

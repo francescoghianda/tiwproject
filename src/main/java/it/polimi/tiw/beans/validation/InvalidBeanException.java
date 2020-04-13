@@ -17,14 +17,15 @@ public class InvalidBeanException extends Exception
     public InvalidBeanException(List<Validation> validations)
     {
         super();
-        this.validations = validations;
+        if(validations != null)this.validations = validations;
+        else this.validations = new ArrayList<>();
     }
 
     public InvalidBeanException(Validation validation)
     {
         super();
         this.validations = new ArrayList<>();
-        this.validations.add(validation);
+        if(validation != null)this.validations.add(validation);
     }
 
     public List<String> getInvalidFieldNames()
