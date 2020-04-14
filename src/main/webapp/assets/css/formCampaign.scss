@@ -1,0 +1,143 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c&display=swap');
+
+
+*{
+  font-family: 'Open Sans', sans-serif;
+  box-sizing: border-box;
+}
+
+$colors:(
+        primary: #455a64,
+        primary-light: #718792,
+        primary-dark: #1c313a,
+        secondary: #0d47a1,
+        secondary-light: #5472d3,
+        secondary-dark: #002171,
+        text: #ffffff,
+);
+
+@function color($color){
+  @return map_get($colors, $color)
+}
+
+html, body{
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+h1{
+  display: inline-block;
+  font-size: 96px;
+  font-weight: 300;
+  letter-spacing: -1.5px;
+  margin: 0;
+}
+h2{
+  display: inline-block;
+  font-size: 59px;
+  font-weight: 300;
+  letter-spacing: -0.5px;
+  margin: 0;
+}
+h3{
+  display: inline-block;
+  font-size: 48px;
+  font-weight: 400;
+  letter-spacing: 0;
+  margin: 0;
+}
+h4{
+  display: inline-block;
+  font-size: 34px;
+  font-weight: 400;
+  letter-spacing: 0.25px;
+  margin: 0;
+}
+h5{
+  display: inline-block;
+  font-size: 24px;
+  font-weight: 400;
+  letter-spacing: 0;
+  margin: 0;
+}
+h6{
+  display: inline-block;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 0.15px;
+  margin: 0;
+}
+.subtitle-1{
+  font-size: 16px;
+  font-weight: 400;
+  letter-spacing: 0.15px;
+}
+.subtitle-2{
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.1px;
+}
+.body-1{
+  font-size: 16px;
+  font-weight: 400;
+  letter-spacing: 0.5px;
+}
+.body-2{
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: 0.25px;
+}
+button{
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: 1.25px;
+  text-transform: uppercase;
+}
+
+$desktop: 840px;
+
+@mixin desktop{
+  @media (min-width: #{$desktop}) {
+    @content
+  }
+}
+.manager-campaign-icon>img{
+  height: 50px;
+  width: 50px;
+}
+
+.form-section.createCampaign{
+  display: none;
+}
+
+.form-section .form-input-error, .form-section .form-input-error-online{
+  display: none;
+  font-size: .8rem;
+  line-height: .8rem;
+  margin-top: .2rem;
+  color: #e11600;
+}
+
+.form-section.invalid .form-input-error{
+  display: inline-block;
+}
+
+.form-section.online-invalid .form-input-error-online{
+  display: inline-block;
+}
+
+footer{
+  grid-column: 1 / span 6;
+  grid-row: 3;
+  padding: 8px 8px 12px;
+  direction: rtl;
+
+  button{
+    border: none;
+    background-color: white;
+    color: color('secondary');
+  }
+}
+

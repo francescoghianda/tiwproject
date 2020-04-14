@@ -20,16 +20,16 @@ public class BeanValidator
 
     public static Validation validate(Bean bean)
     {
-        Field[] fields = bean.getClass().getDeclaredFields();
-        List<Field> invalidFields = new ArrayList<>();
+        Field[] fields = bean.getClass().getDeclaredFields(); //ottiene dalla classe tutte le variabili private e pubbliche
+        List<Field> invalidFields = new ArrayList<>(); //per ogni variabile prende tutte le @
 
         try
         {
             for(Field field : fields)
             {
-                for (Annotation annotation : field.getAnnotations())
+                for (Annotation annotation : field.getAnnotations()) //verifico + @
                 {
-                    Validator validator = getValidator(annotation);
+                    Validator validator = getValidator(annotation); //carico dinamicamente emailValidator
                     if(!validator.validate(annotation, getFieldValue(field, bean)))invalidFields.add(field);
                 }
             }
@@ -55,19 +55,19 @@ public class BeanValidator
     }
 
     private static Validator getValidator(Annotation annotation) throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException
-    {
+    { //prende il nome della classe dell'annotazione (es su username c'è @size )
         String annotationClassName = annotation.annotationType().getSimpleName();
-        String validatorClassName = Validator.class.getPackage().getName()+"."+annotationClassName+"Validator";
-        Class<?> validatorClass = Class.forName(validatorClassName);
-        Constructor<?> constructor = validatorClass.getConstructor();
+        String validatorClassName = Validator.class.getPackage().getName()+"."+annotationClassName+"Validator"; //percorso dei package annotazione+'Validator'
+        Class<?> validatorClass = Class.forName(validatorClassName); //ottiene il costruttore(carica la classe in modo dinamico) e crea l'istanza
+        Constructor<?> constructor = validatorClass.getConstructor();//
         return (Validator) constructor.newInstance();
     }
 
     private static Object getFieldValue(Field field, Bean bean) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException
     {
-        String fieldName = field.getName();
-        if(!Character.isUpperCase(fieldName.charAt(0))) fieldName = Character.toUpperCase(fieldName.charAt(0))+fieldName.substring(1);
-        Method getter = bean.getClass().getMethod("get"+fieldName);
+        String fieldName = field.getName(); //(es username )
+        if(!Character.isUpperCase(fieldName.charAt(0))) fieldName = Character.toUpperCase(fieldName.charAt(0))+fieldName.substring(1); //'Username'
+        Method getter = bean.getClass().getMethod("get"+fieldName); //es classe si username è user
         return getter.invoke(bean);
     }
 
