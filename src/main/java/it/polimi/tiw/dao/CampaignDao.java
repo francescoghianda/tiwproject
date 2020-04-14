@@ -35,6 +35,28 @@ public class CampaignDao extends Dao<Campaign>
         return findFirstBy("name", name);
     }
 
+    public boolean updateCampaignStatus(int campaignId, String status) throws SQLException
+    {
+        try(PooledConnection connection = ConnectionManager.getInstance().getConnection();
+            PreparedStatement statement = connection.getConnection().prepareStatement("UPDATE campaign SET status = ? WHERE id = ?"))
+        {
+            statement.setString(1, status);
+            statement.setInt(2, campaignId);
+            return statement.executeUpdate() != 0;
+        }
+    }
+
+    public boolean updateCampaignStatus(String campaignName, String status) throws SQLException
+    {
+        try(PooledConnection connection = ConnectionManager.getInstance().getConnection();
+            PreparedStatement statement = connection.getConnection().prepareStatement("UPDATE campaign SET status = ? WHERE name = ?"))
+        {
+            statement.setString(1, status);
+            statement.setString(2, campaignName);
+            return statement.executeUpdate() != 0;
+        }
+    }
+
     public boolean insertCampaign(Campaign campaign) throws SQLException, InvalidBeanException
     {
         if(!campaign.isValid()) throw new InvalidBeanException(campaign.getValidation().orElse(null));

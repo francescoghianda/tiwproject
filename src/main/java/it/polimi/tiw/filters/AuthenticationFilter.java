@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
-@WebFilter("/*")
+@WebFilter(filterName = "AuthenticationFilter")
 public class AuthenticationFilter extends HttpFilter
 {
     private List<String> exclusions;

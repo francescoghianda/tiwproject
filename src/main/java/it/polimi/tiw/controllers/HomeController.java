@@ -1,7 +1,10 @@
 package it.polimi.tiw.controllers;
 
 import it.polimi.tiw.Application;
+import it.polimi.tiw.beans.Campaign;
 import it.polimi.tiw.beans.User;
+import it.polimi.tiw.beans.Worker;
+import it.polimi.tiw.dao.CampaignDao;
 import it.polimi.tiw.dao.UserDao;
 import org.thymeleaf.context.WebContext;
 
@@ -14,13 +17,15 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.List;
 
 @WebServlet("")
-public class DashboardController extends HttpServlet
+public class HomeController extends HttpServlet
 {
     private UserDao userDAO;
+    private CampaignDao campaignDao;
 
-    public DashboardController()
+    public HomeController()
     {
         super();
     }
@@ -29,6 +34,7 @@ public class DashboardController extends HttpServlet
     public void init() throws ServletException
     {
         userDAO = new UserDao();
+        campaignDao = new CampaignDao();
     }
 
     @Override
@@ -44,9 +50,20 @@ public class DashboardController extends HttpServlet
         try
         {
             webContext.setVariable("user", user);
-            webContext.setVariable("worker", userDAO.findWorkerByUserId(user.getId()).orElse(null));
+            String template;
+            if(user.getRole().equals("WORKER"))
+            {
+                template = "worker_home";
+                webContext.setVariable("worker", (Worker) userDAO.findWorkerByUserId(user.getId()).orElse(null));
+            }
+            else
+            {
+                template = "manager_home";
+                webContext.setVariable("campaigns", (List<Campaign>) campaignDao.findCampaignByManagerId(user.getId()));
+            }
 
-            Application.getTemplateEngine().process("index", webContext, resp.getWriter());
+
+            Application.getTemplateEngine().process(template, webContext, resp.getWriter());
         }
         catch (SQLException e)
         {
