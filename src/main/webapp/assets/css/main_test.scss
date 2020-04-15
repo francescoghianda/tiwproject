@@ -135,15 +135,22 @@ $desktop: 840px;
   justify-content: center;
   align-items: center;
   z-index: 10;
-  border-radius: 50%;
+  //border-radius: 50%;
   border: none;
   min-width: 56px;
-  width: 56px;
-  height: 56px;
-  bottom: 16px;
-  right: 16px;
+  //width: 56px;
+  //height: 56px;
+  width: 100%;
+  height: 100%;
+  //bottom: 16px;
+  //right: 16px;
+  bottom: 0;
+  right: 0;
+  clip-path: circle(28px at calc(100% - 44px) calc(100% - 44px));
+
   background-color: color('secondary');
   box-shadow: 0 3px 5px -1px rgba(0, 0, 0, 0.2), 0 6px 10px 0px rgba(0, 0, 0, 0.14), 0 1px 18px 0px rgba(0,0,0,.12);
+  will-change: height, width;
   transition: all .4s;
 
   &:hover{
@@ -154,26 +161,39 @@ $desktop: 840px;
     background-color: lighten(color('secondary'), 10%);
   }
 
-  &.expanded{
-    right: 0;
-    bottom: 0;
+  .floating-content{
+    display: none;
     width: 100%;
     height: 100%;
-    border-radius: 0;
+  }
+
+  .floating-btn-img{
+    position: absolute;
+    bottom: 32px;
+    right: 32px;
+    width: 24px;
+    height: 24px;
+    opacity: 1;
+    transition: opacity .2s;
+    transition-delay: .4s;
+  }
+
+  &.expanded{
+    //right: 0;
+    //bottom: 0;
+    //width: 100%;
+    //height: 100%;
+    //border-radius: 0;
+    clip-path: circle(150% at calc(100% - 44px) calc(100% - 44px));
 
     .floating-btn-img{
-      display: none;
+      opacity: 0;
+      transition: none;
     }
 
     .floating-content{
       display: block;
     }
-  }
-
-  .floating-content{
-    display: none;
-    width: 100%;
-    height: 100%;
   }
 
   @include desktop{
@@ -188,11 +208,6 @@ $desktop: 840px;
     }
   };
 
-  .floating-btn-img{
-    width: 24px;
-    height: 24px;
-  }
-
 }
 
 #add-campaign-btn{
@@ -200,12 +215,13 @@ $desktop: 840px;
     border-radius: 0;
     display: block;
     position: relative;
-    bottom: 0;
-    right: 0;
-    width: unset;
-    height: unset;
+    //bottom: 0;
+    //right: 0;
+    //width: unset;
+    //height: unset;
     grid-column: 3 / span 4;
     grid-row: 2 / span 6;
+    clip-path: none;
   }
 }
 

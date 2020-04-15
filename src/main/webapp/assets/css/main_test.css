@@ -121,15 +121,16 @@ button, a.button {
   justify-content: center;
   align-items: center;
   z-index: 10;
-  border-radius: 50%;
   border: none;
   min-width: 56px;
-  width: 56px;
-  height: 56px;
-  bottom: 16px;
-  right: 16px;
+  width: 100%;
+  height: 100%;
+  bottom: 0;
+  right: 0;
+  clip-path: circle(28px at calc(100% - 44px) calc(100% - 44px));
   background-color: #0d47a1;
   box-shadow: 0 3px 5px -1px rgba(0, 0, 0, 0.2), 0 6px 10px 0px rgba(0, 0, 0, 0.14), 0 1px 18px 0px rgba(0, 0, 0, 0.12);
+  will-change: height, width;
   transition: all 0.4s;
 }
 .floating:hover {
@@ -138,23 +139,30 @@ button, a.button {
 .floating:active {
   background-color: #115cd0;
 }
-.floating.expanded {
-  right: 0;
-  bottom: 0;
-  width: 100%;
-  height: 100%;
-  border-radius: 0;
-}
-.floating.expanded .floating-btn-img {
-  display: none;
-}
-.floating.expanded .floating-content {
-  display: block;
-}
 .floating .floating-content {
   display: none;
   width: 100%;
   height: 100%;
+}
+.floating .floating-btn-img {
+  position: absolute;
+  bottom: 32px;
+  right: 32px;
+  width: 24px;
+  height: 24px;
+  opacity: 1;
+  transition: opacity 0.2s;
+  transition-delay: 0.4s;
+}
+.floating.expanded {
+  clip-path: circle(150% at calc(100% - 44px) calc(100% - 44px));
+}
+.floating.expanded .floating-btn-img {
+  opacity: 0;
+  transition: none;
+}
+.floating.expanded .floating-content {
+  display: block;
 }
 @media (min-width: 840px) {
   .floating {
@@ -167,22 +175,15 @@ button, a.button {
     display: block;
   }
 }
-.floating .floating-btn-img {
-  width: 24px;
-  height: 24px;
-}
 
 @media (min-width: 840px) {
   #add-campaign-btn {
     border-radius: 0;
     display: block;
     position: relative;
-    bottom: 0;
-    right: 0;
-    width: unset;
-    height: unset;
     grid-column: 3/span 4;
     grid-row: 2/span 6;
+    clip-path: none;
   }
 }
 
