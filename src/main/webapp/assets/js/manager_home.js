@@ -7,9 +7,18 @@ $(() =>
 
     $('#close-new-campaign').on('click', function (e)
     {
-        console.log("remove");
         $('#add-campaign-btn').removeClass('expanded');
         e.stopPropagation();
+    })
+
+    $('.profile-picture').on('click', function (e)
+    {
+        $('.user-menu').toggleClass('visible');
+        e.stopPropagation();
+    })
+
+    $(window).on('click', function () {
+        $('.user-menu').removeClass('visible');
     })
 
     $('#formCampaign').on('click', function ()
