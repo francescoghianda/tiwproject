@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1" />
     <meta charset="UTF-8">
     <title>Home Page</title>
 
@@ -9,13 +9,13 @@
     <link rel="stylesheet" type="text/css" href="../../assets/css/formCampaign.css" th:href="@{/assets/css/formCampaign.css}">
 
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-    <script src="/assets/js/manager_home.js" type="module" th:src="@{/assets/js/manager_home.js}"></script>
+    <script src="../../assets/js/manager_home.js" type="module" th:src="@{/assets/js/manager_home.js}"></script>
 
 </head>
 <body>
 
-<button class="floating">
-    <img src="../../assets/images/plus-floating.svg" th:src="@{/assets/images/plus-floating.svg}">
+<button id="add-campaign-btn" class="floating">
+    <img src="../../assets/images/add-24px.svg" th:src="@{/assets/images/plus-floating.svg}">
 </button>
 
 <div class="container desktop-fixed">
@@ -23,10 +23,6 @@
     <h5 class="campaigns-title">Campaign list</h5>
 
     <div class="campaign-list-container">
-
-        <!--<div class="list-title">
-            <h5>Campaign List</h5>
-        </div>-->
 
         <div class="campaign-list">
 
@@ -138,17 +134,27 @@
         </div>
     </div>
 
+    <div class="new-campaign-form">
+        <header class="top-bar">
+            <button id="close-new-campaign" class="left-btn">
+                <img src="../../assets/images/arrow_back-24px.svg" th:src="@{/assets/images/arrow_back-24px.svg}">
+            </button>
+            <h6>Create new campaign</h6>
+        </header>
+        <div class="form-section createCampaign" id="createCampaign">
+            <input id="campaign-name" type="text" placeholder="Campaign name" name="campaignName" data-validation="/validate_campaign" required>
+            <label class="form-input-error" for="campaign-name" th:text="#{error.campaignName-unavailable}">Invalid name</label>
+            <label class="form-input-error-online" for="campaign-name" th:text="#{error.email-unavailable}">Email not available</label>
+        </div>
+
+        <footer class="manager-campaign-icon">
+            <img id="formCampaign" src="/assets/images/plus.svg"  alt="triangle with all three sides equal"  />
+        </footer>
+    </div>
+
 </div>
 
-<div class="form-section createCampaign" id="createCampaign">
-    <input id="campaign-name" type="text" placeholder="Campaign name" name="campaignName" data-validation="/validate_campaign" required>
-    <label class="form-input-error" for="campaign-name" th:text="#{error.campaignName-unavailable}">Invalid name</label>
-    <label class="form-input-error-online" for="campaign-name" th:text="#{error.email-unavailable}">Email not available</label>
-</div>
-
-<footer class="manager-campaign-icon">
-    <img id="formCampaign" src="/assets/images/plus.svg"  alt="triangle with all three sides equal"  />
-</footer>
+<!---->
 
 
 </body>
