@@ -72,5 +72,9 @@ public class CampaignDao extends Dao<Campaign>
             return statement.executeUpdate() >= 1;
         }
     }
+    public boolean campaignNameExist(String campaignName) throws SQLException
+    {
+        return exist("name", campaignName);
+    }
 
 }

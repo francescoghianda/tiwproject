@@ -1,5 +1,6 @@
 package it.polimi.tiw.controllers.user;
 
+import it.polimi.tiw.dao.CampaignDao;
 import it.polimi.tiw.dao.UserDao;
 
 import javax.json.Json;
@@ -12,12 +13,12 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
 
-@WebServlet("/validate_data")
-public class ValidateDataController extends HttpServlet
+@WebServlet("/validate_campaign")
+public class ValidateCampaignController extends HttpServlet
 {
-    private UserDao dao;
+    private CampaignDao dao;
 
-    public ValidateDataController()
+    public ValidateCampaignController()
     {
         super();
     }
@@ -25,20 +26,18 @@ public class ValidateDataController extends HttpServlet
     @Override
     public void init() throws ServletException
     {
-        dao = new UserDao();
+        dao = new CampaignDao();
     }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException
     {
-        String username = req.getParameter("username");
-        String email = req.getParameter("email");
+        String campaignName = req.getParameter("campaignName");
 
         try(JsonGenerator generator = Json.createGenerator(resp.getWriter()))
         {
             generator.writeStartObject(); ///inizi a scrivere l'oggeto json
-            if(username != null) generator.write("valid-username", !dao.usernameExist(username) && !username.isEmpty());
-            if(email != null) generator.write("valid-email", !dao.emailExist(email) && !email.isEmpty());
+            if(campaignName != null) generator.write("valid-campaign-name", !dao.campaignNameExist(campaignName) && !campaignName.isEmpty());
             generator.writeEnd();
         }
         catch (SQLException e)

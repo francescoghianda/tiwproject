@@ -6,6 +6,10 @@
     <title>Home Page</title>
 
     <link rel="stylesheet" type="text/css" href="../../assets/css/main_test.css" th:href="@{/assets/css/main_test.css}">
+    <link rel="stylesheet" type="text/css" href="../../assets/css/formCampaign.css" th:href="@{/assets/css/formCampaign.css}">
+
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="/assets/js/manager_home.js" type="module" th:src="@{/assets/js/manager_home.js}"></script>
 
 </head>
 <body>
@@ -135,6 +139,16 @@
     </div>
 
 </div>
+
+<div class="form-section createCampaign" id="createCampaign">
+    <input id="campaign-name" type="text" placeholder="Campaign name" name="campaignName" data-validation="/validate_campaign" required>
+    <label class="form-input-error" for="campaign-name" th:text="#{error.campaignName-unavailable}">Invalid name</label>
+    <label class="form-input-error-online" for="campaign-name" th:text="#{error.email-unavailable}">Email not available</label>
+</div>
+
+<footer class="manager-campaign-icon">
+    <img id="formCampaign" src="/assets/images/plus.svg"  alt="triangle with all three sides equal"  />
+</footer>
 
 
 </body>
