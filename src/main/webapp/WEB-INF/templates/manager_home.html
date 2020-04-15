@@ -14,11 +14,30 @@
 </head>
 <body>
 
-<button id="add-campaign-btn" class="floating">
-    <img src="../../assets/images/add-24px.svg" th:src="@{/assets/images/plus-floating.svg}">
-</button>
-
 <div class="container desktop-fixed">
+
+    <div id="add-campaign-btn" class="floating">
+        <img class="floating-btn-img" src="../../assets/images/add-24px.svg" th:src="@{/assets/images/plus-floating.svg}">
+        <div class="floating-content">
+            <div class="new-campaign-form">
+                <header class="top-bar">
+                    <button id="close-new-campaign" class="left-btn">
+                        <img src="../../assets/images/arrow_back-24px.svg" th:src="@{/assets/images/arrow_back-24px.svg}">
+                    </button>
+                    <h6>Create new campaign</h6>
+                </header>
+                <div class="form-section createCampaign" id="createCampaign">
+                    <input id="campaign-name" type="text" placeholder="Campaign name" name="campaignName" data-validation="/validate_campaign" required>
+                    <label class="form-input-error" for="campaign-name" th:text="#{error.campaignName-unavailable}">Invalid name</label>
+                    <label class="form-input-error-online" for="campaign-name" th:text="#{error.email-unavailable}">Email not available</label>
+                </div>
+
+                <footer class="manager-campaign-icon">
+                    <img id="formCampaign" src="/assets/images/plus.svg"  alt="triangle with all three sides equal"  />
+                </footer>
+            </div>
+        </div>
+    </div>
 
     <h5 class="campaigns-title">Campaign list</h5>
 
@@ -132,24 +151,6 @@
             </div>
 
         </div>
-    </div>
-
-    <div class="new-campaign-form">
-        <header class="top-bar">
-            <button id="close-new-campaign" class="left-btn">
-                <img src="../../assets/images/arrow_back-24px.svg" th:src="@{/assets/images/arrow_back-24px.svg}">
-            </button>
-            <h6>Create new campaign</h6>
-        </header>
-        <div class="form-section createCampaign" id="createCampaign">
-            <input id="campaign-name" type="text" placeholder="Campaign name" name="campaignName" data-validation="/validate_campaign" required>
-            <label class="form-input-error" for="campaign-name" th:text="#{error.campaignName-unavailable}">Invalid name</label>
-            <label class="form-input-error-online" for="campaign-name" th:text="#{error.email-unavailable}">Email not available</label>
-        </div>
-
-        <footer class="manager-campaign-icon">
-            <img id="formCampaign" src="/assets/images/plus.svg"  alt="triangle with all three sides equal"  />
-        </footer>
     </div>
 
 </div>

@@ -116,7 +116,7 @@ button, a.button {
 }
 
 .floating {
-  position: absolute;
+  position: fixed;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -130,6 +130,7 @@ button, a.button {
   right: 16px;
   background-color: #0d47a1;
   box-shadow: 0 3px 5px -1px rgba(0, 0, 0, 0.2), 0 6px 10px 0px rgba(0, 0, 0, 0.14), 0 1px 18px 0px rgba(0, 0, 0, 0.12);
+  transition: all 0.4s;
 }
 .floating:hover {
   background-color: #0f53bd;
@@ -137,21 +138,98 @@ button, a.button {
 .floating:active {
   background-color: #115cd0;
 }
+.floating.expanded {
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 0;
+}
+.floating.expanded .floating-btn-img {
+  display: none;
+}
+.floating.expanded .floating-content {
+  display: block;
+}
+.floating .floating-content {
+  display: none;
+  width: 100%;
+  height: 100%;
+}
 @media (min-width: 840px) {
   .floating {
     display: none;
   }
+  .floating .floating-btn-img {
+    display: none;
+  }
+  .floating .floating-content {
+    display: block;
+  }
 }
-.floating img {
+.floating .floating-btn-img {
   width: 24px;
   height: 24px;
 }
 
-.desktop-fixed {
-  height: 100vh;
-  padding-bottom: 24px;
-  grid-template-rows: repeat(8, 1fr);
-  row-gap: 24px;
+@media (min-width: 840px) {
+  #add-campaign-btn {
+    border-radius: 0;
+    display: block;
+    position: relative;
+    bottom: 0;
+    right: 0;
+    width: unset;
+    height: unset;
+    grid-column: 3/span 4;
+    grid-row: 2/span 6;
+  }
+}
+
+.new-campaign-form {
+  width: 100%;
+  height: 100%;
+  background-color: #fd5959;
+}
+
+@media (min-width: 840px) {
+  .desktop-fixed {
+    height: 100vh;
+    padding-bottom: 24px;
+    grid-template-rows: repeat(8, 1fr);
+    row-gap: 24px;
+  }
+}
+
+.top-bar {
+  display: inline-flex;
+  align-items: flex-end;
+  width: 100%;
+  height: 56px;
+  background-color: #0d47a1;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+  padding-left: 16px;
+  padding-right: 16px;
+  padding-bottom: 20px;
+}
+@media (min-width: 840px) {
+  .top-bar {
+    display: none;
+  }
+}
+.top-bar .left-btn {
+  padding: 0;
+  border: none;
+  background: transparent;
+  min-width: 24px;
+  width: 24px;
+  height: 24px;
+}
+.top-bar h6 {
+  font-family: "Rubik", sans-serif;
+  font-weight: 500;
+  color: #ffffff;
+  padding-left: 32px;
 }
 
 .container {
@@ -253,62 +331,6 @@ button, a.button {
 }
 .campaign-list .manager-campaign-card footer button {
   border: none;
-}
-
-.top-bar {
-  display: inline-flex;
-  align-items: flex-end;
-  width: 100%;
-  height: 56px;
-  background-color: #0d47a1;
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
-  padding-left: 16px;
-  padding-right: 16px;
-  padding-bottom: 20px;
-}
-@media (min-width: 840px) {
-  .top-bar {
-    display: none;
-  }
-}
-.top-bar .left-btn {
-  padding: 0;
-  border: none;
-  background: transparent;
-  min-width: 24px;
-  width: 24px;
-  height: 24px;
-}
-.top-bar h6 {
-  font-family: "Rubik", sans-serif;
-  font-weight: 500;
-  color: #ffffff;
-  padding-left: 32px;
-}
-
-.new-campaign-form {
-  position: fixed;
-  background-color: #fd5959;
-  clip-path: circle(0px at calc(100vw - 44px) calc(100vh - 44px));
-  top: 0;
-  right: 0;
-  z-index: 11;
-  width: 100vw;
-  height: 100vh;
-  transition: clip-path 0.4s;
-}
-@media (min-width: 840px) {
-  .new-campaign-form {
-    position: relative;
-    width: unset;
-    height: unset;
-    grid-column: 3/span 4;
-    grid-row: 2/span 6;
-    clip-path: none !important;
-  }
-}
-.new-campaign-form.visible {
-  clip-path: circle(150vh at calc(100vw - 44px) calc(100vh - 44px));
 }
 
 /*# sourceMappingURL=main_test.css.map */

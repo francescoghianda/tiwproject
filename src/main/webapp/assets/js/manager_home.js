@@ -1,13 +1,15 @@
 $(() =>
 {
-    $('#add-campaign-btn').on('click', () =>
+    $('#add-campaign-btn').on('click', function ()
     {
-        $('.new-campaign-form').addClass('visible');
+        $(this).addClass('expanded');
     })
 
-    $('#close-new-campaign').on('click', () =>
+    $('#close-new-campaign').on('click', function (e)
     {
-        $('.new-campaign-form').removeClass('visible');
+        console.log("remove");
+        $('#add-campaign-btn').removeClass('expanded');
+        e.stopPropagation();
     })
 
     $('#formCampaign').on('click', function ()
