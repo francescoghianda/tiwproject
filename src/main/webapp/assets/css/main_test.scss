@@ -162,7 +162,7 @@ $desktop: 840px;
   clip-path: circle(28px at calc(100% - 44px) calc(100% - 44px));
 
   background-color: color('secondary');
-  box-shadow: 0 3px 5px -1px rgba(0, 0, 0, 0.2), 0 6px 10px 0px rgba(0, 0, 0, 0.14), 0 1px 18px 0px rgba(0,0,0,.12);
+  //box-shadow: 0 3px 5px -1px rgba(0, 0, 0, 0.2), 0 6px 10px 0px rgba(0, 0, 0, 0.14), 0 1px 18px 0px rgba(0,0,0,.12);
   will-change: height, width;
   transition: all .4s;
 
@@ -409,6 +409,15 @@ $desktop: 840px;
   }
 }
 
+@keyframes fade-in {
+  0%{
+    opacity: 0;
+  }
+  100%{
+    opacity: 1;
+  }
+}
+
 .navbar{
   display: flex;
   position: fixed;
@@ -434,7 +443,7 @@ $desktop: 840px;
 
   .user-menu{
     position: absolute;
-    opacity: 0;
+    display: none;
     top: 56px;
     margin-top: 8px;
     padding-top: 16px;
@@ -443,10 +452,13 @@ $desktop: 840px;
     background-color: color('primary');
     border-radius: 4px;
     user-select: none;
-    transition: opacity .2s;
 
     &.visible{
-      opacity: 1;
+      display: block;
+      animation-name: fade-in;
+      animation-iteration-count: 1;
+      animation-duration: .2s;
+      animation-timing-function: ease;
     }
 
     ul{
@@ -528,6 +540,7 @@ $desktop: 840px;
   position: relative;
   height: 56px;
   margin-top: 8px;
+  margin-bottom: 18px;
   min-width: 100px;
 
   input[type=text]{
@@ -552,20 +565,50 @@ $desktop: 840px;
       background-color: white;
       padding-right: 6px;
       padding-left: 6px;
-      transform: scale(.75) translateY(-38px);
-      transform-origin: 0;
+      transform: scale(.75) translateY(-40px);
+      transform-origin: bottom left;
     }
+  }
+
+  &.error{
+    input[type=text]{
+      border: 2px solid #ff0000;
+
+      &:focus~.placeholder, &:not(:placeholder-shown)~.placeholder{
+        color: #ff0000;
+      }
+    }
+
+    .placeholder{
+      color: #ff0000;
+    }
+
+    .form-error-message{
+      display: block;
+    }
+
   }
 
   .placeholder{
     position: absolute;
     left: 14px;
-    top: calc(50% - 7px);
+    bottom: 17px;
     color: rgba(0, 0, 0, 0.6);
     font-family: 'Raleway', sans-serif;
     font-weight: 600;
+    font-size: 16px;
+    transition: transform 150ms cubic-bezier(0.4,0,0.2,1), opacity 150ms cubic-bezier(0.4,0,0.2,1);
+  }
+
+  .form-error-message{
+    display: none;
+    font-family: "Raleway", sans-serif;
+    font-weight: 500;
     font-size: 14px;
-    transition: all .2s;
+    color: #ff0000;
+    position: absolute;
+    top: 100%;
+    left: 14px;
   }
 }
 
