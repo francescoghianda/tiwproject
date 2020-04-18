@@ -38,6 +38,11 @@ function post(input, jsonData)
 
 function checkElementValidity(element)
 {
+    let validationBinding = element.dataset.bind_validation;
+    if(validationBinding)checkElementValidity(document.getElementById(validationBinding));
+
+    if(element.dataset.novalidate)return true;
+
     return new Promise((resolve, reject) =>
     {
         let localValidity = checkLocalValidity(element);
@@ -71,23 +76,30 @@ function checkElementValidity(element)
 function checkLocalValidity(element)
 {
     if(element.tagName.toLowerCase() === 'select') return element.checkValidity() && !element.options[element.selectedIndex].disabled;
+    if(element.getAttribute('type') === 'hidden' && element.hasAttribute('required')) return !!element.value;
+    let equalsTo = element.dataset.equals_to;
+    if(equalsTo) return element.value === document.getElementById(equalsTo).value && element.checkValidity();
     else return element.checkValidity();
 }
 
 function setValidity(element, valid, online)
 {
-    let formSection = $(element).closest('.form-section').get(0);
-    let className = online ? 'online-invalid' : 'invalid';
+    let formSection = $(element).closest('.input-container').get(0);
+    if(!formSection)return;
+
+    let className = online ? 'online-error' : 'local-error';
 
     if(valid)
     {
-        element.classList.remove(className);
-        if(formSection)formSection.classList.remove(className);
+        element.classList.remove('error')
+        formSection.classList.remove('error');
+        formSection.classList.remove(className);
     }
     else
     {
-        element.classList.add(className);
-        if(formSection)formSection.classList.add(className)
+        element.classList.add('error')
+        formSection.classList.add('error');
+        formSection.classList.add(className);
     }
 }
 
@@ -96,7 +108,7 @@ function checkFormValidity(form)
     return new Promise((resolve, reject) =>
     {
         let promises = [];
-        Array.from(form.querySelectorAll('input, select')).filter(element => !element.disabled).forEach(element => promises.push(checkElementValidity(element)));
+        Array.from(form.querySelectorAll('input, select')).filter(element => !element.disabled && !element.dataset.novalidate).forEach(element => promises.push(checkElementValidity(element)));
         Promise.all(promises).then(values =>
             resolve(values.reduce((result, validity) =>
             {

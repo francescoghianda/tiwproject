@@ -1,0 +1,45 @@
+#login-form-container{
+  position: relative;
+  display: flex;
+  align-items: center;
+  grid-column: 1/ span 4;
+  padding: 16px 8px 40px;
+  border: 1px solid #d7d7d7;
+  border-radius: 4px;
+
+  @include desktop{
+    grid-column: 5/ span 4;
+    grid-row: 4/ span 4;
+    padding: 16px;
+  }
+
+  #register-link{
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    padding: 8px;
+    font-size: 12px;
+  }
+}
+
+#login-form{
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 500px;
+  margin: auto;
+
+  #login-btn{
+    align-self: center;
+  }
+
+  #login-form-header{
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 56px;
+    padding-bottom: 24px;
+  }
+
+}

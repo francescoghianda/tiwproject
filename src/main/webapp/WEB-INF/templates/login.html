@@ -3,31 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
+    <title th:text="#{login}">Login</title>
 
-    <link rel="stylesheet" type="text/css" href="assets/css/main.css" th:href="@{/assets/css/main.css}">
+    <link rel="stylesheet" type="text/css" href="../../assets/css/main.css" th:href="@{/assets/css/main.css}">
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script type="module" src="../../assets/js/login.js" th:src="@{/assets/js/login.js}"></script>
 </head>
 <body>
-
-    <div class="blue-container">
-        <div class="form-container" id="login-form">
-            <div class="form-header">
-                <span th:text="#{login}">Login</span>
-            </div>
-            <form action="login" th:action="'login?redirect='+${redirect}" method="post">
-                <div class="form-section">
-                    <!--<label for="username-input" th:text="#{username}">Username:</label>-->
-                    <input id="username-input" type="text" placeholder="Username" th:placeholder="#{username}" name="username" required>
+    <div class="container desktop-fixed">
+        <div id="login-form-container">
+            <form id="login-form">
+                <div id="login-form-header">
+                    <h4 th:text="#{login}">Login</h4>
                 </div>
-                <div class="form-section">
-                    <!--<label for="password-input">Password:</label>-->
-                    <input id="password-input" type="password" placeholder="Password" name="password" required>
+                <div class="input-container">
+                    <input id="username-input" type="text" placeholder=" " name="username" required>
+                    <label for="username-input" class="placeholder" th:text="#{username}">Username</label>
+                    <label for="username-input" class="form-error-message" th:text="#{error.username}">Insert a username</label>
                 </div>
-                <input type="submit" value="Login" th:value="#{login}">
-                <a class="form-bottom-link" href="/create_user" th:href="@{/create_user}" th:text="#{create-new-user}">Create a new user</a>
+                <div class="input-container">
+                    <input id="password-input" type="password" placeholder=" " name="password" required>
+                    <label for="password-input" class="placeholder">Password</label>
+                    <label for="password-input" class="form-error-message" th:text="#{error.password}">Insert a password</label>
+                </div>
+                <input type="button" id="login-btn" value="Login" class="contained-button" th:value="#{login}">
             </form>
+            <a id="register-link" href="./create_user.html" th:href="@{/create_user}" th:text="#{create-new-user}">Create a new user</a>
         </div>
     </div>
-
 </body>
 </html>

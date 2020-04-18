@@ -32,4 +32,10 @@ public class InvalidBeanException extends Exception
     {
         return validations.stream().map(Validation::getInvalidFields).flatMap(List::stream).map(Field::getName).collect(Collectors.toList());
     }
+
+    @Override
+    public String toString()
+    {
+        return "Invalid fields: [" + String.join(", ", getInvalidFieldNames())+"]";
+    }
 }

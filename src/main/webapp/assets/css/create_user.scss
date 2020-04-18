@@ -1,0 +1,44 @@
+#registration-form-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  grid-column: 1/ span 4;
+  padding-bottom: 16px;
+
+  @include desktop{
+    grid-column: 5/ span 4;
+    grid-row: 1/ span end;
+    padding: 16px;
+  }
+}
+
+#registration-form{
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding: 16px 8px 40px;
+  border: 1px solid #d7d7d7;
+  border-radius: 4px;
+
+  #registration-form-header{
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 56px;
+    padding-bottom: 24px;
+  }
+
+  #form-submit-btn{
+    align-self: center;
+  }
+
+  #login-link{
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    padding: 8px;
+    font-size: 12px;
+  }
+}

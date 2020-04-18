@@ -5,8 +5,7 @@
     <meta charset="UTF-8">
     <title>Home Page</title>
 
-    <link rel="stylesheet" type="text/css" href="../../assets/css/main_test.css" th:href="@{/assets/css/main_test.css}">
-    <!--<link rel="stylesheet" type="text/css" href="../../assets/css/formCampaign.css" th:href="@{/assets/css/formCampaign.css}">-->
+    <link rel="stylesheet" type="text/css" href="../../assets/css/main.css" th:href="@{/assets/css/main.css}">
 
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="../../assets/js/manager_home.js" type="module" th:src="@{/assets/js/manager_home.js}"></script>
@@ -43,6 +42,7 @@
 
 <div class="container desktop-fixed">
 
+    <h4 id="new-campaign-title">Create new campaign</h4>
     <div id="add-campaign-btn" class="floating">
         <img class="floating-btn-img" src="../../assets/images/add-24px.svg" th:src="@{/assets/images/add-24px.svg}">
         <div class="floating-content">
@@ -69,7 +69,7 @@
         </div>
     </div>
 
-    <h5 class="campaigns-title">Campaign list</h5>
+    <h4 id="manager-campaigns-title">Campaign list</h4>
 
     <div class="campaign-list-container">
 
@@ -81,7 +81,7 @@
                 </header>
                 <ul>
                     <li><span class="subtitle-2" th:text="#{client}">Client</span><br><span class="body-2" th:text="${campaign.client}">Regione Lombardia</span></li>
-                    <li><span class="subtitle-2" th:text="#{status}">Status</span><br><span class="body-2" th:text="${#messages.msg('status.'+campaign.status)}">CREATED</span></li>
+                    <li><span class="subtitle-2" th:text="#{status}">Status</span><br><div class="status-container"><img src="../../assets/images/lens-24px-green.svg"><span class="body-2" th:text="${#messages.msg('status.'+campaign.status)}">CREATED</span></div></li>
                 </ul>
                 <footer>
                     <a class="button text-button" th:text="#{edit}">Edit</a>

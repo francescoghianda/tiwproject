@@ -65,7 +65,7 @@ public class CreateUserController extends HttpServlet
         }
         catch (InvalidBeanException e1)
         {
-            resp.sendError(400);
+            resp.sendError(400, e1.toString());
         }
     }
 
