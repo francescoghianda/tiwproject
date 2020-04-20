@@ -7,14 +7,17 @@
 
     <link rel="stylesheet" type="text/css" href="../../assets/css/main.css" th:href="@{/assets/css/main.css}">
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-    <script type="module" src="../../assets/js/login.js" th:src="@{/assets/js/login.js}"></script>
+    <script type="module" src="../../assets/js/main.js" th:src="@{/assets/js/main.js}"></script>
 </head>
 <body>
     <div class="container desktop-fixed">
         <div id="login-form-container">
-            <form id="login-form">
+            <form id="login-form" action="/login">
                 <div id="login-form-header">
                     <h4 th:text="#{login}">Login</h4>
+                </div>
+                <div class="form-error">
+                    <span th:text="#{form-error}">Incorrect username or password</span>
                 </div>
                 <div class="input-container">
                     <input id="username-input" type="text" placeholder=" " name="username" required>
@@ -25,10 +28,11 @@
                     <input id="password-input" type="password" placeholder=" " name="password" required>
                     <label for="password-input" class="placeholder">Password</label>
                     <label for="password-input" class="form-error-message" th:text="#{error.password}">Insert a password</label>
+                    <span class="password-eye"></span>
                 </div>
-                <input type="button" id="login-btn" value="Login" class="contained-button" th:value="#{login}">
+                <input type="submit" id="login-btn" value="Login" class="contained-button" th:value="#{login}">
+                <a id="register-link" href="./create_user.html" th:href="@{/create_user}" th:text="#{create-new-user}">Create a new user</a>
             </form>
-            <a id="register-link" href="./create_user.html" th:href="@{/create_user}" th:text="#{create-new-user}">Create a new user</a>
         </div>
     </div>
 </body>

@@ -16,13 +16,33 @@ function showError($errorBox)
 
 function postForm(input, $form)
 {
-    return fetch(input, {
+    return new Promise(((resolve, reject) =>
+    {
+        let request =  new XMLHttpRequest();
+        request.onreadystatechange = function()
+        {
+            if (request.readyState === XMLHttpRequest.DONE) {
+                if (request.status >= 400)
+                {
+                    console.log(request.responseText);
+                    reject(request);
+                }
+                else resolve(request);
+            }
+        }
+        request.open("POST", input, true);
+        request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        request.send($form.serialize());
+    }));
+
+
+    /*return fetch(input, {
         method: 'post',
         headers:{
             'Content-Type': 'application/x-www-form-urlencoded'
         },
         body: $form.serialize()
-    })
+    })*/
 }
 
 function post(input, jsonData)

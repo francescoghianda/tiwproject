@@ -47,11 +47,7 @@ public class LoginController extends HttpServlet
             String redirect = req.getParameter("redirect");
 
             if(AuthenticationHelper.authenticate(req, username, password))resp.sendRedirect(redirect != null ? redirect : "/");
-            else
-            {
-                req.setAttribute("invalid-credentials", true);
-                doGet(req, resp);
-            }
+            else resp.sendError(401, "Invalid credentials");
         }
         catch (SQLException | UnavailableException e)
         {

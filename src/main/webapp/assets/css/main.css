@@ -26,14 +26,12 @@ html, body {
   position: relative;
   display: flex;
   align-items: center;
+  justify-content: center;
   grid-column: 1/span 4;
-  padding: 16px 8px 40px;
-  border: 1px solid #d7d7d7;
-  border-radius: 4px;
 }
 @media (min-width: 840px) {
   #login-form-container {
-    grid-column: 5/span 4;
+    grid-column: 3/span 8;
     grid-row: 4/span 4;
     padding: 16px;
   }
@@ -47,11 +45,14 @@ html, body {
 }
 
 #login-form {
+  position: relative;
   display: flex;
   flex-direction: column;
   width: 100%;
   max-width: 500px;
-  margin: auto;
+  padding: 16px 8px 40px;
+  border: 1px solid #d7d7d7;
+  border-radius: 4px;
 }
 #login-form #login-btn {
   align-self: center;
@@ -293,6 +294,7 @@ button, input[type=submit], input[type=button], a.button {
   border-radius: 4px;
   outline: none;
   user-select: none;
+  cursor: pointer;
 }
 
 .text-button {
@@ -303,9 +305,22 @@ button, input[type=submit], input[type=button], a.button {
 }
 .text-button:hover {
   background-color: rgba(13, 71, 161, 0.04);
-  cursor: pointer;
 }
 .text-button:active {
+  background-color: rgba(13, 71, 161, 0.08);
+}
+
+.outline-button {
+  background-color: transparent;
+  border: 1px solid #0d47a1;
+  border-radius: 4px;
+  padding: 6px 8px;
+  color: #0d47a1;
+}
+.outline-button:hover {
+  background-color: rgba(13, 71, 161, 0.04);
+}
+.outline-button:active {
   background-color: rgba(13, 71, 161, 0.08);
 }
 
@@ -315,6 +330,12 @@ button, input[type=submit], input[type=button], a.button {
   margin-top: 16px;
   padding-left: 16px;
   padding-right: 16px;
+}
+.contained-button:hover {
+  background-color: #115cd0;
+}
+.contained-button:active {
+  background-color: #0f53bd;
 }
 
 .table-container {
@@ -378,6 +399,7 @@ button, input[type=submit], input[type=button], a.button {
 }
 .floating .floating-content {
   display: none;
+  opacity: 0;
   width: 100%;
   height: 100%;
 }
@@ -398,8 +420,27 @@ button, input[type=submit], input[type=button], a.button {
   opacity: 0;
   transition: none;
 }
+@keyframes floating-content-fade-in {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
 .floating.expanded .floating-content {
+  animation-name: floating-content-fade-in;
+  animation-duration: 0.4s;
+  animation-iteration-count: 1;
+  opacity: 1;
   display: block;
+}
+@media (min-width: 840px) {
+  .floating.expanded .floating-content {
+    animation: none;
+    display: block;
+    opacity: 1;
+  }
 }
 @media (min-width: 840px) {
   .floating {
@@ -410,6 +451,7 @@ button, input[type=submit], input[type=button], a.button {
   }
   .floating .floating-content {
     display: block;
+    opacity: 1;
   }
 }
 
@@ -449,6 +491,25 @@ button, input[type=submit], input[type=button], a.button {
   height: 100%;
   background-color: #ffffff;
   padding-top: 8px;
+}
+
+.form-error {
+  display: none;
+  width: 100%;
+  align-items: center;
+  min-height: 65px;
+  background-color: #ffcdcd;
+  border: 1px solid #9e0000;
+  border-radius: 4px;
+  padding: 20px;
+  margin-bottom: 24px;
+}
+.form-error span {
+  color: #9e0000;
+  font-size: 14px;
+}
+.form-error.visible {
+  display: flex;
 }
 
 .input-container {
@@ -506,10 +567,10 @@ button, input[type=submit], input[type=button], a.button {
   background-color: #ff0000;
 }
 .input-container.local-error .form-error-message {
-  display: block;
+  display: flex;
 }
 .input-container.online-error .form-error-message-online {
-  display: block;
+  display: flex;
 }
 .input-container .placeholder {
   position: absolute;
@@ -523,6 +584,7 @@ button, input[type=submit], input[type=button], a.button {
 }
 .input-container .form-error-message, .input-container .form-error-message-online {
   display: none;
+  align-items: center;
   font-family: "Raleway", sans-serif;
   font-weight: 500;
   font-size: 14px;
@@ -530,6 +592,55 @@ button, input[type=submit], input[type=button], a.button {
   position: absolute;
   top: 100%;
   left: 14px;
+}
+.input-container .form-error-message .form-error-helper, .input-container .form-error-message-online .form-error-helper {
+  position: relative;
+  width: 20px;
+  height: 20px;
+  min-width: 0;
+  background-image: url("../images/help_outline-24px.svg");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 20px;
+  background-color: transparent;
+  border: none;
+  padding: 0;
+  margin-left: 4px;
+}
+.input-container .form-error-message .form-error-helper span, .input-container .form-error-message-online .form-error-helper span {
+  display: none;
+  position: absolute;
+  padding: 4px;
+  bottom: 24px;
+  width: max-content;
+  min-height: 24px;
+  max-width: 500px;
+  background-color: #ffffff;
+  border: 1px solid #666666;
+  border-radius: 4px;
+  text-transform: none;
+  font-family: "Raleway", sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: #000000;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+}
+.input-container .form-error-message .form-error-helper:hover span, .input-container .form-error-message-online .form-error-helper:hover span {
+  display: block;
+}
+.input-container .password-eye {
+  position: absolute;
+  top: calc(50% - 12px);
+  right: 16px;
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-image: url("../../assets/images/visibility-24px.svg");
+}
+.input-container .password-eye.toggled {
+  background-image: url("../../assets/images/visibility_off-24px.svg");
 }
 
 .form-row {
@@ -632,7 +743,7 @@ select:-webkit-autofill:focus {
   }
 }
 
-.new-campaign-form {
+#new-campaign-form {
   position: relative;
   display: flex;
   flex-direction: column;
@@ -641,7 +752,7 @@ select:-webkit-autofill:focus {
   width: 95%;
   margin: auto;
 }
-.new-campaign-form .input-container {
+#new-campaign-form .input-container {
   width: 100%;
 }
 
@@ -745,12 +856,13 @@ select:-webkit-autofill:focus {
   position: relative;
   display: flex;
   align-items: center;
+  justify-content: center;
   grid-column: 1/span 4;
   padding-bottom: 16px;
 }
 @media (min-width: 840px) {
   #registration-form-container {
-    grid-column: 5/span 4;
+    grid-column: 3/span 8;
     grid-row: 1/span end;
     padding: 16px;
   }
@@ -761,6 +873,7 @@ select:-webkit-autofill:focus {
   display: flex;
   flex-direction: column;
   width: 100%;
+  max-width: 700px;
   padding: 16px 8px 40px;
   border: 1px solid #d7d7d7;
   border-radius: 4px;

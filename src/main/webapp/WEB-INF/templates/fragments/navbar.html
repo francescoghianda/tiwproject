@@ -3,29 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <title></title>
+    <link rel="stylesheet" type="text/css" href="../../../assets/css/main.css">
 </head>
 <body>
 
 <nav class="navbar" th:fragment="navbar">
-    <img class="profile-picture" src="../../assets/images/rocket.svg" th:src="${user.role.equals('WORKER')} ? ${worker.photo} : '/assets/images/manager_icon.svg'">
+    <img class="profile-picture" src="../../../assets/images/account_circle-24px.svg" th:src="${user.role.equals('WORKER')} ? ${worker.photo} : '/assets/images/manager_icon.svg'">
 
     <div class="user-menu">
         <ul>
             <li class="menu-item">
                 <div class="user-data">
-                    <div class="user-image"><img src="../../assets/images/rocket.svg" th:src="${user.role.equals('WORKER')} ? ${worker.photo} : '/assets/images/manager_icon.svg'"></div>
+                    <div class="user-image"><img src="../../../assets/images/account_circle-24px.svg" th:src="${user.role.equals('WORKER')} ? ${worker.photo} : '/assets/images/manager_icon.svg'"></div>
                     <h6 th:text="${user.username}">username</h6>
                 </div>
             </li>
             <li class="menu-item">
-                <a href="./settings.html" th:href="@{/settings}">
-                    <img src="../../assets/images/settings.svg" th:src="@{/assets/images/settings.svg}">
+                <a href="../settings.html" th:href="@{/settings}">
+                    <img src="../../../assets/images/settings-24px.svg" th:src="@{/assets/images/settings-24px.svg}">
                     <span class="subtitle-1" th:text="#{settings}">Settings</span>
                 </a>
             </li>
             <li class="menu-item">
                 <a th:href="@{/logout}">
-                    <img src="../../assets/images/switch.svg" th:src="@{/assets/images/switch.svg}">
+                    <img src="../../../assets/images/power_settings_new-24px.svg" th:src="@{/assets/images/power_settings_new-24px.svg}">
                     <span class="subtitle-1" th:text="#{logout}">Logout</span>
                 </a>
             </li>

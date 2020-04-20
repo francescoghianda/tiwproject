@@ -1,4 +1,4 @@
-package it.polimi.tiw.controllers.user;
+package it.polimi.tiw.controllers.api.v1;
 
 import it.polimi.tiw.dao.CampaignDao;
 import it.polimi.tiw.dao.UserDao;
@@ -13,12 +13,13 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
 
-@WebServlet("/validate_campaign")
-public class ValidateCampaignController extends HttpServlet
+@WebServlet("/api/v1/validate_data")
+public class ValidateDataController extends HttpServlet
 {
-    private CampaignDao dao;
+    private UserDao userDao;
+    private CampaignDao campaignDao;
 
-    public ValidateCampaignController()
+    public ValidateDataController()
     {
         super();
     }
@@ -26,18 +27,23 @@ public class ValidateCampaignController extends HttpServlet
     @Override
     public void init() throws ServletException
     {
-        dao = new CampaignDao();
+        userDao = new UserDao();
+        campaignDao = new CampaignDao();
     }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException
     {
-        String campaignName = req.getParameter("campaignName");
+        String username = req.getParameter("username");
+        String email = req.getParameter("email");
+        String campaignName = req.getParameter("campaign-name");
 
         try(JsonGenerator generator = Json.createGenerator(resp.getWriter()))
         {
             generator.writeStartObject(); ///inizi a scrivere l'oggeto json
-            if(campaignName != null) generator.write("valid-campaign-name", !dao.campaignNameExist(campaignName) && !campaignName.isEmpty());
+            if(username != null) generator.write("valid-username", !userDao.usernameExist(username) && !username.isEmpty());
+            if(email != null) generator.write("valid-email", !userDao.emailExist(email) && !email.isEmpty());
+            if(campaignName != null) generator.write("valid-campaign-name", !campaignDao.campaignNameExist(campaignName) && !campaignName.isEmpty());
             generator.writeEnd();
         }
         catch (SQLException e)

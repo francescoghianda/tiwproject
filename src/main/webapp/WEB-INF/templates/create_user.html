@@ -6,26 +6,34 @@
     <title th:text="#{title}">Create new user</title>
     <link rel="stylesheet" type="text/css" href="../../assets/css/main.css" th:href="@{/assets/css/main.css}"/>
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script type="module" src="../../assets/js/main.js" th:src="@{/assets/js/main.js}"></script>
     <script src="../../assets/js/create_user.js" type="module" th:src="@{/assets/js/create_user.js}"></script>
 </head>
 <body>
 
     <div class="container desktop-fixed">
         <div id="registration-form-container">
-            <form id="registration-form">
+            <form id="registration-form" action="/create_user">
                 <div id="registration-form-header">
                     <h4 th:text="#{title}">Create a new user</h4>
                 </div>
+                <div class="form-error">
+                    <span th:text="form-error">An error occurred during the creation of the user</span>
+                </div>
                 <section class="form-row">
                     <div class="input-container">
-                        <input id="username-input" type="text" placeholder=" " name="username" data-validation="/validate_data" minlength="4" maxlength="20" required>
+                        <input id="username-input" type="text" placeholder=" " name="username" data-validation="/api/v1/validate_data" minlength="4" maxlength="20" required>
                         <label class="placeholder" for="username-input" th:text="#{username}">Username</label>
-                        <label class="form-error-message" for="username-input" th:text="#{error.username-invalid}">Invalid username</label>
+                        <label class="form-error-message" for="username-input" th:text="#{error.username-invalid}">Invalid username
+                            <button class="form-error-helper" th:text="error-helper.username">
+                                <span>The username must have at least 6 characters.</span>
+                            </button>
+                        </label>
                         <label class="form-error-message-online" for="username-input" th:text="#{error.username-unavailable}">Username not available</label>
                     </div>
 
                     <div class="input-container">
-                        <input id="email-input" type="email" placeholder=" " name="email" data-validation="/validate_data" required>
+                        <input id="email-input" type="email" placeholder=" " name="email" data-validation="/api/v1/validate_data" required>
                         <label class="placeholder" for="email-input">Email</label>
                         <label class="form-error-message" for="email-input" th:text="#{error.email-invalid}">Invalid email</label>
                         <label class="form-error-message-online" for="email-input" th:text="#{error.email-unavailable}">Email not available</label>
@@ -37,11 +45,13 @@
                         <input id="password-input" type="password" placeholder=" " name="password" minlength="6" data-bind_validation="password-confirmation-input" required>
                         <label class="placeholder" for="password-input">Password</label>
                         <label class="form-error-message" for="password-input" th:text="#{error.password-invalid}">Invalid password</label>
+                        <span class="password-eye"></span>
                     </div>
                     <div class="input-container">
                         <input id="password-confirmation-input" type="password" placeholder=" " data-equals_to="password-input" required>
                         <label class="placeholder" for="password-confirmation-input" th:text="#{confirm}">Confirm the password</label>
                         <label class="form-error-message" for="password-confirmation-input" th:text="#{error.password-invalid}"></label>
+                        <span class="password-eye"></span>
                     </div>
                 </section>
 
@@ -81,7 +91,7 @@
                     </div>
 
                 </div>
-                <input id="form-submit-btn" class="contained-button" type="button" value="Create user" th:value="#{submit-btn}">
+                <input id="form-submit-btn" class="contained-button" type="submit" value="Create user" th:value="#{submit-btn}">
                 <a id="login-link" href="./login.html" th:href="@{/login}" th:text="#{login}">Login</a>
             </form>
         </div>

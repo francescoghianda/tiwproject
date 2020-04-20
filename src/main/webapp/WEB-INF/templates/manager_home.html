@@ -8,30 +8,30 @@
     <link rel="stylesheet" type="text/css" href="../../assets/css/main.css" th:href="@{/assets/css/main.css}">
 
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-    <script src="../../assets/js/manager_home.js" type="module" th:src="@{/assets/js/manager_home.js}"></script>
+    <script src="../../assets/js/main.js" type="module" th:src="@{/assets/js/main.js}"></script>
 
 </head>
 <body>
 
 <nav class="navbar" th:replace="fragments/navbar :: navbar">
-    <img class="profile-picture" src="../../assets/images/rocket.svg">
+    <img class="profile-picture" src="../../assets/images/account_circle-24px.svg">
     <div class="user-menu">
         <ul>
             <li class="menu-item">
                 <div class="user-data">
-                    <div class="user-image"><img src="../../assets/images/rocket.svg"></div>
+                    <div class="user-image"><img src="../../assets/images/account_circle-24px.svg"></div>
                     <h6>username</h6>
                 </div>
             </li>
             <li class="menu-item">
                 <a href="./settings.html">
-                    <img src="../../assets/images/settings.svg" >
+                    <img src="../../assets/images/settings-24px.svg" >
                     <span class="subtitle-1" >Settings</span>
                 </a>
             </li>
             <li class="menu-item">
                 <a>
-                    <img src="../../assets/images/switch.svg">
+                    <img src="../../assets/images/power_settings_new-24px.svg">
                     <span class="subtitle-1">Logout</span>
                 </a>
             </li>
@@ -42,34 +42,38 @@
 
 <div class="container desktop-fixed">
 
-    <h4 id="new-campaign-title">Create new campaign</h4>
+    <h4 id="new-campaign-title" th:text="#{new-campaign-form-title}">Create new campaign</h4>
     <div id="add-campaign-btn" class="floating">
         <img class="floating-btn-img" src="../../assets/images/add-24px.svg" th:src="@{/assets/images/add-24px.svg}">
         <div class="floating-content">
             <header class="top-bar">
-                <button id="close-new-campaign" class="left-btn">
+                <button id="close-new-campaign" class="left-btn floating-close" data-floating_id="add-campaign-btn">
                     <img src="../../assets/images/arrow_back-24px.svg" th:src="@{/assets/images/arrow_back-24px.svg}">
                 </button>
-                <h6>Create new campaign</h6>
+                <h6 th:text="#{new-campaign-form-title}">Create new campaign</h6>
             </header>
             <div class="form-container">
-                <form class="new-campaign-form" id="createCampaign">
-                    <div class="input-container">
-                        <input id="campaign-name-input" type="text" placeholder=" " name="campaign-name" data-validation="/validate_campaign" required>
-                        <label for="campaign-name-input" class="placeholder">Campaign name</label>
-                        <label for="campaign-name-input" class="form-error-message">Error</label>
+                <form id="new-campaign-form" action="/create_campaign">
+                    <div class="form-error">
+                        <span th:text="#{form-error}">An error occurred.</span>
                     </div>
                     <div class="input-container">
-                        <input id="campaign-client-input" type="text" placeholder=" " name="campaign-client" data-validation="/validate_campaign" required>
-                        <label for="campaign-client-input" class="placeholder">Client</label>
+                        <input id="campaign-name-input" type="text" placeholder=" " name="campaign-name" data-validation="/api/v1/validate_data" required>
+                        <label for="campaign-name-input" class="placeholder" th:text="#{campaign-name}">Campaign name</label>
+                        <label for="campaign-name-input" class="form-error-message" th:text="#{error.missing-name}">Insert a campaign name</label>
                     </div>
-                    <input class="contained-button" type="submit" value="Create">
+                    <div class="input-container">
+                        <input id="campaign-client-input" type="text" placeholder=" " name="campaign-client" required>
+                        <label for="campaign-client-input" class="placeholder" th:text="#{client}">Client</label>
+                        <label for="campaign-client-input" class="form-error-message" th:text="#{error.missing-client}">Insert a client</label>
+                    </div>
+                    <input id="new-campaign-form-btn" class="contained-button" type="submit" value="Create" th:value="#{create}">
                 </form>
             </div>
         </div>
     </div>
 
-    <h4 id="manager-campaigns-title">Campaign list</h4>
+    <h4 id="manager-campaigns-title" th:text="#{campaign-list-title}">Campaign list</h4>
 
     <div class="campaign-list-container">
 
@@ -87,66 +91,6 @@
                     <a class="button text-button" th:text="#{edit}">Edit</a>
                     <a class="button text-button" th:text="#{statistics}">Statistics</a>
                     <a class="button text-button" th:text="#{delete}">Delete</a>
-                </footer>
-            </div>
-
-            <div class="manager-campaign-card">
-                <header>
-                    <h5>Campaign name</h5>
-                </header>
-                <ul>
-                    <li><span class="subtitle-2">Client</span><br><span class="body-2">Regione Lombardia</span></li>
-                    <li><span class="subtitle-2">Status</span><br><span class="body-2">CREATED</span></li>
-                </ul>
-                <footer>
-                    <a class="button text-button">Edit</a>
-                    <a class="button text-button">Statistics</a>
-                    <a class="button text-button">Delete</a>
-                </footer>
-            </div>
-
-            <div class="manager-campaign-card">
-                <header>
-                    <h5>Campaign name</h5>
-                </header>
-                <ul>
-                    <li><span class="subtitle-2">Client</span><br><span class="body-2">Regione Lombardia</span></li>
-                    <li><span class="subtitle-2">Status</span><br><span class="body-2">CREATED</span></li>
-                </ul>
-                <footer>
-                    <a class="button text-button">Edit</a>
-                    <a class="button text-button">Statistics</a>
-                    <a class="button text-button">Delete</a>
-                </footer>
-            </div>
-
-            <div class="manager-campaign-card">
-                <header>
-                    <h5>Campaign name</h5>
-                </header>
-                <ul>
-                    <li><span class="subtitle-2">Client</span><br><span class="body-2">Regione Lombardia</span></li>
-                    <li><span class="subtitle-2">Status</span><br><span class="body-2">CREATED</span></li>
-                </ul>
-                <footer>
-                    <a class="button text-button">Edit</a>
-                    <a class="button text-button">Statistics</a>
-                    <a class="button text-button">Delete</a>
-                </footer>
-            </div>
-
-            <div class="manager-campaign-card">
-                <header>
-                    <h5>Campaign name</h5>
-                </header>
-                <ul>
-                    <li><span class="subtitle-2">Client</span><br><span class="body-2">Regione Lombardia</span></li>
-                    <li><span class="subtitle-2">Status</span><br><span class="body-2">CREATED</span></li>
-                </ul>
-                <footer>
-                    <a class="button text-button">Edit</a>
-                    <a class="button text-button">Statistics</a>
-                    <a class="button text-button">Delete</a>
                 </footer>
             </div>
 

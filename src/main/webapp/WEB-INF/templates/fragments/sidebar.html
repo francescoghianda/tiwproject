@@ -13,7 +13,7 @@
                     <span class="sidebar-username" th:text="${user.username}">username</span>
                     <span class="sidebar-role" th:text="${#messages.msg('role.'+user.role)}">Role</span>
                     <div class="user-status">
-                        <img src="/assets/images/green_dot.svg" th:src="@{/assets/images/green_dot.svg}"/>
+                        <img src="/assets/images/lens-24px-green.svg" th:src="@{/assets/images/lens-24px-green.svg}"/>
                         <span th:text="#{online}">Online</span>
                     </div>
                 </div>
@@ -57,12 +57,12 @@
             <ul class="rapid-actions">
                 <li class="rapid-action">
                     <a href="/logout" th:href="@{/logout}">
-                        <img src="/assets/images/switch.svg"/>
+                        <img src="/assets/images/power_settings_new-24px.svg"/>
                     </a>
                 </li>
                 <li class="rapid-action">
                     <a href="/settings" th:href="@{/settings}">
-                        <img src="/assets/images/settings.svg"/>
+                        <img src="/assets/images/settings-24px.svg"/>
                     </a>
                 </li>
                 <li class="rapid-action">

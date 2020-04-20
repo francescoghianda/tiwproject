@@ -231,6 +231,7 @@ button, input[type=submit], input[type=button], a.button{
   border-radius: 4px;
   outline: none;
   user-select: none;
+  cursor: pointer;
 }
 .text-button{
   background-color: transparent;
@@ -240,7 +241,20 @@ button, input[type=submit], input[type=button], a.button{
 
   &:hover{
     background-color: transparentize(color('secondary'), .96);
-    cursor: pointer;
+  }
+  &:active{
+    background-color: transparentize(color('secondary'), .92);
+  }
+}
+.outline-button{
+  background-color: transparent;
+  border: 1px solid color('secondary');
+  border-radius: 4px;
+  padding: 6px 8px;
+  color: color('secondary');
+
+  &:hover{
+    background-color: transparentize(color('secondary'), .96);
   }
   &:active{
     background-color: transparentize(color('secondary'), .92);
@@ -252,6 +266,13 @@ button, input[type=submit], input[type=button], a.button{
   margin-top: 16px;
   padding-left: 16px;
   padding-right: 16px;
+
+  &:hover{
+    background-color: lighten(color('secondary'), 10%);
+  }
+  &:active{
+    background-color: lighten(color('secondary'), 6%);
+  }
 }
 
 
@@ -325,6 +346,7 @@ button, input[type=submit], input[type=button], a.button{
 
   .floating-content{
     display: none;
+    opacity: 0;
     width: 100%;
     height: 100%;
   }
@@ -348,8 +370,29 @@ button, input[type=submit], input[type=button], a.button{
       transition: none;
     }
 
+    @keyframes floating-content-fade-in {
+      0%{
+        opacity: 0;
+      }
+      100%{
+        opacity: 1;
+      }
+    }
+
     .floating-content{
+      animation-name: floating-content-fade-in;
+      animation-duration: 0.4s;
+      animation-iteration-count: 1;
+      opacity: 1;
       display: block;
+    }
+
+    @include desktop{
+      .floating-content{
+        animation: none;
+        display: block;
+        opacity: 1;
+      }
     }
   }
 
@@ -362,6 +405,7 @@ button, input[type=submit], input[type=button], a.button{
 
     .floating-content{
       display: block;
+      opacity: 1;
     }
   };
 
@@ -406,6 +450,26 @@ button, input[type=submit], input[type=button], a.button{
   height: 100%;
   background-color: #ffffff;
   padding-top: 8px;
+}
+.form-error{
+  display: none;
+  width: 100%;
+  align-items: center;
+  min-height: 65px;
+  background-color: rgb(255, 205, 205);
+  border: 1px solid #9e0000;
+  border-radius: 4px;
+  padding: 20px;
+  margin-bottom: 24px;
+
+  span{
+    color: #9e0000;
+    font-size: 14px;
+  }
+
+  &.visible{
+    display: flex;
+  }
 }
 .input-container{
   position: relative;
@@ -477,13 +541,13 @@ button, input[type=submit], input[type=button], a.button{
 
   &.local-error{
     .form-error-message{
-      display: block;
+      display: flex;
     }
   }
 
   &.online-error{
     .form-error-message-online{
-      display: block;
+      display: flex;
     }
   }
 
@@ -500,6 +564,7 @@ button, input[type=submit], input[type=button], a.button{
 
   .form-error-message, .form-error-message-online{
     display: none;
+    align-items: center;
     font-family: "Raleway", sans-serif;
     font-weight: 500;
     font-size: 14px;
@@ -507,6 +572,61 @@ button, input[type=submit], input[type=button], a.button{
     position: absolute;
     top: 100%;
     left: 14px;
+
+    .form-error-helper{
+      position: relative;
+      width: 20px;
+      height: 20px;
+      min-width: 0;
+      background-image: url("../images/help_outline-24px.svg");
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: 20px;
+      background-color: transparent;
+      border: none;
+      padding: 0;
+      margin-left: 4px;
+
+      span{
+        display: none;
+        position: absolute;
+        padding: 4px;
+        bottom: 24px;
+        width: max-content;
+        min-height: 24px;
+        max-width: 500px;
+        background-color: #ffffff;
+        border: 1px solid #666666;
+        border-radius: 4px;
+        text-transform: none;
+        font-family: "Raleway", sans-serif;
+        font-size: 14px;
+        font-weight: 500;
+        color: #000000;
+        box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+      }
+
+      &:hover{
+        span{
+          display: block;
+        }
+      }
+    }
+  }
+
+  .password-eye{
+    position: absolute;
+    top: calc(50% - 12px);
+    right: 16px;
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-image: url("../../assets/images/visibility-24px.svg");
+  }
+  .password-eye.toggled{
+    background-image: url("../../assets/images/visibility_off-24px.svg");
   }
 }
 .form-row{
