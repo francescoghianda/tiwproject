@@ -88,7 +88,7 @@
                     <li><span class="subtitle-2" th:text="#{status}">Status</span><br><div class="status-container"><img src="../../assets/images/lens-24px-green.svg"><span class="body-2" th:text="${#messages.msg('status.'+campaign.status)}">CREATED</span></div></li>
                 </ul>
                 <footer>
-                    <a class="button text-button" th:text="#{edit}">Edit</a>
+                    <a class="button text-button" th:href="@{/campaign/details(id=${campaign.id})}" th:text="#{edit}">Edit</a>
                     <a class="button text-button" th:text="#{statistics}">Statistics</a>
                     <a class="button text-button" th:text="#{delete}">Delete</a>
                 </footer>

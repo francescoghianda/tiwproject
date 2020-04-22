@@ -27,6 +27,11 @@ public final class Location
         return "POINT("+longitude+" "+latitude+")";
     }
 
+    public static Location fromString(String latitude, String longitude)
+    {
+        return new Location(Float.parseFloat(longitude), Float.parseFloat(latitude));
+    }
+
     public static Location fromWKT(String wkt)
     {
         String[] coordinates = wkt.substring(6, wkt.length()-1).split(" ");

@@ -36,9 +36,12 @@ public class LocationImage extends Bean
     @Enum({"GOOD", "MEDIUM", "LOW"})
     private String resolution;
 
+    @Size(min = 1)
+    private String image;
+
     public LocationImage(){}
 
-    public LocationImage(int id, int campaignId, Location location, String municipality, String region, String source, Date date, String resolution)
+    public LocationImage(int id, int campaignId, Location location, String municipality, String region, String source, Date date, String resolution, String image)
     {
         this.id = id;
         this.campaignId = campaignId;
@@ -48,6 +51,7 @@ public class LocationImage extends Bean
         this.source = source;
         this.date = date;
         this.resolution = resolution;
+        this.image = image;
     }
 
     public int getId()
@@ -128,5 +132,15 @@ public class LocationImage extends Bean
     public void setResolution(String resolution)
     {
         this.resolution = resolution;
+    }
+
+    public String getImage()
+    {
+        return image;
+    }
+
+    public void setImage(String image)
+    {
+        this.image = image;
     }
 }

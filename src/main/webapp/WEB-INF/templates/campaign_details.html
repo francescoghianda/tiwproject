@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Campaign details</title>
+
+    <link rel="stylesheet" type="text/css" href="../../assets/css/main.css" th:href="@{/assets/css/main.css}">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
+          integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+          crossorigin=""/>
+
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
+            integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
+            crossorigin=""></script>
+    <script src="../../assets/js/main.js" type="module" th:src="@{/assets/js/main.js}"></script>
+
+    <script>
+        $(() =>
+        {
+            let lat = 45.4645075;
+            let lon = 9.1895711;
+            let zoom = 10;
+
+            let map = L.map('map').setView([lat, lon], zoom);
+
+            L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+                attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+                maxZoom: 18,
+                id: 'mapbox/streets-v11',
+                tileSize: 512,
+                zoomOffset: -1,
+                accessToken: 'pk.eyJ1IjoiZnJhbmNlc2NvZ2hpYW5kYSIsImEiOiJjazk5MDhoa2QwYmJ6M2ZrNHBuZzBoZnQ1In0.RW31Z5q9VRzdHPv0BTzg4g'
+            }).addTo(map);
+
+
+            map.on('click', function (e) {
+                $('#input-latitude').val(e.latlng.lat);
+                $('#input-longitude').val(e.latlng.lng);
+
+                $.get(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${e.latlng.lat}&lon=${e.latlng.lng}`, function(data){
+                    let municipality = data.address.city;
+                    if(!municipality)municipality = data.address.town;
+                    if(!municipality)municipality = data.address.village;
+                    if(!municipality)municipality = data.address.county;
+                    if(!municipality)municipality = data.address.province;
+
+                    $('#input-municipality').val(municipality);
+                    $('#input-region').val(data.address.state);
+                });
+            });
+
+            $(".delete-image-btn").on('click', function () {
+                let campaignId = $('#campaign-id').val();
+                let imageId = $(this).data('image_id');
+                fetch(`/campaign/remove_image?id=${campaignId}&image_id=${imageId}`).then(response =>
+                {
+                   if(response.ok)
+                   {
+                       $(this).parents('li').remove();
+                       if(!$('#campaign-image-list ul li')[0])location.reload();
+                   }
+                });
+            });
+
+        });
+    </script>
+</head>
+<body>
+
+    <nav class="navbar" th:replace="fragments/navbar :: navbar"></nav>
+    <div class="container desktop-fixed">
+
+        <div id="campaign-details">
+            <form>
+                <h4 th:text="${campaign.name}">Campaign name</h4>
+                <span class="subtitle-2">Client</span><span class="body-2" id="campaign-client" th:text="${campaign.client}">Politecnico di Milano</span>
+                <span class="subtitle-2">Status</span><span class="body-2" id="campaign-status" th:text="${campaign.status}">CREATED</span>
+                <input class="contained-button" type="submit" value="Start Campaign" disabled th:disabled="${images.isEmpty()}">
+            </form>
+        </div>
+
+        <div id="add-new-image-container">
+            <h4>Carica nuova foto</h4>
+            <div id="map-container">
+                <div class="map" id="map"></div>
+                <span class="subtitle-2">Seleziona un punto sulla mappa per recuperare le coordiate geografiche.</span>
+            </div>
+            <div id="add-new-image-form">
+                <form method="post" enctype="multipart/form-data" th:action="@{/campaign/add_image}" novalidate>
+                    <input id="campaign-id" type="hidden" name="id" th:value="${campaign.id}">
+                    <section id="first-section">
+                        <div class="input-container">
+                            <input type="text" id="input-latitude" placeholder=" " name="latitude" required readonly>
+                            <label for="input-latitude" class="placeholder">Latitude</label>
+                            <span class="input-lock"></span>
+                        </div>
+                        <div class="input-container">
+                            <input type="text" id="input-longitude" placeholder=" " name="longitude" required readonly>
+                            <label for="input-longitude" class="placeholder">Longitude</label>
+                            <span class="input-lock"></span>
+                        </div>
+                        <div class="input-container">
+                            <div class="input-file-button">
+                                <!--<input type="hidden" required>-->
+                                <input id="input-photo" type="file" name="campaign-photo" data-preview_id="campaign-photo-preview" accept="image/*">
+                                <label for="input-photo" class="button outline-button">Seleziona foto</label>
+                            </div>
+                        </div>
+                    </section>
+                    <section id="second-section">
+                        <div class="form-row">
+                            <div class="input-container">
+                                <input type="text" id="input-municipality" placeholder=" " name="municipality" required readonly>
+                                <label for="input-municipality" class="placeholder">Comune</label>
+                                <span class="input-lock"></span>
+                            </div>
+                            <div class="input-container">
+                                <input type="text" id="input-region" placeholder=" " name="region" required readonly>
+                                <label for="input-region" class="placeholder">Regione</label>
+                                <span class="input-lock"></span>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="input-container">
+                                <input id="input-date" type="date" name="date" required>
+                                <label for="input-date" class="placeholder">Data</label>
+                            </div>
+                            <div class="input-container">
+                                <select id="input-resolution" name="resolution" required>
+                                    <option value=" " disabled hidden selected>Seleziona</option>
+                                    <option value="GOOD">Alta</option>
+                                    <option value="MEDIUM">Media</option>
+                                    <option value="LOW">Bassa</option>
+                                </select>
+                                <label for="input-resolution" class="placeholder">Risoluzione</label>
+                            </div>
+                        </div>
+                        <div class="input-container">
+                            <input id="input-source" type="text" placeholder=" " name="source" required>
+                            <label for="input-source" class="placeholder">Provenienza</label>
+                        </div>
+                    </section>
+                    <div class="preview empty" id="campaign-photo-preview">
+                        <h4>Anteprima</h4>
+                        <img>
+                    </div>
+                    <input class="contained-button" type="submit" value="INVIA">
+                </form>
+            </div>
+        </div>
+
+        <div id="image-list-container">
+            <h4>Foto campagna</h4>
+            <div id="campaign-image-list">
+                <ul th:remove="all-but-first" th:each="image : ${images}">
+                    <li>
+                        <img th:src="${image.image}">
+                        <button class="delete-image-btn" th:data-image_id="${image.id}"></button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>

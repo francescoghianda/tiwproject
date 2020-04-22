@@ -56,13 +56,20 @@
 
     <filter-mapping>
         <filter-name>WorkerFilter</filter-name>
-        <url-pattern>/create_campaign</url-pattern>
+        <url-pattern>/create-annotation</url-pattern>
     </filter-mapping>
 
     <filter-mapping>
         <filter-name>ManagerFilter</filter-name>
-        <url-pattern>/create-annotation</url-pattern>
+        <url-pattern>/create_campaign</url-pattern>
+        <url-pattern>/campaign/*</url-pattern>
     </filter-mapping>
+    
+    <filter-mapping>
+        <filter-name>CampaignFilter</filter-name>
+        <url-pattern>/campaign/*</url-pattern>
+    </filter-mapping>
+
     <!--
     <servlet>
         <servlet-name>Jersey REST Service</servlet-name>

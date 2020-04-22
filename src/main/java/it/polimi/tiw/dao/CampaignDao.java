@@ -35,6 +35,11 @@ public class CampaignDao extends Dao<Campaign>
         return findFirstBy("name", name);
     }
 
+    public Optional<Campaign> findCampaignById(int id) throws SQLException
+    {
+        return findFirstBy("id", id);
+    }
+
     public boolean updateCampaignStatus(int campaignId, String status) throws SQLException
     {
         try(PooledConnection connection = ConnectionManager.getInstance().getConnection();

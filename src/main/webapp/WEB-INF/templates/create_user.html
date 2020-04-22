@@ -25,8 +25,8 @@
                         <input id="username-input" type="text" placeholder=" " name="username" data-validation="/api/v1/validate_data" minlength="4" maxlength="20" required>
                         <label class="placeholder" for="username-input" th:text="#{username}">Username</label>
                         <label class="form-error-message" for="username-input" th:text="#{error.username-invalid}">Invalid username
-                            <button class="form-error-helper" th:text="error-helper.username">
-                                <span>The username must have at least 6 characters.</span>
+                            <button class="popover form-error-helper" th:text="error-helper.username">
+                                <div class="popover-content">The username must be between 4 and 20 characters long</div>
                             </button>
                         </label>
                         <label class="form-error-message-online" for="username-input" th:text="#{error.username-unavailable}">Username not available</label>

@@ -31,8 +31,20 @@ function postForm(input, $form)
             }
         }
         request.open("POST", input, true);
-        request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-        request.send($form.serialize());
+
+        if($form.attr('enctype') === 'multipart/form-data')
+        {
+            let data = new FormData($form[0]);
+            //request.setRequestHeader('Content-Type', 'multipart/form-data');
+            request.send(data);
+        }
+        else
+        {
+            request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            request.send($form.serialize());
+        }
+
+
     }));
 
 
@@ -65,7 +77,15 @@ function checkElementValidity(element)
 
     return new Promise((resolve, reject) =>
     {
+        let readOnly = false;
+        if(element.readOnly)
+        {
+            readOnly = true;
+            element.readOnly = false;
+        }
         let localValidity = checkLocalValidity(element);
+        element.readOnly = readOnly;
+
         let onlineValidation = element.dataset.validation;
         if(localValidity && onlineValidation)
         {

@@ -20,6 +20,7 @@ public class LocationImageBeanFactory extends BeanFactory<LocationImage>
         locationImage.setSource(resultSet.getString("source"));
         locationImage.setDate(resultSet.getDate("date"));
         locationImage.setResolution(resultSet.getString("resolution"));
+        locationImage.setImage(resultSet.getString("image"));
         return locationImage;
     }
 }

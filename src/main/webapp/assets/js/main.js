@@ -8,6 +8,12 @@ $(() =>
        input.attr('type', $(this).hasClass('toggled') ? 'text' : 'password');
    });
 
+    $('.input-container .input-lock').on('click', function () {
+        $(this).toggleClass('toggled');
+        let input = $(this).parents('.input-container').find(':input');
+        $(this).hasClass('toggled') ? input.removeAttr('readonly') : input.attr('readonly', 'readonly');
+    });
+
     $('.profile-picture').on('click', function (e)
     {
         $('.user-menu').toggleClass('visible');
@@ -47,6 +53,24 @@ $(() =>
         reader.onloadend = function () {
             inputFileElem.parent(".photo-selector").find(".photo-preview").attr("src", reader.result).css("display", "block")
             $('#photo-hidden').val(reader.result);
+        };
+        reader.readAsDataURL(this.files[0]);
+    });
+
+    $('.input-file-button input:file').on('change', function ()
+    {
+        if(this.files.length <= 0)return;
+
+        let container = $(this).parents('.input-file-button');
+        let previewId = $(this).data('preview_id');
+
+        console.log($(`#${previewId}`));
+
+        let reader = new FileReader();
+        reader.onloadend = function () {
+            container.find('input[type=hidden]').val(reader.result);
+            $(`#${previewId} img`).attr('src', reader.result);
+            $(`#${previewId}`).removeClass('empty');
         };
         reader.readAsDataURL(this.files[0]);
     });
