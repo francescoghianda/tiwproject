@@ -2,6 +2,7 @@ package it.polimi.tiw.dao;
 
 import it.polimi.tiw.beans.LocationImage;
 import it.polimi.tiw.beans.validation.InvalidBeanException;
+import it.polimi.tiw.utils.beans.JoinedBean;
 import it.polimi.tiw.utils.beans.LocationImageBeanFactory;
 import it.polimi.tiw.utils.dao.Dao;
 import it.polimi.tiw.utils.sql.ConnectionManager;
@@ -11,6 +12,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class LocationImageDao extends Dao<LocationImage>
@@ -21,9 +23,20 @@ public class LocationImageDao extends Dao<LocationImage>
         super("location_image", new LocationImageBeanFactory());
     }
 
+    public Optional<LocationImage> findLocationImageById(int locationImageId) throws SQLException
+    {
+        return get("SELECT img.*, ST_AsText(img.location) location_coordinates from location_image img where id = ?", locationImageId).stream().findFirst();
+    }
+
     public List<LocationImage> findImagesByCampaignId(int campaignId) throws SQLException
     {
-        return get("SELECT img.*, ST_AsText(img.location) location_coordinates from location_image img where campaign_id = ?", campaignId);
+        return findImagesByCampaignId(campaignId, true);
+    }
+
+    public List<LocationImage> findImagesByCampaignId(int campaignId, boolean media) throws SQLException
+    {
+        if(media)return get("SELECT img.*, ST_AsText(img.location) location_coordinates from location_image img where campaign_id = ?", campaignId);
+        return get("SELECT img.id, img.campaign_id, img.municipality, img.region, img.source, img.date, img.resolution, ST_AsText(img.location) location_coordinates from location_image img where campaign_id = ?", campaignId);
     }
 
     public boolean deleteLocationImage(int imageId) throws SQLException
@@ -34,6 +47,11 @@ public class LocationImageDao extends Dao<LocationImage>
             statement.setInt(1, imageId);
             return statement.executeUpdate() == 1;
         }
+    }
+
+    public boolean atLeastOneByCampaignId(int campaignId) throws SQLException
+    {
+        return exist("campaign_id", campaignId);
     }
 
     public boolean insertLocationImages(LocationImage... locationImages) throws SQLException, InvalidBeanException

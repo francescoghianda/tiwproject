@@ -5,7 +5,7 @@ import it.polimi.tiw.beans.Campaign;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class CampaignBeanFactory extends BeanFactory<Campaign>
+public class CampaignBeanFactory implements BeanFactory<Campaign>
 {
     @Override
     public Campaign convert(ResultSet resultSet) throws SQLException

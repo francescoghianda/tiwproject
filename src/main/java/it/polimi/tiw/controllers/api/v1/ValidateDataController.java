@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
 
-@WebServlet("/api/v1/validate_data")
+@WebServlet("/api/v1/validate-data")
 public class ValidateDataController extends HttpServlet
 {
     private UserDao userDao;

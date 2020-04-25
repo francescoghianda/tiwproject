@@ -8,6 +8,11 @@
 <body>
 
 <nav class="navbar" th:fragment="navbar">
+
+    <div class="nav-item">
+        <a href="../manager-home.html" th:href="@{/}">Home</a>
+    </div>
+
     <img class="profile-picture" src="../../../assets/images/account_circle-24px.svg" th:src="${user.role.equals('WORKER')} ? ${worker.photo} : '/assets/images/manager_icon.svg'">
 
     <div class="user-menu">

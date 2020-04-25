@@ -5,7 +5,7 @@ import it.polimi.tiw.beans.User;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class UserBeanFactory extends BeanFactory<User>
+public class UserBeanFactory implements BeanFactory<User>
 {
     @Override
     public User convert(ResultSet resultSet) throws SQLException

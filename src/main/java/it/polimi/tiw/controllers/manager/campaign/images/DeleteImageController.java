@@ -1,6 +1,8 @@
-package it.polimi.tiw.controllers.manager;
+package it.polimi.tiw.controllers.manager.campaign.images;
 
+import it.polimi.tiw.beans.Campaign;
 import it.polimi.tiw.dao.LocationImageDao;
+import it.polimi.tiw.utils.beans.CampaignStatus;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -10,12 +12,12 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
 
-@WebServlet("/campaign/remove_image")
-public class RemoveLocationImageController extends HttpServlet
+@WebServlet("/campaign/images/delete")
+public class DeleteImageController extends HttpServlet
 {
     private LocationImageDao locationImageDao;
 
-    public RemoveLocationImageController()
+    public DeleteImageController()
     {
         super();
     }
@@ -29,9 +31,16 @@ public class RemoveLocationImageController extends HttpServlet
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
     {
+        Campaign campaign = (Campaign)req.getAttribute("capaign");
+        if(!campaign.getStatus().equals(CampaignStatus.CREATED))
+        {
+            resp.sendError(409, "Cannot modify a started or closed campaign.");
+            return;
+        }
+
         try
         {
-            int imageId = Integer.parseInt(req.getParameter("image_id"));
+            int imageId = Integer.parseInt(req.getParameter("image-id"));
             locationImageDao.deleteLocationImage(imageId);
             resp.setStatus(200);
         }

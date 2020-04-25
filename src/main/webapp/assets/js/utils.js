@@ -14,6 +14,17 @@ function showError($errorBox)
     }, 2500);
 }
 
+function postFormIfValid($form)
+{
+    return new Promise(((resolve, reject) =>
+    {
+        checkFormValidity($form[0]).then(valid =>
+        {
+            if(valid)postForm($form.attr('action'), $form).then(response => resolve(response)).catch(response => reject(response));
+        });
+    }));
+}
+
 function postForm(input, $form)
 {
     return new Promise(((resolve, reject) =>
@@ -30,6 +41,14 @@ function postForm(input, $form)
                 else resolve(request);
             }
         }
+
+        /*request.upload.onprogress = function (e)
+        {
+            if (e.lengthComputable) {
+                console.log(e.loaded / e.total);
+            }
+        }*/
+
         request.open("POST", input, true);
 
         if($form.attr('enctype') === 'multipart/form-data')
@@ -158,4 +177,4 @@ function checkFormValidity(form)
     });
 }
 
-export {serializeJson, post, postForm, showError, checkFormValidity, checkElementValidity}
+export {serializeJson, post, postForm, postFormIfValid, showError, checkFormValidity, checkElementValidity}

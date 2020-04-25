@@ -27,14 +27,20 @@ $(() =>
     $('form').submit(function (event) {
 
         event.preventDefault();
-        Utils.checkFormValidity($(this)[0]).then(valid =>
+        Utils.postFormIfValid($(this)).then(response => {
+            $(this).find('.form-error').removeClass('visible');
+            if(response.responseURL)window.location.href = response.responseURL;
+        })
+            .catch(response => $(this).find('.form-error').addClass('visible'));
+
+        /*Utils.checkFormValidity($(this)[0]).then(valid =>
         {
             if(valid)Utils.postForm($(this).attr('action'), $(this)).then(response =>
             {
                 $(this).find('.form-error').removeClass('visible');
                 if(response.responseURL)window.location.href = response.responseURL;
             }).catch(response => $(this).find('.form-error').addClass('visible'));
-        });
+        });*/
 
     });
 
@@ -85,6 +91,10 @@ $(() =>
         let floatingId = $(this).data('floating_id');
         $(`#${floatingId}`).removeClass('expanded');
         e.stopPropagation();
+    });
+
+    $('.popup-close-btn').on('click', function () {
+        $(this).closest('.popup').addClass("hidden");
     });
 
 });

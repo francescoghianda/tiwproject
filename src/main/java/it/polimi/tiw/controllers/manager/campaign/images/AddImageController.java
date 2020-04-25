@@ -1,4 +1,4 @@
-package it.polimi.tiw.controllers.manager;
+package it.polimi.tiw.controllers.manager.campaign.images;
 
 import it.polimi.tiw.beans.Campaign;
 import it.polimi.tiw.beans.LocationImage;
@@ -19,13 +19,13 @@ import java.sql.SQLException;
 import java.util.Base64;
 import java.util.Objects;
 
-@WebServlet("/campaign/add_image")
+@WebServlet("/campaign/images/add")
 @MultipartConfig(fileSizeThreshold=1024*1024*10, maxFileSize=1024*1024*50, maxRequestSize=1024*1024*100)
-public class AddLocationImageController extends HttpServlet
+public class AddImageController extends HttpServlet
 {
     private LocationImageDao locationImageDao;
 
-    public AddLocationImageController()
+    public AddImageController()
     {
         super();
     }
@@ -39,9 +39,17 @@ public class AddLocationImageController extends HttpServlet
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException
     {
-        int campaignId = ((Campaign)req.getAttribute("campaign")).getId();
+        Campaign campaign = (Campaign)req.getAttribute("campaign");
 
-        Part imagePart = req.getPart("campaign-photo");
+        if(!campaign.getStatus().equals("CREATED"))
+        {
+            resp.sendError(409, "The campaign is already started or closed.");
+            return;
+        }
+
+        int campaignId = campaign.getId();
+
+        Part imagePart = req.getPart("photo");
 
         byte[] imageBytes = new byte[(int)imagePart.getSize()];
         imagePart.getInputStream().read(imageBytes, 0, imageBytes.length);

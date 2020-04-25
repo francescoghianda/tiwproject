@@ -15,8 +15,8 @@ import java.util.Optional;
 
 public class Dao<T extends Bean>
 {
-    private BeanFactory<T> beanFactory;
-    private String tableName;
+    protected final BeanFactory<T> beanFactory;
+    private final String tableName;
 
     public Dao(String tableName, BeanFactory<T> beanFactory)
     {

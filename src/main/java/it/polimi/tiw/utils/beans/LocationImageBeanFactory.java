@@ -6,7 +6,7 @@ import it.polimi.tiw.utils.Location;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class LocationImageBeanFactory extends BeanFactory<LocationImage>
+public class LocationImageBeanFactory implements BeanFactory<LocationImage>
 {
     @Override
     public LocationImage convert(ResultSet resultSet) throws SQLException
@@ -20,7 +20,7 @@ public class LocationImageBeanFactory extends BeanFactory<LocationImage>
         locationImage.setSource(resultSet.getString("source"));
         locationImage.setDate(resultSet.getDate("date"));
         locationImage.setResolution(resultSet.getString("resolution"));
-        locationImage.setImage(resultSet.getString("image"));
+        if(hasColumn(resultSet, "image"))locationImage.setImage(resultSet.getString("image"));
         return locationImage;
     }
 }

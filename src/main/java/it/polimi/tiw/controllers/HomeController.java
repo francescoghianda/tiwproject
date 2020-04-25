@@ -53,12 +53,12 @@ public class HomeController extends HttpServlet
             String template;
             if(user.getRole().equals("WORKER"))
             {
-                template = "worker_home";
+                template = "worker-home";
                 webContext.setVariable("worker", (Worker) userDAO.findWorkerByUserId(user.getId()).orElse(null));
             }
             else
             {
-                template = "manager_home";
+                template = "manager-home";
                 webContext.setVariable("campaigns", (List<Campaign>) campaignDao.findCampaignByManagerId(user.getId()));
             }
 

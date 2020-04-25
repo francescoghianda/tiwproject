@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Objects;
 
-@WebServlet("/create_user")
+@WebServlet("/create-user")
 public class CreateUserController extends HttpServlet
 {
     private UserDao dao;
@@ -36,7 +36,7 @@ public class CreateUserController extends HttpServlet
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
     {
         WebContext webContext = new WebContext(req, resp, getServletContext(), req.getLocale());
-        Application.getTemplateEngine().process("create_user", webContext, resp.getWriter());
+        Application.getTemplateEngine().process("create-user", webContext, resp.getWriter());
     }
 
     @Override

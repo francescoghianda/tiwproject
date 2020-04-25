@@ -5,7 +5,7 @@ import it.polimi.tiw.beans.Worker;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class WorkerBeanFactory extends BeanFactory<Worker>
+public class WorkerBeanFactory implements BeanFactory<Worker>
 {
 
     @Override

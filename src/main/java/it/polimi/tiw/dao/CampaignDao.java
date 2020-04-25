@@ -8,6 +8,7 @@ import it.polimi.tiw.utils.sql.ConnectionManager;
 import it.polimi.tiw.utils.sql.PooledConnection;
 
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
@@ -40,10 +41,25 @@ public class CampaignDao extends Dao<Campaign>
         return findFirstBy("id", id);
     }
 
+    public boolean existSubscription(int campaignId, int userId) throws SQLException
+    {
+        try(PooledConnection connection = ConnectionManager.getInstance().getConnection();
+            PreparedStatement statement = connection.getConnection().prepareStatement("SELECT true FROM subscription WHERE campaign_id = ? and user_id = ?"))
+        {
+            statement.setInt(1, campaignId);
+            statement.setInt(2, userId);
+
+            try(ResultSet resultSet = statement.executeQuery())
+            {
+                return resultSet.next();
+            }
+        }
+    }
+
     public boolean updateCampaignStatus(int campaignId, String status) throws SQLException
     {
         try(PooledConnection connection = ConnectionManager.getInstance().getConnection();
-            PreparedStatement statement = connection.getConnection().prepareStatement("UPDATE campaign SET status = ? WHERE id = ?"))
+            PreparedStatement statement = connection.getConnection().prepareStatement("UPDATE campaign SET status = ?::campaign_status WHERE id = ?"))
         {
             statement.setString(1, status);
             statement.setInt(2, campaignId);
@@ -54,7 +70,7 @@ public class CampaignDao extends Dao<Campaign>
     public boolean updateCampaignStatus(String campaignName, String status) throws SQLException
     {
         try(PooledConnection connection = ConnectionManager.getInstance().getConnection();
-            PreparedStatement statement = connection.getConnection().prepareStatement("UPDATE campaign SET status = ? WHERE name = ?"))
+            PreparedStatement statement = connection.getConnection().prepareStatement("UPDATE campaign SET status::campaign_status = ? WHERE name = ?"))
         {
             statement.setString(1, status);
             statement.setString(2, campaignName);

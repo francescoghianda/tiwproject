@@ -2,12 +2,15 @@ package it.polimi.tiw.dao;
 
 import it.polimi.tiw.authentication.security.PBKDF2WithHmacSHA512;
 import it.polimi.tiw.beans.User;
+import it.polimi.tiw.beans.UserWorker;
 import it.polimi.tiw.beans.Worker;
 import it.polimi.tiw.beans.validation.InvalidBeanException;
 import it.polimi.tiw.utils.beans.BeanFactory;
 import it.polimi.tiw.utils.beans.UserBeanFactory;
 import it.polimi.tiw.utils.beans.WorkerBeanFactory;
 import it.polimi.tiw.utils.dao.Dao;
+import it.polimi.tiw.utils.sql.ConnectionManager;
+import it.polimi.tiw.utils.sql.PooledConnection;
 
 import java.sql.*;
 import java.util.List;
@@ -43,9 +46,30 @@ public class UserDao extends Dao<User>
         return findFirstBy("username", username);
     }
 
+    public Optional<User> findUserById(int userId) throws SQLException
+    {
+        return findFirstBy("id", userId);
+    }
+
     public Optional<Worker> findWorkerByUserId(int userId) throws SQLException
     {
         return findFirstBy("worker", "user_id", userId, workerBeanFactory);
+    }
+
+    public Optional<UserWorker> findWorkerById(int userId) throws SQLException
+    {
+        try(PooledConnection connection = ConnectionManager.getInstance().getConnection();
+            PreparedStatement statement = connection.getConnection().prepareStatement("SELECT * FROM users U, worker W WHERE U.id = W.user_id and U.id = ?"))
+        {
+            statement.setInt(1, userId);
+            try(ResultSet resultSet = statement.executeQuery())
+            {
+                if(!resultSet.next())return Optional.empty();
+                User user = BeanFactory.getBeanInstance(beanFactory, resultSet);
+                Worker worker = BeanFactory.getBeanInstance(workerBeanFactory, resultSet);
+                return Optional.of(new UserWorker(user, worker));
+            }
+        }
     }
 
     public boolean insertUser(User user, Worker worker) throws SQLException, InvalidBeanException

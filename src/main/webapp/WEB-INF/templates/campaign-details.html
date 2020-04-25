@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Campaign details</title>
+
+    <link rel="stylesheet" type="text/css" href="../../assets/css/main.css" th:href="@{/assets/css/main.css}">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
+          integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+          crossorigin=""/>
+
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
+            integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
+            crossorigin=""></script>
+    <script src="../../assets/js/main.js" type="module" th:src="@{/assets/js/main.js}"></script>
+
+    <script>
+        $(() =>
+        {
+
+            $('.right-arrow').on('click', function () {
+                let annotationList = $(this).closest('.pcontent').find('.annotations');
+                displayAnnotation(annotationList, +1, $(this).closest('.nav-controller').find('.counter'))
+            });
+
+            $('.left-arrow').on('click', function () {
+                let annotationList = $(this).closest('.pcontent').find('.annotations');
+                displayAnnotation(annotationList, -1, $(this).closest('.nav-controller').find('.counter'))
+            });
+
+
+            function displayAnnotation(annotationList, delta, indexElem)
+            {
+                let current = annotationList.data('current');
+                let items = annotationList.find('li');
+                let toDisplay = current + delta;
+                if(toDisplay < 0)toDisplay = items.length-1;
+                if(toDisplay >= items.length)toDisplay = 0;
+                annotationList.data('current', toDisplay);
+
+                let currentElement = $(items.get(current));
+                let toDisplayElement = $(items.get(toDisplay));
+
+                currentElement.css('transform', 'translateX(100%)');
+                toDisplayElement.css('transform', 'translateX(0)')
+
+                if(indexElem)indexElem.text(`${toDisplay+1} / ${items.length}`);
+            }
+
+
+
+            let lat = 45.4645075;
+            let lon = 9.1895711;
+            let zoom = 10;
+
+            let map = L.map('map').setView([lat, lon], zoom);
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 18,
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
+
+            /*
+            L.tileLayer('https://tiles.stadiamaps.com/tiles/osm_bright/{z}/{x}/{y}{r}.png', {
+	            maxZoom: 20,
+	            attribution: '&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors'
+            });
+             */
+
+            map.on('click', function (e) {
+                $('#input-latitude').val(e.latlng.lat);
+                $('#input-longitude').val(e.latlng.lng);
+
+                $.get(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${e.latlng.lat}&lon=${e.latlng.lng}`, function(data){
+                    let municipality = data.address.city;
+                    if(!municipality)municipality = data.address.town;
+                    if(!municipality)municipality = data.address.village;
+                    if(!municipality)municipality = data.address.county;
+                    if(!municipality)municipality = data.address.province;
+
+                    $('#input-municipality').val(municipality);
+                    $('#input-region').val(data.address.state);
+                });
+            });
+
+            $(".delete-image-btn").on('click', function () {
+                let campaignId = $('#campaign-id').val();
+                let imageId = $(this).data('image_id');
+                fetch(`/campaign/remove_image?id=${campaignId}&image_id=${imageId}`).then(response =>
+                {
+                   if(response.ok)
+                   {
+                       $(this).parents('li').remove();
+                       if(!$('#campaign-image-list ul li')[0])location.reload();
+                   }
+                });
+            });
+
+            loadImages(map);
+        });
+
+        function loadImages(map) {
+            let imageList = $('#campaign-image-list ul li').toArray();
+
+            imageList.forEach(image =>
+            {
+                let imageId = image.dataset.imageId;
+                let popup = $(`.popup[data-image-id=${imageId}]`);
+
+                L.marker([image.dataset.latitude, image.dataset.longitude]).addTo(map).on('click', () =>
+                {
+                    popup.removeClass("hidden");
+                });
+
+                fetch(`/get-image?id=${imageId}`).then(async response =>
+                {
+                    let imageHash = await response.text();
+                    $(image).find('img').attr('src', imageHash).removeAttr('style');
+                    popup.find(".pcontent .image img").attr('src', imageHash).removeAttr('style');
+                })
+            });
+
+        }
+
+        /*function loadImages(map) {
+            let url = new URL(window.location.href);
+            let searchParams = new URLSearchParams(url.search);
+            let id = searchParams.get('id');
+            fetch(`/campaign/images?id=${id}&media=false`).then(async response =>
+            {
+                let json = await response.json();
+                let imageList = $('#campaign-image-list ul');
+
+                for(let image of json.images)
+                {
+                    let button = json.campaignStatus === 'CREATED' ? `<button class="delete-image-btn" data-image_id="${image.id}"></button>` : "";
+
+                    let card = $(`<li>
+                                        <img style="width: 24px" src="/assets/images/puff.svg">
+                                        ${button}
+                                      </li>`);
+
+                    fetch(`/get-image?id=${image.id}`).then(async response =>
+                    {
+                        let imageHash = await response.text();
+                        card.find('img').attr('src', imageHash).removeAttr('style');
+                    });
+
+                    L.marker([image.location.latitude, image.location.longitude]).addTo(map).on('click', () =>
+                    {
+                        $('.popup').removeClass("hidden");
+                    });
+
+                    imageList.append(card);
+                }
+            });
+        }*/
+    </script>
+</head>
+<body>
+    <img style="display: none" src="/assets/images/puff.svg">
+    <img style="display: none" src="/assets/images/remove.svg">
+
+    <nav class="navbar" th:replace="fragments/navbar :: navbar"></nav>
+    <div class="container desktop-fixed">
+
+        <div id="campaign-details">
+            <form action="/campaign/change-status">
+                <h4 th:text="${campaign.name}">Campaign name</h4>
+                <span class="subtitle-2" th:text="#{client}">Client</span><span class="body-2" id="campaign-client" th:text="${campaign.client}">Politecnico di Milano</span>
+                <span class="subtitle-2" th:text="#{status}">Status</span><span class="body-2" id="campaign-status" th:text="${#messages.msg('status.'+campaign.status)}">CREATED</span>
+                <input type="hidden" name="id" th:value="${campaign.id}">
+                <input type="hidden" name="status" th:value="${campaign.status.equals('CREATED')} ? 'STARTED' : 'CLOSED'">
+                <input class="contained-button" th:class="${campaign.status.equals('CREATED')} ? 'contained-button green' : 'contained-button red'" type="submit" value="Start Campaign" th:value="${campaign.status.equals('CREATED')} ? 'Start Campaign' : 'Close Campaign'" disabled th:disabled="${!hasImage || campaign.status.equals('CLOSED')}">
+            </form>
+        </div>
+
+        <div id="add-new-image-container" th:class="${!created} ? 'only-map' : ''">
+            <h4 th:if="${created}" th:text="#{load-new-photo}">Carica nuova foto</h4>
+            <div id="map-container">
+                <div class="map" id="map"></div>
+                <span th:if="${created}" class="subtitle-2" th:text="#{map-instruction}">Seleziona un punto sulla mappa per recuperare le coordiate geografiche.</span>
+            </div>
+            <div th:if="${created}" id="add-new-image-form">
+                <form method="post" enctype="multipart/form-data" th:action="@{/campaign/images/add}" novalidate>
+                    <fieldset th:disabled="${!created}">
+                        <input id="campaign-id" type="hidden" name="id" th:value="${campaign.id}">
+                        <section id="first-section">
+                            <div class="input-container">
+                                <input type="text" id="input-latitude" placeholder=" " name="latitude" required readonly>
+                                <label for="input-latitude" class="placeholder" th:text="#{latitude}">Latitude</label>
+                                <span class="input-lock"></span>
+                            </div>
+                            <div class="input-container">
+                                <input type="text" id="input-longitude" placeholder=" " name="longitude" required readonly>
+                                <label for="input-longitude" class="placeholder" th:text="#{longitude}">Longitude</label>
+                                <span class="input-lock"></span>
+                            </div>
+                            <div class="input-container">
+                                <div class="input-file-button">
+                                    <input id="input-photo" type="file" name="photo" data-preview_id="campaign-photo-preview" accept="image/*">
+                                    <label for="input-photo" class="button outline-button" th:text="#{select-photo}">Seleziona foto</label>
+                                </div>
+                            </div>
+                        </section>
+                        <section id="second-section">
+                            <div class="form-row">
+                                <div class="input-container">
+                                    <input type="text" id="input-municipality" placeholder=" " name="municipality" required readonly>
+                                    <label for="input-municipality" class="placeholder" th:text="#{municipality}">Comune</label>
+                                    <span class="input-lock"></span>
+                                </div>
+                                <div class="input-container">
+                                    <input type="text" id="input-region" placeholder=" " name="region" required readonly>
+                                    <label for="input-region" class="placeholder" th:text="#{region}">Regione</label>
+                                    <span class="input-lock"></span>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="input-container">
+                                    <input id="input-date" type="date" name="date" required>
+                                    <label for="input-date" class="placeholder" th:text="#{date}">Data</label>
+                                </div>
+                                <div class="input-container">
+                                    <select id="input-resolution" name="resolution" required>
+                                        <option value=" " th:text="#{select}" disabled hidden selected>Seleziona</option>
+                                        <option value="GOOD" th:text="#{resolution.good}">Alta</option>
+                                        <option value="MEDIUM" th:text="#{resolution.medium}">Media</option>
+                                        <option value="LOW" th:text="#{resolution.low}">Bassa</option>
+                                    </select>
+                                    <label for="input-resolution" class="placeholder" th:text="#{resolution}">Risoluzione</label>
+                                </div>
+                            </div>
+                            <div class="input-container">
+                                <input id="input-source" type="text" placeholder=" " name="source" required>
+                                <label for="input-source" class="placeholder" th:text="#{source}">Provenienza</label>
+                            </div>
+                        </section>
+                        <div class="preview empty" id="campaign-photo-preview">
+                            <h4 th:text="#{preview}">Anteprima</h4>
+                            <img>
+                        </div>
+                        <input class="contained-button" type="submit" th:value="#{send}" value="INVIA">
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+
+        <div id="image-list-container">
+            <h4 th:text="#{campaign-photo}">Foto campagna</h4>
+            <div th:unless="${!hasImage}" id="campaign-image-list">
+
+                <ul th:remove="all-but-first" th:each="image : ${images}">
+                    <li th:data-image-id="${image.id}" th:data-longitude="${image.location.longitude}" th:data-latitude="${image.location.latitude}">
+                        <img style="width: 24px" src="../../assets/images/puff.svg" th:src="@{/assets/images/puff.svg}">
+                        <button class="delete-image-btn" th:if="${campaign.status.equals('CREATED')}" th:data-image_id="${image.id}"></button>
+                    </li>
+                </ul>
+
+            </div>
+            <span class="subtitle-2 empty-list-message" th:if="${!hasImage}" th:text="#{empty-photo-list-message}">Ancora nessuna foto</span>
+        </div>
+
+    </div>
+
+    <div id="popups" th:remove="all-but-first" th:each="image : ${images}">
+
+        <!--/*@thymesVar id="imageAnnotations" type="java.util.List"*/-->
+        <div th:data-image-id="${image.id}" class="popup hidden" th:with="imageAnnotations=${annotations.get(image.id)}">
+            <div class="pbody">
+                <div class="pnav">
+                    <button class="popup-close-btn"></button>
+                </div>
+                <div class="pcontent manager-images-popup-content">
+                    <div class="image">
+                        <img style="width: 24px" src="../../assets/images/puff.svg" th:src="@{/assets/images/puff.svg}">
+                    </div>
+                    <div class="image-details">
+                        <section class="light">
+                            <h5>Latitude</h5>
+                            <h5>Longitude</h5>
+                            <h5>Municipality</h5>
+                            <h5>Region</h5>
+                            <br>
+                            <h5>Date</h5>
+                            <h5>Resolution</h5>
+                        </section>
+                        <section>
+                            <h5 th:text="${image.location.latitude}">45.956295023</h5>
+                            <h5 th:text="${image.location.longitude}">9.4638563802</h5>
+                            <h5 th:text="${image.municipality}">Milano</h5>
+                            <h5 th:text="${image.region}">Lombardia</h5>
+                            <br>
+                            <h5 th:text="${image.date}">11-04-2020</h5>
+                            <h5 th:text="${image.resolution}">Good</h5>
+                        </section>
+                    </div>
+
+                    <div class="separator">
+                        <div th:unless="${imageAnnotations.isEmpty()}" class="nav-controller">
+                            <button class="left-arrow"></button>
+                            <span class="counter" th:text="'1 / '+${imageAnnotations.size()}">1/12</span>
+                            <button class="right-arrow"></button>
+                        </div>
+                    </div>
+
+                    <!--/*@thymesVar id="joinedBean" type="it.polimi.tiw.utils.beans.JoinedBean<it.polimi.tiw.beans.Annotation, it.polimi.tiw.beans.User, it.polimi.tiw.beans.Worker>"*/-->
+                    <ul class="annotations" data-current="0" th:remove="all-but-first" th:each="joinedBean, stat : ${imageAnnotations}">
+                        <li th:style="${stat.first} ? 'transform: translateX(0)' : ''">
+                            <div class="annotation-details">
+                                <section class="light">
+                                    <h5>Worker username</h5>
+                                    <h5>Worker experience</h5>
+                                    <br>
+                                    <h5>Date</h5>
+                                    <h5>Valid</h5>
+                                    <h5>Trust</h5>
+                                </section>
+                                <section>
+                                    <h5 th:text="${joinedBean.getBean2().username}">Worker username</h5>
+                                    <h5 th:text="${joinedBean.getBean3().expLvl}">Worker experience</h5>
+                                    <br>
+                                    <h5 th:text="${joinedBean.getBean1().date}">Date</h5>
+                                    <h5 th:text="${joinedBean.getBean1().getValid()}">Valid</h5>
+                                    <h5 th:text="${joinedBean.getBean1().trust}">Trust</h5>
+                                </section>
+                            </div>
+                            <div class="annotation-notes">
+
+                            </div>
+                        </li>
+                        <li style="background-color: blue"></li>
+                        <li style="background-color: green"></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

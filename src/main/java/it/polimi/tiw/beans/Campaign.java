@@ -4,6 +4,8 @@ import it.polimi.tiw.beans.validation.annotations.Enum;
 import it.polimi.tiw.beans.validation.annotations.IntRange;
 import it.polimi.tiw.beans.validation.annotations.Size;
 
+import java.io.Serializable;
+
 public class Campaign extends Bean
 {
 

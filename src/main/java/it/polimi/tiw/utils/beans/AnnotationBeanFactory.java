@@ -5,7 +5,7 @@ import it.polimi.tiw.beans.Annotation;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class AnnotationBeanFactory extends BeanFactory<Annotation>
+public class AnnotationBeanFactory implements BeanFactory<Annotation>
 {
 
     @Override

@@ -40,7 +40,7 @@
 
 </nav>
 
-<div class="container desktop-fixed">
+<div id="manager-home-container" class="container desktop-fixed">
 
     <h4 id="new-campaign-title" th:text="#{new-campaign-form-title}">Create new campaign</h4>
     <div id="add-campaign-btn" class="floating">
@@ -53,17 +53,17 @@
                 <h6 th:text="#{new-campaign-form-title}">Create new campaign</h6>
             </header>
             <div class="form-container">
-                <form id="new-campaign-form" action="/create_campaign">
+                <form id="new-campaign-form" action="/create-campaign">
                     <div class="form-error">
                         <span th:text="#{form-error}">An error occurred.</span>
                     </div>
                     <div class="input-container">
-                        <input id="campaign-name-input" type="text" placeholder=" " name="campaign-name" data-validation="/api/v1/validate_data" required>
+                        <input id="campaign-name-input" type="text" placeholder=" " name="name" data-validation="/api/v1/validate-data" required>
                         <label for="campaign-name-input" class="placeholder" th:text="#{campaign-name}">Campaign name</label>
                         <label for="campaign-name-input" class="form-error-message" th:text="#{error.missing-name}">Insert a campaign name</label>
                     </div>
                     <div class="input-container">
-                        <input id="campaign-client-input" type="text" placeholder=" " name="campaign-client" required>
+                        <input id="campaign-client-input" type="text" placeholder=" " name="client" required>
                         <label for="campaign-client-input" class="placeholder" th:text="#{client}">Client</label>
                         <label for="campaign-client-input" class="form-error-message" th:text="#{error.missing-client}">Insert a client</label>
                     </div>
@@ -85,7 +85,16 @@
                 </header>
                 <ul>
                     <li><span class="subtitle-2" th:text="#{client}">Client</span><br><span class="body-2" th:text="${campaign.client}">Regione Lombardia</span></li>
-                    <li><span class="subtitle-2" th:text="#{status}">Status</span><br><div class="status-container"><img src="../../assets/images/lens-24px-green.svg"><span class="body-2" th:text="${#messages.msg('status.'+campaign.status)}">CREATED</span></div></li>
+                    <li><span class="subtitle-2" th:text="#{status}">Status</span><br>
+                        <div class="status-container">
+                            <th:block th:switch="${campaign.status}">
+                                <img th:case="'CREATED'" th:src="@{/assets/images/lens-24px-yellow.svg}" src="../../assets/images/lens-24px-yellow.svg">
+                                <img th:case="'STARTED'" th:src="@{/assets/images/lens-24px-green.svg}" src="../../assets/images/lens-24px-green.svg">
+                                <img th:case="'CLOSED'" th:src="@{/assets/images/lens-24px-red.svg}" src="../../assets/images/lens-24px-red.svg">
+                            </th:block>
+                            <span class="body-2" th:text="${#messages.msg('status.'+campaign.status)}">CREATED</span>
+                        </div>
+                    </li>
                 </ul>
                 <footer>
                     <a class="button text-button" th:href="@{/campaign/details(id=${campaign.id})}" th:text="#{edit}">Edit</a>
@@ -128,9 +137,6 @@
     </div>
 
 </div>
-
-<!---->
-
 
 </body>
 </html>

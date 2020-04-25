@@ -6,7 +6,6 @@ import it.polimi.tiw.dao.CampaignDao;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
-import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpFilter;
 import javax.servlet.http.HttpServletRequest;
@@ -36,7 +35,10 @@ public class CampaignFilter extends HttpFilter
         try
         {
             int campaignId = Integer.parseInt(campaignIdStr);
-            Optional<Campaign> campaign = campaignDao.findCampaignById(campaignId);
+
+            Campaign cachedCampaign = (Campaign) request.getSession().getAttribute("cached-campaign");
+
+            Optional<Campaign> campaign = (cachedCampaign != null && cachedCampaign.getId() == campaignId) ? Optional.of(cachedCampaign) : campaignDao.findCampaignById(campaignId);
 
             if(!campaign.isPresent())
             {
@@ -49,6 +51,7 @@ public class CampaignFilter extends HttpFilter
                 return;
             }
 
+            request.getSession().setAttribute("cached-campaign", campaign.get());
             request.setAttribute("campaign", campaign.get());
             filterChain.doFilter(request, response);
         }

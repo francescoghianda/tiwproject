@@ -1,11 +1,10 @@
-package it.polimi.tiw.controllers.manager;
+package it.polimi.tiw.controllers.manager.campaign;
 
 import it.polimi.tiw.beans.Campaign;
 import it.polimi.tiw.beans.User;
 import it.polimi.tiw.beans.validation.InvalidBeanException;
 import it.polimi.tiw.dao.CampaignDao;
 
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -14,7 +13,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Objects;
 
-@WebServlet("/create_campaign")
+@WebServlet("/create-campaign")
 public class CreateCampaignController extends HttpServlet
 {
     private CampaignDao campaignDao;
@@ -33,8 +32,8 @@ public class CreateCampaignController extends HttpServlet
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException
     {
-        String campaignName = Objects.toString(req.getParameter("campaign-name"), "");
-        String client = Objects.toString(req.getParameter("campaign-client"), "");
+        String campaignName = Objects.toString(req.getParameter("name"), "");
+        String client = Objects.toString(req.getParameter("client"), "");
         int managerId = ((User)req.getSession().getAttribute("user")).getId();
 
         Campaign campaign = new Campaign(0, managerId, campaignName, client, "CREATED");
