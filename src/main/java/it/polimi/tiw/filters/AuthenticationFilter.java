@@ -40,7 +40,9 @@ public class AuthenticationFilter extends HttpFilter
             else
             {
                 RequestDispatcher dispatcher = request.getRequestDispatcher("/login");
-                request.setAttribute("redirect", requestURI);
+                String query = request.getQueryString();
+                query = query == null ? "" : "?"+query;
+                request.setAttribute("redirect", requestURI+query);
                 dispatcher.forward(request, response);
             }
         }

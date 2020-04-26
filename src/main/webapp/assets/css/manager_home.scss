@@ -104,20 +104,6 @@
       box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
     }
 
-    .status-container{
-      display: inline-flex;
-      flex-direction: row;
-      align-items: center;
-
-      img{
-        width: 18px;
-      }
-
-      span{
-        padding-left: 4px;
-      }
-    }
-
     header{
       grid-column: 1 / span 6;
       grid-row: 1;

@@ -900,6 +900,20 @@ fieldset{
   }
 }
 
+.status-container{
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+
+  img{
+    width: 18px;
+  }
+
+  span{
+    padding-left: 4px;
+  }
+}
+
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,

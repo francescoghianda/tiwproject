@@ -13,6 +13,7 @@
     <div class="container desktop-fixed">
         <div id="login-form-container">
             <form id="login-form" action="/login">
+                <input type="hidden" name="redirect" th:value="${redirect}">
                 <div id="login-form-header">
                     <h4 th:text="#{login}">Login</h4>
                 </div>
