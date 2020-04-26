@@ -127,5 +127,6 @@ public class ConnectionManager
     public void stop()
     {
         stopMonitor();
+        connectionPoolMap.values().forEach(connectionPool -> connectionPool.close());
     }
 }

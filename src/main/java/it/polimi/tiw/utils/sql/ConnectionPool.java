@@ -14,8 +14,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class ConnectionPool
 {
+    private static final int CONNECTIONS_LIMIT = 20;
     private static final long MAX_IDLE = 60*10*1000L;
     private static final int VALID_TIMEOUT_SECONDS = 5;
+
+    private static final AtomicInteger connectionCounter = new AtomicInteger(0);
 
     private final String name;
     private final PriorityBlockingQueue<PooledConnection> connectionQueue;
@@ -30,8 +33,37 @@ public class ConnectionPool
         this.connectionManager = connectionManager;
     }
 
+    private synchronized PooledConnection createConnection() throws SQLException
+    {
+        try
+        {
+            while(connectionCounter.get() >= CONNECTIONS_LIMIT) wait();
+
+            PooledConnection connection = new PooledConnection(this, DriverManager.getConnection(connectionManager.getDatabaseURL(), connectionManager.getConnectionProperties()));
+            connectionCounter.incrementAndGet();
+            return connection;
+        }
+        catch (InterruptedException e)
+        {
+            e.printStackTrace();
+            throw new RuntimeException("Interrupted exception in connection pool "+name, e);
+        }
+    }
+
     public synchronized PooledConnection getConnection() throws SQLException
     {
+        while (connectionQueue.isEmpty() && connectionCounter.get() >= CONNECTIONS_LIMIT)
+        {
+            try
+            {
+                wait();
+            }
+            catch (InterruptedException e)
+            {
+                e.printStackTrace();
+            }
+        }
+
         PooledConnection connection = connectionQueue.poll();
 
         boolean createNewConnection = false;
@@ -51,7 +83,7 @@ public class ConnectionPool
         }
         finally
         {
-            if(createNewConnection) connection = new PooledConnection(this, DriverManager.getConnection(connectionManager.getDatabaseURL(), connectionManager.getConnectionProperties()));
+            if(createNewConnection) connection = createConnection();
         }
 
         connection.setInUse(true);
@@ -71,7 +103,12 @@ public class ConnectionPool
             } catch (SQLException e) {
                 Logger.out.log("Error closing old connection from pool "+name, LogType.ERROR);
             }
+            finally {
+                connectionCounter.decrementAndGet();
+            }
         }
+
+        notifyAll();
         return true;
     }
 
@@ -94,6 +131,26 @@ public class ConnectionPool
             }
         });
         Logger.out.log("Removed "+removedConnection.get()+" connections from pool "+name);
+    }
+
+    public void close()
+    {
+        try
+        {
+            for(PooledConnection connection : connectionQueue)
+                connection.getConnection().close();
+
+            for(PooledConnection connection : inUseConnections)
+                connection.getConnection().close();
+        }
+        catch (SQLException e)
+        {
+           Logger.out.log("Error closing some connections!", LogType.ERROR);
+        }
+        finally {
+            connectionQueue.clear();
+            inUseConnections.clear();
+        }
     }
 
 }

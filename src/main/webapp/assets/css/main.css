@@ -1421,14 +1421,6 @@ select:-webkit-autofill:focus {
   height: 100%;
   transform: translateX(100%);
 }
-.manager-images-popup-content .image-details {
-  grid-column: 2;
-  grid-row: 1;
-}
-.manager-images-popup-content .annotation-details {
-  grid-column: 1;
-  grid-row: 1;
-}
 .manager-images-popup-content .annotation-notes {
   position: relative;
   grid-column: 2;
@@ -1462,10 +1454,19 @@ select:-webkit-autofill:focus {
   font-family: "Roboto", sans-serif;
   color: #8d8d8d;
 }
+.manager-images-popup-content .image-details {
+  grid-column: 2;
+  grid-row: 1;
+  grid-template-columns: min-content auto min-content auto;
+}
+.manager-images-popup-content .annotation-details {
+  grid-column: 1;
+  grid-row: 1;
+  grid-template-columns: min-content auto;
+}
 .manager-images-popup-content .image-details, .manager-images-popup-content .annotation-details {
   height: 100%;
   display: grid;
-  grid-template-columns: min-content auto;
 }
 .manager-images-popup-content .image-details section, .manager-images-popup-content .annotation-details section {
   height: 100%;
@@ -1479,8 +1480,8 @@ select:-webkit-autofill:focus {
   font-weight: 100;
   font-family: "Roboto", sans-serif;
   white-space: nowrap;
-  margin-top: 16px;
-  margin-bottom: 16px;
+  margin-top: 8px;
+  margin-bottom: 8px;
 }
 .manager-images-popup-content .image-details section.light h5, .manager-images-popup-content .annotation-details section.light h5 {
   color: #8d8d8d;

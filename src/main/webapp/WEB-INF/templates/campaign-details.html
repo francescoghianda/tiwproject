@@ -152,16 +152,18 @@
                             <h5 th:text="#{longitude}">Longitude</h5>
                             <h5 th:text="#{municipality}">Municipality</h5>
                             <h5 th:text="#{region}">Region</h5>
-                            <br>
-                            <h5 th:text="#{date}">Date</h5>
-                            <h5 th:text="#{resolution}">Resolution</h5>
                         </section>
                         <section>
                             <h5 th:text="${image.location.latitude}">45.956295023</h5>
                             <h5 th:text="${image.location.longitude}">9.4638563802</h5>
                             <h5 th:text="${image.municipality}">Milano</h5>
                             <h5 th:text="${image.region}">Lombardia</h5>
-                            <br>
+                        </section>
+                        <section>
+                            <h5 th:text="#{date}">Date</h5>
+                            <h5 th:text="#{resolution}">Resolution</h5>
+                        </section>
+                        <section>
                             <h5 th:text="${#dates.format(image.date, 'dd-MM-yyyy')}">11-04-2020</h5>
                             <h5 th:text="${#messages.msg('resolution.'+image.resolution)}">Good</h5>
                         </section>
