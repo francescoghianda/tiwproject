@@ -138,7 +138,6 @@
 
         <!--/*@thymesVar id="imageAnnotations" type="java.util.List"*/-->
         <div th:each="image : ${images}" th:data-image-id="${image.id}" class="popup hidden" th:with="imageAnnotations=${annotations.get(image.id)}">
-            <div class="pbody">
                 <div class="pnav">
                     <button class="popup-close-btn"></button>
                 </div>
@@ -205,7 +204,7 @@
                         </li>
                     </ul>
                 </div>
-            </div>
+
         </div>
     </div>
 

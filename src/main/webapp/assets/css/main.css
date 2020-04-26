@@ -841,30 +841,25 @@ fieldset:disabled label.text-button {
 .popup {
   position: fixed;
   z-index: 20;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  top: calc(50% - 300px);
+  left: calc(50% - 555px);
+  width: 1110px;
+  height: 600px;
+  min-width: 1110px;
+  min-height: 600px;
+  resize: both;
   transform: scale(1);
-  background-color: rgba(70, 70, 70, 0.3);
-  transition: all 0.2s;
-}
-@media (min-width: 840px) {
-  .popup {
-    padding: 32px;
-  }
-}
-.popup .pbody {
   display: grid;
   grid-template-rows: 56px auto;
   background-color: #ffffff;
-  width: 100%;
-  height: 100%;
   box-shadow: 0 19px 38px rgba(0, 0, 0, 0.3), 0 15px 12px rgba(0, 0, 0, 0.22);
   border-radius: 4px;
   overflow: hidden;
 }
-.popup .pbody .pnav {
+.popup.draggable {
+  opacity: 0.4;
+}
+.popup .pnav {
   grid-row: 1;
   display: flex;
   flex-direction: row;
@@ -875,6 +870,7 @@ fieldset:disabled label.text-button {
   height: 100%;
   background-color: #0d47a1;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  cursor: grab;
 }
 .popup .popup-close-btn {
   width: 24px;
@@ -1432,6 +1428,7 @@ select:-webkit-autofill:focus {
   padding: 16px;
   width: calc(100% - 32px);
   height: calc(100% - 32px);
+  border: 2px solid #000000;
   border-radius: 4px;
   font-size: 24px;
   font-weight: 100;

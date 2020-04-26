@@ -97,4 +97,42 @@ $(() =>
         $(this).closest('.popup').addClass("hidden");
     });
 
+
+    let draggable = null;
+    let dragOffsetX = 0;
+    let dragOffsetY = 0;
+
+    $('.pnav').on('mousedown', function (e) {
+
+        $(this).css('cursor', 'grabbing');
+        let popup = $(this).closest('.popup');
+        popup.addClass('draggable');
+        let currentOffset = popup.offset();
+        dragOffsetX = e.pageX - currentOffset.left;
+        dragOffsetY = e.pageY - currentOffset.top;
+        draggable = popup;
+    });
+
+    $('.pnav').on('mouseup', function () {
+        $(this).css('cursor', 'grab');
+        let popup = $(this).closest('.popup');
+        popup.removeClass('draggable');
+        draggable = null;
+    });
+
+    $('.popup').on('mousedown', function () {
+        $('.popup').css('z-index', 20);
+        $(this).css('z-index', 21);
+    })
+
+    $(window).on('mousemove', function (e) {
+        if(draggable)
+        {
+            draggable.offset({
+                top: e.pageY - dragOffsetY,
+                left: e.pageX - dragOffsetX
+            })
+        }
+    });
+
 });
