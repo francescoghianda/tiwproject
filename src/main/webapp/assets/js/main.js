@@ -119,6 +119,19 @@ $(() =>
         draggable = null;
     });
 
+    $('.pnav').on('dblclick', function () {
+        let popup = $(this).closest('.popup');
+        let height = $(window).height()-32;
+        let width = $(window).width()-32;
+
+        popup.animate({
+            width: width,
+            height: height,
+            left: 16,
+            top: 16
+        }, 200);
+    })
+
     $('.popup').on('mousedown', function () {
         $('.popup').css('z-index', 20);
         $(this).css('z-index', 21);
