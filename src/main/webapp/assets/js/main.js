@@ -103,7 +103,6 @@ $(() =>
     let dragOffsetY = 0;
 
     $('.pnav').on('mousedown', function (e) {
-
         $(this).css('cursor', 'grabbing');
         let popup = $(this).closest('.popup');
         popup.addClass('draggable');
@@ -128,6 +127,7 @@ $(() =>
     $(window).on('mousemove', function (e) {
         if(draggable)
         {
+            e.preventDefault();
             draggable.offset({
                 top: e.pageY - dragOffsetY,
                 left: e.pageX - dragOffsetX

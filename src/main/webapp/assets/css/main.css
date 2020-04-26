@@ -855,6 +855,7 @@ fieldset:disabled label.text-button {
   box-shadow: 0 19px 38px rgba(0, 0, 0, 0.3), 0 15px 12px rgba(0, 0, 0, 0.22);
   border-radius: 4px;
   overflow: hidden;
+  transition: transform 0.2s;
 }
 .popup.draggable {
   opacity: 0.4;
@@ -862,6 +863,7 @@ fieldset:disabled label.text-button {
 .popup .pnav {
   grid-row: 1;
   display: flex;
+  position: relative;
   flex-direction: row;
   padding-left: 16px;
   padding-right: 16px;
@@ -871,6 +873,17 @@ fieldset:disabled label.text-button {
   background-color: #0d47a1;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   cursor: grab;
+}
+.popup .pnav::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 56px;
+  height: 56px;
+  background-image: url("../images/drag_indicator-24px.svg");
+  background-repeat: no-repeat;
+  background-position: center;
 }
 .popup .popup-close-btn {
   width: 24px;

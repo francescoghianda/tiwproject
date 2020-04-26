@@ -101,6 +101,8 @@ function loadImages(map) {
         L.marker([image.dataset.latitude, image.dataset.longitude]).addTo(map).on('click', () =>
         {
             popup.removeClass("hidden");
+            $('.popup').css('z-index', 20);
+            popup.css('z-index', 21);
         });
 
         fetch(`/get-image?id=${imageId}`).then(async response =>
