@@ -4,14 +4,11 @@ import it.polimi.tiw.beans.Annotation;
 import it.polimi.tiw.beans.LocationImage;
 import it.polimi.tiw.beans.validation.InvalidBeanException;
 import it.polimi.tiw.utils.ImagesAnnotationsMap;
-import it.polimi.tiw.utils.beans.JoinedBean;
 import it.polimi.tiw.utils.beans.LocationImageBeanFactory;
 import it.polimi.tiw.utils.dao.Dao;
 import it.polimi.tiw.utils.sql.ConnectionManager;
 import it.polimi.tiw.utils.sql.PooledConnection;
-import javafx.collections.transformation.SortedList;
 
-import javax.naming.InsufficientResourcesException;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

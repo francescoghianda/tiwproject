@@ -46,7 +46,7 @@ public class CampaignStatisticsController extends HttpServlet
 
             int imagesNumber = map.keySet().size();
             int totAnnotationsNumber = map.values().stream().mapToInt(Collection::size).sum();
-            double avgAnnotationsPerImage = map.values().stream().mapToInt(Collection::size).average().orElse(0);
+            int avgAnnotationsPerImage = (int) map.values().stream().mapToInt(Collection::size).average().orElse(0);
             int conflictsNumber = 0;
 
             for(List<Annotation> annotations : map.values())
