@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
+    <!--<meta content="text/html; charset=UTF-8">-->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Campaign details</title>
@@ -26,7 +27,7 @@
     <div class="container desktop-fixed">
 
         <div id="campaign-details">
-            <form action="/campaign/change-status">
+            <form id="change-status-form" action="/campaign/change-status" data-popup="change-status-confirm">
                 <h4 th:text="${campaign.name}">Campaign name</h4>
                 <span class="subtitle-2" th:text="#{client}">Client</span><span class="body-2" id="campaign-client" th:text="${campaign.client}">Politecnico di Milano</span>
                 <span class="subtitle-2" th:text="#{status}">Status</span>
@@ -124,7 +125,10 @@
                 <ul th:remove="all-but-first">
                     <li th:each="image : ${images}" th:data-image-id="${image.id}" th:data-longitude="${image.location.longitude}" th:data-latitude="${image.location.latitude}">
                         <img style="width: 24px" src="../../assets/images/puff.svg" th:src="@{/assets/images/puff.svg}">
-                        <button class="delete-image-btn" th:if="${campaign.status.equals('CREATED')}" th:data-image_id="${image.id}"></button>
+                        <div class="image-buttons">
+                            <button class="delete-image-btn" th:if="${campaign.status.equals('CREATED')}" th:data-image_id="${image.id}"></button>
+                            <button class="map-target-btn"></button>
+                        </div>
                     </li>
                 </ul>
 
@@ -134,14 +138,14 @@
 
     </div>
 
-    <div id="popups" th:remove="all-but-first">
+    <div id="windows" th:remove="all-but-first">
 
         <!--/*@thymesVar id="imageAnnotations" type="java.util.List"*/-->
-        <div th:each="image : ${images}" th:data-image-id="${image.id}" class="popup hidden" th:with="imageAnnotations=${annotations.get(image.id)}">
-                <div class="pnav">
-                    <button class="popup-close-btn"></button>
+        <div th:each="image : ${images}" th:data-image-id="${image.id}" class="window hidden" th:with="imageAnnotations=${annotations.get(image.id)}">
+                <div class="wnav">
+                    <button class="window-close-btn"></button>
                 </div>
-                <div class="pcontent manager-images-popup-content">
+                <div class="wcontent manager-images-window-content">
                     <div class="image">
                         <img style="width: 24px" src="../../assets/images/puff.svg" th:src="@{/assets/images/puff.svg}">
                     </div>
@@ -205,6 +209,21 @@
                     </ul>
                 </div>
 
+        </div>
+    </div>
+
+    <div id="change-status-confirm" class="popup">
+        <div class="pbody">
+            <div class="pnav">
+                <button class="popup-close-btn"></button>
+            </div>
+            <div class="pcontent">
+                <span class="body-1">Questa azione &egrave; irreversibile, vuoi continuare?</span>
+            </div>
+            <div class="pfooter">
+                <button class="cancel-btn" value="cancel">Cancel</button>
+                <button class="ok-btn" value="ok">OK</button>
+            </div>
         </div>
     </div>
 

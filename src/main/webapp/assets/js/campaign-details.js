@@ -2,12 +2,12 @@ $(() =>
 {
 
     $('.right-arrow').on('click', function () {
-        let annotationList = $(this).closest('.pcontent').find('.annotations');
+        let annotationList = $(this).closest('.wcontent').find('.annotations');
         displayAnnotation(annotationList, +1, $(this).closest('.nav-controller').find('.counter'))
     });
 
     $('.left-arrow').on('click', function () {
-        let annotationList = $(this).closest('.pcontent').find('.annotations');
+        let annotationList = $(this).closest('.wcontent').find('.annotations');
         displayAnnotation(annotationList, -1, $(this).closest('.nav-controller').find('.counter'))
     });
 
@@ -87,6 +87,13 @@ $(() =>
         });
     });
 
+    $(".map-target-btn").on('click', function () {
+        let image = $(this).closest('li');
+        let longitude = image.data('longitude');
+        let latitude = image.data('latitude');
+        map.flyTo([latitude, longitude], 16);
+    })
+
     loadImages(map);
 });
 
@@ -96,20 +103,20 @@ function loadImages(map) {
     imageList.forEach(image =>
     {
         let imageId = image.dataset.imageId;
-        let popup = $(`.popup[data-image-id=${imageId}]`);
+        let window = $(`.window[data-image-id=${imageId}]`);
 
         L.marker([image.dataset.latitude, image.dataset.longitude]).addTo(map).on('click', () =>
         {
-            popup.removeClass("hidden");
-            $('.popup').css('z-index', 20);
-            popup.css('z-index', 21);
+            window.removeClass("hidden");
+            $('.window').css('z-index', 20);
+            window.css('z-index', 21);
         });
 
         fetch(`/get-image?id=${imageId}`).then(async response =>
         {
             let imageHash = await response.text();
             $(image).find('img').attr('src', imageHash).removeAttr('style');
-            popup.find(".pcontent .image img").attr('src', imageHash).removeAttr('style');
+            window.find(".wcontent .image img").attr('src', imageHash).removeAttr('style');
         })
     });
 

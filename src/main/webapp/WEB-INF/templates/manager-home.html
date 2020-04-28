@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1" />
-    <meta charset="UTF-8">
+    <meta content="text/html; charset=utf-8">
     <title>Home Page</title>
 
     <link rel="stylesheet" type="text/css" href="../../assets/css/main.css" th:href="@{/assets/css/main.css}">
@@ -58,7 +58,7 @@
                         <span th:text="#{form-error}">An error occurred.</span>
                     </div>
                     <div class="input-container">
-                        <input id="campaign-name-input" type="text" placeholder=" " name="name" data-validation="/api/v1/validate-data" required>
+                        <input id="campaign-name-input" type="text" placeholder=" " name="campaign-name" data-validation="/api/v1/validate-data" required>
                         <label for="campaign-name-input" class="placeholder" th:text="#{campaign-name}">Campaign name</label>
                         <label for="campaign-name-input" class="form-error-message" th:text="#{error.missing-name}">Insert a campaign name</label>
                     </div>
@@ -97,8 +97,8 @@
                     </li>
                 </ul>
                 <footer>
-                    <a class="button text-button" th:href="@{/campaign/details(id=${campaign.id})}" th:text="#{edit}">Edit</a>
-                    <a class="button text-button" th:text="#{statistics}">Statistics</a>
+                    <a class="button text-button" th:href="@{/campaign/details(id=${campaign.id})}" th:text="#{details}">Dettagli</a>
+                    <a class="button text-button" th:href="@{/campaign/stat(id=${campaign.id})}" th:text="#{statistics}">Statistics</a>
                     <a class="button text-button" th:text="#{delete}">Delete</a>
                 </footer>
             </div>

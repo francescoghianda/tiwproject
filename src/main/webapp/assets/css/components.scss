@@ -844,12 +844,12 @@ fieldset{
   z-index: 0;
 }
 
-.popup.hidden{
+.window.hidden{
   transform: scale(0);
   transition: all .2s;
 }
 
-.popup {
+.window {
   position: fixed;
   z-index: 20;
   top: calc(50% - 300px);
@@ -872,7 +872,7 @@ fieldset{
     opacity: .4;
   }
 
-  .pnav{
+  .wnav{
     grid-row: 1;
     display: flex;
     position: relative;
@@ -899,7 +899,7 @@ fieldset{
     }
   }
 
-  .popup-close-btn{
+  .window-close-btn{
     width: 24px;
     height: 24px;
     background-color: transparent;
@@ -908,6 +908,117 @@ fieldset{
     background-position: center;
     border: none;
     min-width: 0;
+  }
+}
+
+@keyframes popup-open {
+  0%{
+    transform: translateY(-300px);
+    opacity: 0;
+  }
+  100%{
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.popup{
+  position: fixed;
+  display: none;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: 30;
+  background-color: rgba(61, 61, 61, 0.6);
+
+  &.show{
+    display: flex;
+
+    .pbody{
+      animation-name: popup-open;
+      animation-duration: .4s;
+      animation-iteration-count: 1;
+    }
+  }
+
+  .pbody{
+    display: grid;
+    grid-template-rows: minmax(0, 56px) auto minmax(0, 56px);
+    width: min-content;
+    height: min-content;
+    background-color: #ffffff;
+    border-radius: 4px;
+    margin-top: 56px;
+    box-shadow: 0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22);
+    overflow: hidden;
+
+    .pnav{
+      grid-row: 1;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: flex-start;
+      width: 100%;
+      height: 56px;
+      padding-left: 8px;
+      background-color: color('secondary');
+
+      .popup-close-btn{
+        background-color: transparent;
+        border: none;
+        min-width: 0;
+        width: 24px;
+        height: 24px;
+        background-image: url("../images/close-white-24px.svg");
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: 24px;
+      }
+    }
+
+    .pcontent{
+      grid-row: 2;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 32px;
+      white-space: nowrap;
+    }
+
+    .pfooter{
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: flex-end;
+      grid-row: 3;
+      width: 100%;
+      height: 56px;
+
+
+      button{
+        margin-left: 4px;
+        margin-right: 4px;
+      }
+
+      .ok-btn{
+        background-color: color('secondary');
+        color: color('text');
+
+        &:hover{
+          background-color: lighten(color('secondary'), 10%);
+        }
+      }
+
+      .cancel-btn{
+        transition: all .2s;
+        &:hover{
+          background-color: #e00f0f;
+          color: #ffffff;
+        }
+      }
+    }
   }
 }
 

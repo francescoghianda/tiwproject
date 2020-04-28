@@ -54,6 +54,8 @@ public class CampaignFilter extends HttpFilter
             request.getSession().setAttribute("cached-campaign", campaign.get());
             request.setAttribute("campaign", campaign.get());
             filterChain.doFilter(request, response);
+
+
         }
         catch (NumberFormatException e)
         {

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Statistics</title>
+
+
+    <link rel="stylesheet" type="text/css" href="../../assets/css/main.css" th:href="@{/assets/css/main.css}">
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="../../assets/js/main.js" type="module" th:src="@{/assets/js/main.js}"></script>
+
+    <style>
+        #stat-container{
+            display: grid;
+            grid-template-columns: auto auto;
+            grid-auto-flow: row;
+        }
+
+        h5{
+            white-space: nowrap;
+        }
+    </style>
+
+</head>
+<body>
+    <nav class="navbar" th:replace="fragments/navbar :: navbar"></nav>
+
+    <div class="container">
+
+        <div id="stat-container">
+            <h5>Tot. images: </h5>
+            <h5 th:text="${imagesNumber}"></h5>
+            <h5>Tot. annotations: </h5>
+            <h5 th:text="${annotationsNumber}"></h5>
+            <h5>Avg. annotations per image: </h5>
+            <h5 th:text="${avgAnnotations}"></h5>
+            <h5>Tot. conflicts: </h5>
+            <h5 th:text="${conflictsNumber}"></h5>
+        </div>
+
+    </div>
+
+</body>
+</html>

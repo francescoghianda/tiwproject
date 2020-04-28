@@ -55,11 +55,17 @@ public class ChangeStatusController extends HttpServlet
             return;
         }
 
+        boolean statusChanged = false;
         try
         {
+
             if(currentStatus.equals(CampaignStatus.STARTED))
             {
-                if(campaignDao.updateCampaignStatus(campaign.getId(), CampaignStatus.CLOSED)) resp.sendRedirect("/campaign/details?id="+campaign.getId());
+                if(campaignDao.updateCampaignStatus(campaign.getId(), CampaignStatus.CLOSED))
+                {
+                    resp.sendRedirect("/campaign/details?id="+campaign.getId());
+                    statusChanged = true;
+                }
                 else resp.sendError(500, "An error occurred while changing campaign status.");
                 return;
             }
@@ -71,7 +77,11 @@ public class ChangeStatusController extends HttpServlet
                 return;
             }
 
-            if(campaignDao.updateCampaignStatus(campaign.getId(), CampaignStatus.STARTED)) resp.sendRedirect("/campaign/details?id="+campaign.getId());
+            if(campaignDao.updateCampaignStatus(campaign.getId(), CampaignStatus.STARTED))
+            {
+                resp.sendRedirect("/campaign/details?id="+campaign.getId());
+                statusChanged = true;
+            }
             else resp.sendError(500, "An error occurred while changing campaign status.");
 
         }
@@ -79,6 +89,10 @@ public class ChangeStatusController extends HttpServlet
         {
             e.printStackTrace();
             resp.sendError(500, "A SQL error occurred while changing campaign status.");
+        }
+        finally
+        {
+            if(statusChanged)req.getSession().removeAttribute("cached-campaign");
         }
     }
 }

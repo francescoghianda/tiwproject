@@ -1,18 +1,23 @@
 package it.polimi.tiw.dao;
 
+import it.polimi.tiw.beans.Annotation;
 import it.polimi.tiw.beans.LocationImage;
 import it.polimi.tiw.beans.validation.InvalidBeanException;
+import it.polimi.tiw.utils.ImagesAnnotationsMap;
 import it.polimi.tiw.utils.beans.JoinedBean;
 import it.polimi.tiw.utils.beans.LocationImageBeanFactory;
 import it.polimi.tiw.utils.dao.Dao;
 import it.polimi.tiw.utils.sql.ConnectionManager;
 import it.polimi.tiw.utils.sql.PooledConnection;
+import javafx.collections.transformation.SortedList;
 
+import javax.naming.InsufficientResourcesException;
+import java.sql.Date;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class LocationImageDao extends Dao<LocationImage>
@@ -37,6 +42,28 @@ public class LocationImageDao extends Dao<LocationImage>
     {
         if(media)return get("SELECT img.*, ST_AsText(img.location) location_coordinates from location_image img where campaign_id = ?", campaignId);
         return get("SELECT img.id, img.campaign_id, img.municipality, img.region, img.source, img.date, img.resolution, ST_AsText(img.location) location_coordinates from location_image img where campaign_id = ?", campaignId);
+    }
+
+    public Map<LocationImage, List<Annotation>> findImagesAndAnnotationsByCampaignId(int campaignId) throws SQLException
+    {
+        try(PooledConnection connection = ConnectionManager.getInstance().getConnection();
+            PreparedStatement statement = connection.getConnection().prepareStatement(
+                    "SELECT img.id id, img.campaign_id, ST_AsText(img.location) location_coordinates, img.municipality," +
+                    "       img.region, img.source, img.date date, img.resolution, ann.id ann_id, ann.user_id, ann.image_id, ann.date ann_date," +
+                            "ann.valid, ann.trust, ann.notes " +
+                    "FROM location_image img " +
+                    "LEFT JOIN annotation ann " +
+                    "ON ann.image_id = img.id " +
+                    "WHERE img.campaign_id = ? " +
+                    "ORDER BY img.id"))
+        {
+            statement.setInt(1, campaignId);
+
+            try(ResultSet resultSet = statement.executeQuery())
+            {
+                return buildImageAnnotationMap(resultSet);
+            }
+        }
     }
 
     public boolean deleteLocationImage(int imageId) throws SQLException
@@ -91,4 +118,33 @@ public class LocationImageDao extends Dao<LocationImage>
         return committed;
     }
 
+
+    private Map<LocationImage, List<Annotation>> buildImageAnnotationMap(ResultSet resultSet) throws SQLException
+    {
+        ImagesAnnotationsMap map = new ImagesAnnotationsMap();
+        int lastId = 0;
+
+        while(resultSet.next())
+        {
+            int imageId = resultSet.getInt("id");
+            if(imageId > lastId)map.next(beanFactory.convert(resultSet));
+            lastId = imageId;
+            map.put(buildAnnotation(resultSet));
+        }
+
+        return map.buildMap();
+    }
+
+    private Annotation buildAnnotation(ResultSet resultSet) throws SQLException
+    {
+        int id = resultSet.getInt("ann_id");
+        if(id == 0)return null;
+        int userId = resultSet.getInt("user_id");
+        int imageId = resultSet.getInt("image_id");
+        Date date = resultSet.getDate("ann_date");
+        boolean valid = resultSet.getBoolean("valid");
+        String trust = resultSet.getString("trust");
+        String notes = resultSet.getString("notes");
+        return new Annotation(id, userId, imageId, date, valid, trust, notes);
+    }
 }

@@ -32,7 +32,7 @@ public class CreateCampaignController extends HttpServlet
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException
     {
-        String campaignName = Objects.toString(req.getParameter("name"), "");
+        String campaignName = Objects.toString(req.getParameter("campaign-name"), "");
         String client = Objects.toString(req.getParameter("client"), "");
         int managerId = ((User)req.getSession().getAttribute("user")).getId();
 

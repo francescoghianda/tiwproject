@@ -27,22 +27,36 @@ $(() =>
     $('form').submit(function (event) {
 
         event.preventDefault();
-        Utils.postFormIfValid($(this)).then(response => {
-            $(this).find('.form-error').removeClass('visible');
+
+        let popupId = $(this).data('popup');
+        if(popupId)
+        {
+            let popup = $(`#${popupId}`);
+            let form = $(this);
+            popup.on('close', function () {
+                console.log($(this));
+                if($(this).data('result') === 'ok')postForm(form);
+            });
+            popup.addClass('show');
+        }
+        else postForm($(this));
+    });
+
+    $('.popup .ok-btn, .popup .cancel-btn, .popup .popup-close-btn').on('click', function () {
+        let popup = $(this).closest('.popup');
+        popup.data('result', $(this).val())
+        popup.removeClass('show');
+        popup.trigger('close');
+    });
+
+    function postForm(form)
+    {
+        Utils.postFormIfValid(form).then(response => {
+            form.find('.form-error').removeClass('visible');
             if(response.responseURL)window.location.href = response.responseURL;
         })
-            .catch(response => $(this).find('.form-error').addClass('visible'));
-
-        /*Utils.checkFormValidity($(this)[0]).then(valid =>
-        {
-            if(valid)Utils.postForm($(this).attr('action'), $(this)).then(response =>
-            {
-                $(this).find('.form-error').removeClass('visible');
-                if(response.responseURL)window.location.href = response.responseURL;
-            }).catch(response => $(this).find('.form-error').addClass('visible'));
-        });*/
-
-    });
+            .catch(response => form.find('.form-error').addClass('visible'));
+    }
 
     $('form')[0].querySelectorAll('input, select').forEach(element => {
         element.addEventListener('blur', () => {
@@ -93,8 +107,8 @@ $(() =>
         e.stopPropagation();
     });
 
-    $('.popup-close-btn').on('click', function () {
-        $(this).closest('.popup').addClass("hidden");
+    $('.window-close-btn').on('click', function () {
+        $(this).closest('.window').addClass("hidden");
     });
 
 
@@ -102,9 +116,9 @@ $(() =>
     let dragOffsetX = 0;
     let dragOffsetY = 0;
 
-    $('.pnav').on('mousedown', function (e) {
+    $('.wnav').on('mousedown', function (e) {
         $(this).css('cursor', 'grabbing');
-        let popup = $(this).closest('.popup');
+        let popup = $(this).closest('.window');
         popup.addClass('draggable');
         let currentOffset = popup.offset();
         dragOffsetX = e.pageX - currentOffset.left;
@@ -112,15 +126,15 @@ $(() =>
         draggable = popup;
     });
 
-    $('.pnav').on('mouseup', function () {
+    $('.wnav').on('mouseup', function () {
         $(this).css('cursor', 'grab');
-        let popup = $(this).closest('.popup');
+        let popup = $(this).closest('.window');
         popup.removeClass('draggable');
         draggable = null;
     });
 
-    $('.pnav').on('dblclick', function () {
-        let popup = $(this).closest('.popup');
+    $('.wnav').on('dblclick', function () {
+        let popup = $(this).closest('.window');
         let height = $(window).height()-32;
         let width = $(window).width()-32;
 
@@ -132,8 +146,8 @@ $(() =>
         }, 200);
     })
 
-    $('.popup').on('mousedown', function () {
-        $('.popup').css('z-index', 20);
+    $('.window').on('mousedown', function () {
+        $('.window').css('z-index', 20);
         $(this).css('z-index', 21);
     })
 
