@@ -15,8 +15,7 @@
 <body>
     <nav class="navbar" th:replace="fragments/navbar :: navbar"></nav>
 
-    <div class="container">
-
+    <div id="stat-container">
         <ul id="stat-list">
             <li>
                 <span class="value" th:text="${imagesNumber}"></span>
@@ -28,14 +27,13 @@
             </li>
             <li>
                 <span class="value" th:text="${avgAnnotations}"></span>
-                <span class="label">avg. annotations per image</span>
+                <span class="label">avg. annotations<br>per image</span>
             </li>
             <li>
                 <span class="value" th:text="${conflictsNumber}"></span>
                 <span class="label">conflicts</span>
             </li>
         </ul>
-
     </div>
 
 </body>
