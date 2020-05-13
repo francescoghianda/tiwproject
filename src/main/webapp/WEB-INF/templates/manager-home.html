@@ -53,7 +53,7 @@
                 <h6 th:text="#{new-campaign-form-title}">Create new campaign</h6>
             </header>
             <div class="form-container">
-                <form id="new-campaign-form" action="/create-campaign">
+                <form id="new-campaign-form" th:action="@{/create-campaign}">
                     <div class="form-error">
                         <span th:text="#{form-error}">An error occurred.</span>
                     </div>
@@ -73,67 +73,40 @@
         </div>
     </div>
 
-    <h4 id="manager-campaigns-title" th:text="#{campaign-list-title}">Campaign list</h4>
-
-    <div class="campaign-list-container">
-
-        <div class="campaign-list" th:remove="all-but-first" th:each="campaign : ${campaigns}">
-
-            <div class="manager-campaign-card">
+    <div id="campaign-list" class="list-container">
+        <div class="list-header">
+            <h5 th:text="#{campaign-list-title}">Campaign list</h5>
+        </div>
+        <span class="body-2 empty-message" th:if="${campaigns.isEmpty()}" th:text="#{empty-list-message}">Create a campaign to start.</span>
+        <ul th:unless="${campaigns.isEmpty()}" class="list" th:remove="all-but-first">
+            <li class="list-item card" th:each="campaign : ${campaigns}">
                 <header>
-                    <h5 th:text="${campaign.name}">Campaign name 1</h5>
+                    <h5 class="overflow-marquee" th:text="${campaign.name}">Campaign name 1</h5>
                 </header>
-                <ul>
-                    <li><span class="subtitle-2" th:text="#{client}">Client</span><br><span class="body-2" th:text="${campaign.client}">Regione Lombardia</span></li>
-                    <li><span class="subtitle-2" th:text="#{status}">Status</span><br>
-                        <div class="status-container">
-                            <th:block th:switch="${campaign.status}">
-                                <img th:case="'CREATED'" th:src="@{/assets/images/lens-24px-yellow.svg}" src="../../assets/images/lens-24px-yellow.svg">
-                                <img th:case="'STARTED'" th:src="@{/assets/images/lens-24px-green.svg}" src="../../assets/images/lens-24px-green.svg">
-                                <img th:case="'CLOSED'" th:src="@{/assets/images/lens-24px-red.svg}" src="../../assets/images/lens-24px-red.svg">
-                            </th:block>
-                            <span class="body-2" th:text="${#messages.msg('status.'+campaign.status)}">CREATED</span>
-                        </div>
-                    </li>
-                </ul>
+                <div class="card-body campaign-card-content">
+                    <ul>
+                        <li><span class="subtitle-2" th:text="#{client}">Client</span><br><span class="body-2" th:text="${campaign.client}">Regione Lombardia</span></li>
+                        <li><span class="subtitle-2" th:text="#{status}">Status</span><br>
+                            <div class="status-container">
+                                <th:block th:switch="${campaign.status}">
+                                    <img th:case="'CREATED'" th:src="@{/assets/images/lens-24px-yellow.svg}" src="../../assets/images/lens-24px-yellow.svg">
+                                    <img th:case="'STARTED'" th:src="@{/assets/images/lens-24px-green.svg}" src="../../assets/images/lens-24px-green.svg">
+                                    <img th:case="'CLOSED'" th:src="@{/assets/images/lens-24px-red.svg}" src="../../assets/images/lens-24px-red.svg">
+                                </th:block>
+                                <span class="body-2" th:text="${#messages.msg('status.'+campaign.status)}">CREATED</span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
                 <footer>
                     <a class="button text-button" th:href="@{/campaign/details(id=${campaign.id})}" th:text="#{details}">Dettagli</a>
                     <a class="button text-button" th:href="@{/campaign/stat(id=${campaign.id})}" th:text="#{statistics}">Statistics</a>
                     <a class="button text-button" th:text="#{delete}">Delete</a>
                 </footer>
-            </div>
+            </li>
+        </ul>
 
-            <div class="manager-campaign-card">
-                <header>
-                    <h5>Campaign name</h5>
-                </header>
-                <ul>
-                    <li><span class="subtitle-2">Client</span><br><span class="body-2">Regione Lombardia</span></li>
-                    <li><span class="subtitle-2">Status</span><br><span class="body-2">CREATED</span></li>
-                </ul>
-                <footer>
-                    <a class="button text-button">Edit</a>
-                    <a class="button text-button">Statistics</a>
-                    <a class="button text-button">Delete</a>
-                </footer>
-            </div>
 
-            <div class="manager-campaign-card">
-                <header>
-                    <h5>Campaign name</h5>
-                </header>
-                <ul>
-                    <li><span class="subtitle-2">Client</span><br><span class="body-2">Regione Lombardia</span></li>
-                    <li><span class="subtitle-2">Status</span><br><span class="body-2">CREATED</span></li>
-                </ul>
-                <footer>
-                    <a class="button text-button">Edit</a>
-                    <a class="button text-button">Statistics</a>
-                    <a class="button text-button">Delete</a>
-                </footer>
-            </div>
-
-        </div>
     </div>
 
 </div>

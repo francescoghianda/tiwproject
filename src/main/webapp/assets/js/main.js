@@ -58,11 +58,15 @@ $(() =>
             .catch(response => form.find('.form-error').addClass('visible'));
     }
 
-    $('form')[0].querySelectorAll('input, select').forEach(element => {
+    /*$('form')[0].querySelectorAll('input, select').forEach(element => {
         element.addEventListener('blur', () => {
             Utils.checkElementValidity(element);
         });
-    });
+    });*/
+
+    $('form').find('input, select').on('blur', function () {
+        Utils.checkElementValidity($(this).get(0));
+    })
 
     $('.photo-selector input:file').on('change', function ()
     {
@@ -162,4 +166,66 @@ $(() =>
         }
     });
 
+
+    $('.list-close-btn').on('click', function () {
+        $(this).toggleClass('toggled');
+        $(this).closest('.list-container').toggleClass('closed');
+    });
+
+
+    let marquee = $(".overflow-marquee");
+    marquee.each(index =>
+    {
+        let marqueeElement = $(marquee[index]);
+        marqueeElement.data('width', marqueeElement.width()+10);
+        if(marqueeElement.width() > marqueeElement.parent().width())marqueeElement.data("overflow", "true");
+    });
+
+    $(window).on('resize', function () {
+        console.log("resize");
+        marquee.each(index =>
+        {
+            let marqueeElement = $(marquee[index]);
+            marqueeElement.data('width', marqueeElement.width()+10);
+            if(marqueeElement.width() > marqueeElement.parent().width())marqueeElement.data("overflow", "true");
+            else{
+                marqueeElement.data("overflow", "false");
+                marqueeElement.css("text-indent", 0);
+            }
+        });
+    })
+
+    marquee.parent().on('mouseenter', function () {
+        let marqueeElement = $(this).find(".overflow-marquee");
+        if(marqueeElement.data("overflow") === "true")startMarquee(marqueeElement);
+    })
+
+    marquee.parent().on('mouseleave', function () {
+        $(this).find(".overflow-marquee").stop();
+    })
+
+    function startMarquee($element){
+        let width = $element.data("width");
+
+        let currentTextIndent = $element.css("text-indent");
+        currentTextIndent = currentTextIndent.substring(0, currentTextIndent.length-2);
+        let animationSpeed;
+        if(currentTextIndent < 0)
+        {
+            currentTextIndent = Math.abs(currentTextIndent);
+            animationSpeed = (width-currentTextIndent)*10;
+        }
+        else animationSpeed = width*10;
+
+        $element.animate({
+            'text-indent': -width
+        }, animationSpeed, "linear", () => marqueeLoop($element));
+    }
+
+    function marqueeLoop($element) {
+        let width = $element.data("width");
+        $element.css("text-indent", `${width}px`).animate({
+            'text-indent': -width
+        }, width*10*2, "linear", () => marqueeLoop($element));
+    }
 });

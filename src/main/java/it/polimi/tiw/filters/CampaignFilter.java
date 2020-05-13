@@ -15,7 +15,7 @@ import java.sql.SQLException;
 import java.util.Objects;
 import java.util.Optional;
 
-@WebFilter(filterName = "CampaignFilter")
+@WebFilter(filterName = "ManagerCampaignFilter")
 public class CampaignFilter extends HttpFilter
 {
     private CampaignDao campaignDao;

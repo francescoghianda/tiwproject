@@ -6,6 +6,7 @@ import it.polimi.tiw.beans.User;
 import it.polimi.tiw.beans.Worker;
 import it.polimi.tiw.dao.CampaignDao;
 import it.polimi.tiw.dao.UserDao;
+import it.polimi.tiw.utils.beans.CampaignStatus;
 import org.thymeleaf.context.WebContext;
 
 import javax.servlet.ServletException;
@@ -17,6 +18,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 @WebServlet("")
@@ -54,6 +57,24 @@ public class HomeController extends HttpServlet
             if(user.getRole().equals("WORKER"))
             {
                 template = "worker-home";
+
+                List<Campaign> freeCampaigns = campaignDao.findCampaignByStatus(CampaignStatus.STARTED);
+                List<Campaign> subCampaigns = new ArrayList<>();
+                List<Integer> subscription = campaignDao.findSubscription(user.getId());
+
+                Iterator<Campaign> iterator = freeCampaigns.iterator();
+                while (iterator.hasNext())
+                {
+                    Campaign campaign = iterator.next();
+                    if(subscription.contains(campaign.getId()))
+                    {
+                        subCampaigns.add(campaign);
+                        iterator.remove();
+                    }
+                }
+
+                webContext.setVariable("freeCampaigns", freeCampaigns);
+                webContext.setVariable("subCampaigns", subCampaigns);
                 webContext.setVariable("worker", (Worker) userDAO.findWorkerByUserId(user.getId()).orElse(null));
             }
             else

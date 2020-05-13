@@ -56,17 +56,18 @@
 
     <filter-mapping>
         <filter-name>WorkerFilter</filter-name>
-        <url-pattern>/create-annotation</url-pattern>
+        <url-pattern>/add-annotation</url-pattern>
+        <url-pattern>/subscribe</url-pattern>
     </filter-mapping>
 
     <filter-mapping>
         <filter-name>ManagerFilter</filter-name>
-        <url-pattern>/create_campaign</url-pattern>
+        <url-pattern>/create-campaign</url-pattern>
         <url-pattern>/campaign/*</url-pattern>
     </filter-mapping>
     
     <filter-mapping>
-        <filter-name>CampaignFilter</filter-name>
+        <filter-name>ManagerCampaignFilter</filter-name>
         <url-pattern>/campaign/*</url-pattern>
     </filter-mapping>
 

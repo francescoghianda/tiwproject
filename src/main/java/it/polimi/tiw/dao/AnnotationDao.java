@@ -63,7 +63,7 @@ public class AnnotationDao extends Dao<Annotation>
     public boolean insertAnnotation(Annotation annotation) throws SQLException
     {
         try(PooledConnection connection = ConnectionManager.getInstance().getConnection();
-            PreparedStatement statement = connection.getConnection().prepareStatement("INSERT INTO annotation (user_id, image_id, date, valid, trust, notes) values (?, ?, ?, ?, ?::gml_enum, ?)"))
+            PreparedStatement statement = connection.getConnection().prepareStatement("INSERT INTO annotation (user_id, image_id, date, valid, trust, notes) values (?, ?, ?, ?, ?::gml_enum, ?) ON CONFLICT DO NOTHING"))
         {
             statement.setInt(1, annotation.getUserId());
             statement.setInt(2, annotation.getImageId());
@@ -72,7 +72,7 @@ public class AnnotationDao extends Dao<Annotation>
             statement.setString(5, annotation.getTrust());
             statement.setString(6, annotation.getNotes());
 
-            return statement.executeUpdate() != 0;
+            return statement.executeUpdate() == 1;
         }
     }
 }

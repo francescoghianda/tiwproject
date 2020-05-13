@@ -204,7 +204,7 @@
 
       @include desktop{
         display: grid;
-        grid-template-columns: 22% 35% auto;
+        grid-template-columns: 22% 45% auto;
         grid-template-rows: auto auto;
       }
 
@@ -265,6 +265,7 @@
         border: 2px solid #282828;
         border-radius: 4px;
         min-height: 224px;
+        overflow: auto;
 
         @include desktop{
           margin-left: 32px;
@@ -272,7 +273,6 @@
 
         img{
           display: block;
-          overflow: hidden;
           height: 100%;
           max-height: 224px;
         }
@@ -311,7 +311,7 @@
     height: calc(100% - 32px);
     border: 2px solid #000000;
     border-radius: 4px;
-    overflow: hidden;
+    overflow: auto;
 
     img{
       max-height: 100%;
@@ -380,7 +380,7 @@
       grid-template-columns: 40% auto;
       width: 100%;
       height: 100%;
-      transform: translateX(100%);
+      //transform: translateX(100%);
     }
   }
 

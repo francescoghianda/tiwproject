@@ -1,0 +1,56 @@
+.annotation-popup{
+
+  @include desktop{
+
+  }
+
+  .pcontent{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+
+    *{
+      width: 100%;
+    }
+  }
+
+  .image-container{
+    position: relative;
+    display: flex;
+    padding: 24px;
+    height: 300px;
+    overflow: hidden;
+
+    .image{
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+      width: 400px;
+      min-width: 400px;
+
+      img{
+        width: unset;
+        max-height: 100%;
+      }
+    }
+
+  }
+
+  .image-details{
+    display: grid;
+    grid-template-columns: 50% 50%;
+    column-gap: 36px;
+    margin-left: 36px;
+
+    section{
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+
+      &.light{
+        color: #666666;
+      }
+    }
+  }
+}

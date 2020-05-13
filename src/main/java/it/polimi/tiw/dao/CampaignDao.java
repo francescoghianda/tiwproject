@@ -2,6 +2,7 @@ package it.polimi.tiw.dao;
 
 import it.polimi.tiw.beans.Campaign;
 import it.polimi.tiw.beans.validation.InvalidBeanException;
+import it.polimi.tiw.utils.beans.BeanFactory;
 import it.polimi.tiw.utils.beans.CampaignBeanFactory;
 import it.polimi.tiw.utils.dao.Dao;
 import it.polimi.tiw.utils.sql.ConnectionManager;
@@ -10,6 +11,7 @@ import it.polimi.tiw.utils.sql.PooledConnection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,7 +25,7 @@ public class CampaignDao extends Dao<Campaign>
 
     public List<Campaign> findCampaignByStatus(String status) throws SQLException
     {
-        return findBy("status", status);
+        return get("SELECT * from campaign where status = ?::campaign_status", status);
     }
 
     public List<Campaign> findCampaignByManagerId(int managerId) throws SQLException
@@ -52,6 +54,34 @@ public class CampaignDao extends Dao<Campaign>
             try(ResultSet resultSet = statement.executeQuery())
             {
                 return resultSet.next();
+            }
+        }
+    }
+
+    public boolean addSubscription(int campaignId, int userId) throws SQLException
+    {
+        try(PooledConnection connection = ConnectionManager.getInstance().getConnection();
+            PreparedStatement statement = connection.getConnection().prepareStatement("INSERT INTO subscription (user_id, campaign_id) VALUES (?, ?) ON CONFLICT DO NOTHING"))
+        {
+            statement.setInt(1, userId);
+            statement.setInt(2, campaignId);
+
+            return statement.executeUpdate() == 1;
+        }
+    }
+
+    public List<Integer> findSubscription(int userId) throws SQLException
+    {
+        try(PooledConnection connection = ConnectionManager.getInstance().getConnection();
+            PreparedStatement statement = connection.getConnection().prepareStatement("SELECT campaign_id FROM subscription WHERE user_id = ?"))
+        {
+            statement.setInt(1, userId);
+
+            try(ResultSet resultSet = statement.executeQuery())
+            {
+                List<Integer> ids = new ArrayList<>();
+                while (resultSet.next())ids.add(resultSet.getInt("campaign_id"));
+                return ids;
             }
         }
     }

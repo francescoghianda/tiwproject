@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+
+    <link rel="stylesheet" type="text/css" href="../../assets/css/main.css" th:href="@{/assets/css/main.css}">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
+          integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+          crossorigin=""/>
+
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
+            integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
+            crossorigin=""></script>
+    <script src="../../assets/js/main.js" type="module" th:src="@{/assets/js/main.js}"></script>
+    <script src="../../assets/js/add-annotation.js" th:src="@{/assets/js/add-annotation.js}"></script>
+
+</head>
+<body>
+<nav class="navbar" th:replace="fragments/navbar :: navbar"></nav>
+<div class="container desktop-fixed">
+
+    <div id="campaign-details">
+        <form id="change-status-form">
+            <h4 th:text="${campaign.name}">Campaign name</h4>
+            <span class="subtitle-2" th:text="#{client}">Client</span><span class="body-2" id="campaign-client" th:text="${campaign.client}">Politecnico di Milano</span>
+            <span class="subtitle-2" th:text="#{status}">Status</span>
+
+            <div class="status-container">
+                <th:block th:switch="${campaign.status}">
+                    <img th:case="'CREATED'" th:src="@{/assets/images/lens-24px-yellow.svg}" src="../../assets/images/lens-24px-yellow.svg">
+                    <img th:case="'STARTED'" th:src="@{/assets/images/lens-24px-green.svg}" src="../../assets/images/lens-24px-green.svg">
+                    <img th:case="'CLOSED'" th:src="@{/assets/images/lens-24px-red.svg}" src="../../assets/images/lens-24px-red.svg">
+                </th:block>
+                <span class="body-2" th:text="${#messages.msg('status.'+campaign.status)}">CREATED</span>
+            </div>
+        </form>
+    </div>
+
+    <div id="add-new-image-container" class="only-map">
+        <div id="map-container">
+            <div class="map" id="map"></div>
+        </div>
+    </div>
+
+    <div id="image-list-container">
+        <h4 th:text="#{campaign-photo}">Foto campagna</h4>
+        <div th:unless="${!hasImage}" id="campaign-image-list">
+
+            <ul th:remove="all-but-first">
+                <li th:each="imageEntry : ${imageMap.entrySet()}" th:with="image=${imageEntry.getKey()},annotation=${imageEntry.getValue()}" th:data-image-id="${image.id}" th:data-longitude="${image.location.longitude}" th:data-latitude="${image.location.latitude}" th:data-has-annotation="${annotation.isPresent()}">
+                    <img style="width: 24px" src="../../assets/images/puff.svg" th:src="@{/assets/images/puff.svg}">
+                    <div class="image-buttons">
+                        <button class="delete-image-btn" th:if="${campaign.status.equals('CREATED')}" th:data-image_id="${image.id}"></button>
+                        <button class="map-target-btn"></button>
+                    </div>
+                </li>
+            </ul>
+
+        </div>
+        <span class="subtitle-2 empty-list-message" th:if="${!hasImage}" th:text="#{empty-photo-list-message}">Ancora nessuna foto</span>
+    </div>
+
+</div>
+
+<div th:each="imageEntry : ${imageMap.entrySet()}" th:with="image=${imageEntry.getKey()},annotation=${imageEntry.getValue()}" th:id="'popup-'+${image.id}" class="popup">
+    <div class="pbody annotation-popup">
+        <div class="pnav">
+            <button class="popup-close-btn"></button>
+            <span th:text="#{photo}+' '+${image.id}">Image 00</span>
+        </div>
+        <div class="pcontent">
+            <div class="image-container">
+                <div class="image">
+                    <img style="width: 24px" src="../../assets/images/puff.svg" th:src="@{/assets/images/puff.svg}">
+                </div>
+                <div class="image-details">
+                    <section class="light">
+                        <h5 th:text="#{latitude}">Latitude</h5>
+                        <h5 th:text="#{longitude}">Longitude</h5>
+                        <h5 th:text="#{municipality}">Municipality</h5>
+                        <h5 th:text="#{region}">Region</h5>
+                        <h5 th:text="#{date}">Date</h5>
+                        <h5 th:text="#{resolution}">Resolution</h5>
+                    </section>
+                    <section>
+                        <h5 th:text="${image.location.latitude}">45.956295023</h5>
+                        <h5 th:text="${image.location.longitude}">9.4638563802</h5>
+                        <h5 th:text="${image.municipality}">Milano</h5>
+                        <h5 th:text="${image.region}">Lombardia</h5>
+                        <h5 th:text="${#dates.format(image.date, 'dd-MM-yyyy')}">11-04-2020</h5>
+                        <h5 th:text="${#messages.msg('resolution.'+image.resolution)}">Good</h5>
+                    </section>
+                </div>
+            </div>
+            <fieldset th:disabled="${annotation.isPresent()}">
+                <form method="post" action="/add-annotation">
+                    <input type="hidden" name="id" th:value="${campaign.id}">
+                    <input type="hidden" name="image-id" th:value="${image.id}">
+                    <div class="input-container">
+                        <div class="checkbox">
+                            <input id="valid-check" th:id="'valid-check-'+${image.id}" type="checkbox" name="valid">
+                            <label for="valid-check" th:for="'valid-check-'+${image.id}" th:text="#{valid}">Valid</label>
+                        </div>
+                    </div>
+                    <div class="input-container">
+                        <select id="trust-select" th:id="'trust-select-'+${image.id}" name="role" required>
+                            <option value="" th:text="#{select-trust}" hidden disabled selected>Select a trust level</option>
+                            <option value="GOOD" th:text="#{trust.high}">High</option>
+                            <option value="MEDIUM" th:text="#{trust.medium}">Medium</option>
+                            <option value="LOW" th:text="#{trust.low}">Low</option>
+                        </select>
+                        <label for="trust-select" th:for="'trust-select-'+${image.id}" class="placeholder" th:text="#{trust}">Trust</label>
+                        <label class="form-error-message" th:for="'trust-select-'+${image.id}" th:text="#{error.trust-invalid}">Select a trust level</label>
+                    </div>
+                    <div class="input-container">
+                        <textarea name="notes">
+
+                        </textarea>
+                    </div>
+                </form>
+            </fieldset>
+        </div>
+        <div class="pfooter">
+            <button class="cancel-btn" value="cancel">Cancel</button>
+            <button class="ok-btn" value="ok">OK</button>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

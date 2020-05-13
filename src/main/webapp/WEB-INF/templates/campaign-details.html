@@ -27,7 +27,7 @@
     <div class="container desktop-fixed">
 
         <div id="campaign-details">
-            <form id="change-status-form" action="/campaign/change-status" data-popup="change-status-confirm">
+            <form id="change-status-form" th:action="@{/campaign/change-status}" data-popup="change-status-confirm">
                 <h4 th:text="${campaign.name}">Campaign name</h4>
                 <span class="subtitle-2" th:text="#{client}">Client</span><span class="body-2" id="campaign-client" th:text="${campaign.client}">Politecnico di Milano</span>
                 <span class="subtitle-2" th:text="#{status}">Status</span>
@@ -123,7 +123,7 @@
             <div th:unless="${!hasImage}" id="campaign-image-list">
 
                 <ul th:remove="all-but-first">
-                    <li th:each="image : ${images}" th:data-image-id="${image.id}" th:data-longitude="${image.location.longitude}" th:data-latitude="${image.location.latitude}">
+                    <li th:each="image : ${images}" th:data-image-id="${image.id}" th:data-longitude="${image.location.longitude}" th:data-latitude="${image.location.latitude}" th:data-has-annotations="${!annotations.get(image.id).isEmpty()}">
                         <img style="width: 24px" src="../../assets/images/puff.svg" th:src="@{/assets/images/puff.svg}">
                         <div class="image-buttons">
                             <button class="delete-image-btn" th:if="${campaign.status.equals('CREATED')}" th:data-image_id="${image.id}"></button>
@@ -172,41 +172,45 @@
                         </section>
                     </div>
 
-                    <div class="separator">
-                        <div th:unless="${imageAnnotations.isEmpty()}" class="nav-controller">
-                            <button class="left-arrow"></button>
-                            <span class="counter" th:text="'1 / '+${imageAnnotations.size()}">1/12</span>
-                            <button class="right-arrow"></button>
-                        </div>
-                    </div>
+                    <div th:id="'slider-'+${image.id}" class="slider" style="display: contents">
 
-                    <!--/*@thymesVar id="joinedBean" type="it.polimi.tiw.utils.beans.JoinedBean<it.polimi.tiw.beans.Annotation, it.polimi.tiw.beans.User, it.polimi.tiw.beans.Worker>"*/-->
-                    <ul class="annotations" data-current="0" th:remove="all-but-first">
-                        <li th:each="joinedBean, stat : ${imageAnnotations}" th:style="${stat.first} ? 'transform: translateX(0)' : ''">
-                            <div class="annotation-details">
-                                <section class="light">
-                                    <h5 th:text="#{worker.username}">Worker username</h5>
-                                    <h5 th:text="#{worker.exp}">Worker experience</h5>
-                                    <br>
-                                    <h5 th:text="#{date}">Date</h5>
-                                    <h5 th:text="#{valid}">Valid</h5>
-                                    <h5 th:text="#{trust}">Trust</h5>
-                                </section>
-                                <section>
-                                    <h5 th:text="${joinedBean.getBean2().username}">Worker username</h5>
-                                    <h5 th:text="${joinedBean.getBean3().expLvl}">Worker experience</h5>
-                                    <br>
-                                    <h5 th:text="${#dates.format(joinedBean.getBean1().date, 'dd-MM-yyyy')}">Date</h5>
-                                    <h5 th:text="${#messages.msg('valid.'+joinedBean.getBean1().getValid())}">Valid</h5>
-                                    <h5 th:text="${#messages.msg('trust.'+joinedBean.getBean1().trust)}">Trust</h5>
-                                </section>
+                        <div class="separator">
+                            <div th:unless="${imageAnnotations.isEmpty()}" class="nav-controller">
+                                <button class="left-arrow"></button>
+                                <span class="counter index" th:text="'1 / '+${imageAnnotations.size()}">1/12</span>
+                                <button class="right-arrow"></button>
                             </div>
-                            <div class="annotation-notes">
-                                <textarea readonly th:id="'notes-'+${joinedBean.getBean1().id}" th:text="${joinedBean.getBean1().notes}"></textarea>
-                                <label th:for="'notes-'+${joinedBean.getBean1().id}" th:text="#{notes}">Notes</label>
-                            </div>
-                        </li>
-                    </ul>
+                        </div>
+
+                        <!--/*@thymesVar id="joinedBean" type="it.polimi.tiw.utils.beans.JoinedBean<it.polimi.tiw.beans.Annotation, it.polimi.tiw.beans.User, it.polimi.tiw.beans.Worker>"*/-->
+                        <ul class="annotations" data-current="0" th:remove="all-but-first">
+                            <li class="slide" th:each="joinedBean, stat : ${imageAnnotations}" th:style_x="${stat.first} ? 'transform: translateX(0)' : ''">
+                                <div class="annotation-details">
+                                    <section class="light">
+                                        <h5 th:text="#{worker.username}">Worker username</h5>
+                                        <h5 th:text="#{worker.exp}">Worker experience</h5>
+                                        <br>
+                                        <h5 th:text="#{date}">Date</h5>
+                                        <h5 th:text="#{valid}">Valid</h5>
+                                        <h5 th:text="#{trust}">Trust</h5>
+                                    </section>
+                                    <section>
+                                        <h5 th:text="${joinedBean.getBean2().username}">Worker username</h5>
+                                        <h5 th:text="${joinedBean.getBean3().expLvl}">Worker experience</h5>
+                                        <br>
+                                        <h5 th:text="${#dates.format(joinedBean.getBean1().date, 'dd-MM-yyyy')}">Date</h5>
+                                        <h5 th:text="${#messages.msg('valid.'+joinedBean.getBean1().getValid())}">Valid</h5>
+                                        <h5 th:text="${#messages.msg('trust.'+joinedBean.getBean1().trust)}">Trust</h5>
+                                    </section>
+                                </div>
+                                <div class="annotation-notes">
+                                    <textarea readonly th:id="'notes-'+${joinedBean.getBean1().id}" th:text="${joinedBean.getBean1().notes}"></textarea>
+                                    <label th:for="'notes-'+${joinedBean.getBean1().id}" th:text="#{notes}">Notes</label>
+                                </div>
+                            </li>
+                        </ul>
+
+                    </div>
                 </div>
 
         </div>

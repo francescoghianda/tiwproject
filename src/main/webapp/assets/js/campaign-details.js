@@ -1,7 +1,100 @@
+
+function Slider(id, transition, speed, easing)
+{
+    let _slider = $(`#${id}`);
+    let _leftArrow = _slider.find(".left-arrow");
+    let _rightArrow = _slider.find(".right-arrow");
+    let _indexText = _slider.find(".index");
+    let _slides = _slider.find(".slide");
+    let _current = 0;
+    let _lock = false;
+    let _onSlideChange;
+    let _asyncTransition = false;
+    let _easing = easing ? easing : 'linear';
+    let _speed = speed ? speed : 250;
+
+    let _hiddenPropLeft = {opacity: 0};
+    let _hiddenPropRight = {opacity: 0};
+    let _visiblePropLeft = {opacity: 1};
+    let _visiblePropRight = {opacity: 1};
+
+    if(transition === 'slideX')
+    {
+        _hiddenPropLeft = {right: 0, left: '-100%'};
+        _hiddenPropRight = {left: '100%', right: 0};
+        _visiblePropLeft = {right: '100%', left: 0};
+        _visiblePropRight = {left: 0, right: '100%'};
+        _asyncTransition = true;
+    }
+
+    _slides.each(i => $(_slides[i]).css(i === 0 ? _visiblePropLeft : _hiddenPropLeft));
+
+    this.getCurrentIndex = function () {
+        return _current;
+    }
+
+    this.updateSlide = function () {
+        _slides = _slider.find(".slide");
+    }
+
+    this.onSlideChange = function (callback) {
+        _onSlideChange = callback;
+    };
+
+    this.slide = function (delta) {
+        if(_lock)return;
+        _lock = true;
+
+        let newIndex = _current + delta;
+        if(newIndex >= _slides.length)newIndex = 0;
+        else if(newIndex < 0)newIndex = _slides.length-1;
+
+        let currentElement = $(_slides.get(_current));
+        let newElement = $(_slides.get(newIndex));
+
+        _current = newIndex;
+
+        let hideAnimationProp = delta > 0 ? _hiddenPropRight : _hiddenPropLeft;
+        let showAnimationProp = delta > 0 ? _visiblePropRight : _visiblePropLeft;
+
+        if(_asyncTransition)
+        {
+            currentElement.animate(hideAnimationProp, _speed, _easing);
+            newElement.css(delta > 0 ? _hiddenPropLeft : _hiddenPropRight).animate(showAnimationProp, _speed, _easing, function () {
+                if(_indexText)_indexText.text(`${newIndex+1} / ${_slides.length}`);
+                _lock = false;
+                _onSlideChange(newIndex, newElement);
+            })
+        }
+        else
+        {
+            currentElement.animate(hideAnimationProp, _speed, _easing, function () {
+                newElement.css(delta > 0 ? _hiddenPropLeft : _hiddenPropRight).animate(showAnimationProp, _speed, _easing, function () {
+                    if(_indexText)_indexText.text(`${newIndex+1} / ${_slides.length}`);
+                    _lock = false;
+                    _onSlideChange(newIndex, newElement);
+                })
+            });
+        }
+    }
+
+    _leftArrow.on('click', () => this.slide(1));
+    _rightArrow.on('click', () => this.slide(-1));
+}
+
 $(() =>
 {
 
-    $('.right-arrow').on('click', function () {
+    let sliders = $(".slider");
+    sliders.each(i =>
+    {
+        let slider = new Slider(sliders[i].id, 'slideX', 400);
+        slider.onSlideChange((index, slide) =>
+        {
+            console.log(slide);
+        })
+    });
+    /*$('.right-arrow').on('click', function () {
         let annotationList = $(this).closest('.wcontent').find('.annotations');
         displayAnnotation(annotationList, +1, $(this).closest('.nav-controller').find('.counter'))
     });
@@ -37,7 +130,7 @@ $(() =>
                 displayAnnotation.lock = false;
             })
         })
-    }
+    }*/
 
 
     let lat = 45.4645075;
@@ -98,11 +191,31 @@ $(() =>
 });
 
 function loadImages(map) {
+
+    let redMarkerIcon = new L.Icon({
+        iconUrl: '/assets/images/marker-icon-2x-red.png',
+        shadowUrl: '/assets/images/marker-shadow.png',
+        iconSize: [25, 41],
+        iconAnchor: [12, 41],
+        popupAnchor: [1, -34],
+        shadowSize: [41, 41]
+    });
+
+    let greenMarkerIcon = new L.Icon({
+        iconUrl: '/assets/images/marker-icon-2x-green.png',
+        shadowUrl: '/assets/images/marker-shadow.png',
+        iconSize: [25, 41],
+        iconAnchor: [12, 41],
+        popupAnchor: [1, -34],
+        shadowSize: [41, 41]
+    });
+
     let imageList = $('#campaign-image-list ul li').toArray();
 
     imageList.forEach(image =>
     {
         let imageId = image.dataset.imageId;
+        let hasAnnotations = image.dataset.hasAnnotations;
         let window = $(`.window[data-image-id=${imageId}]`);
 
         L.marker([image.dataset.latitude, image.dataset.longitude]).addTo(map).on('click', () =>
@@ -110,7 +223,7 @@ function loadImages(map) {
             window.removeClass("hidden");
             $('.window').css('z-index', 20);
             window.css('z-index', 21);
-        });
+        }).setIcon(hasAnnotations === 'true' ? greenMarkerIcon : redMarkerIcon);
 
         fetch(`/get-image?id=${imageId}`).then(async response =>
         {

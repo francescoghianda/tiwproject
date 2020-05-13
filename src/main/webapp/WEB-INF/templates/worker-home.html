@@ -2,11 +2,87 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1" />
     <title>Home Page</title>
+
+    <link rel="stylesheet" type="text/css" href="../../assets/css/main.css" th:href="@{/assets/css/main.css}">
+
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="../../assets/js/main.js" type="module" th:src="@{/assets/js/main.js}"></script>
 </head>
 <body>
 
-<h1>WORKER HOME</h1>
+    <nav class="navbar" th:replace="fragments/navbar :: navbar"></nav>
+
+    <div class="container desktop-fixed">
+
+        <div id="free-campaigns-container" class="list-container">
+            <div class="list-header">
+                <h5 th:text="#{free-campaigns}">Free campaigns</h5>
+                <button class="list-close-btn"></button>
+            </div>
+            <span class="body-2 empty-message" th:if="${freeCampaigns.isEmpty()}" th:text="#{empty-free-list}">No campaigns yet.</span>
+            <ul th:unless="${freeCampaigns.isEmpty()}" class="list" th:remove="all-but-first">
+                <li class="list-item card" th:each="campaign : ${freeCampaigns}">
+                    <header>
+                        <h5 th:text="${campaign.name}">Campaign name</h5>
+                    </header>
+                    <div class="card-body campaign-card-content">
+                        <ul>
+                            <li><span class="subtitle-2" th:text="#{client}">Client</span><br><span class="body-2" th:text="${campaign.client}">Regione Lombardia</span></li>
+                            <li><span class="subtitle-2" th:text="#{status}">Status</span><br>
+                                <div class="status-container">
+                                    <th:block th:switch="${campaign.status}">
+                                        <img th:case="'CREATED'" th:src="@{/assets/images/lens-24px-yellow.svg}" src="../../assets/images/lens-24px-yellow.svg">
+                                        <img th:case="'STARTED'" th:src="@{/assets/images/lens-24px-green.svg}" src="../../assets/images/lens-24px-green.svg">
+                                        <img th:case="'CLOSED'" th:src="@{/assets/images/lens-24px-red.svg}" src="../../assets/images/lens-24px-red.svg">
+                                    </th:block>
+                                    <span class="body-2" th:text="${#messages.msg('status.'+campaign.status)}">STARTED</span>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <footer>
+                        <a class="button text-button" th:text="#{subscribe}" th:href="@{/subscribe(id = ${campaign.id})}">Iscriviti</a>
+                    </footer>
+                </li>
+            </ul>
+        </div>
+
+        <div id="sub-campaigns-container" class="list-container">
+            <div class="list-header">
+                <h5 th:text="#{sub-campaigns}">Subscription</h5>
+                <button class="list-close-btn"></button>
+            </div>
+            <span class="body-2 empty-message" th:if="${subCampaigns.isEmpty()}" th:text="#{empty-sub-list}">Subscribe to a campaign to start.</span>
+            <ul th:unless="${subCampaigns.isEmpty()}" class="list" th:remove="all-but-first">
+                <li class="list-item card" th:each="campaign : ${subCampaigns}">
+                    <header>
+                        <h5 class="overflow-marquee" th:text="${campaign.name}">Campaign name</h5>
+                    </header>
+                    <div class="card-body campaign-card-content">
+                        <ul>
+                            <li><span class="subtitle-2" th:text="#{client}">Client</span><br><span class="body-2" th:text="${campaign.client}">Regione Lombardia</span></li>
+                            <li><span class="subtitle-2" th:text="#{status}">Status</span><br>
+                                <div class="status-container">
+                                    <th:block th:switch="${campaign.status}">
+                                        <img th:case="'CREATED'" th:src="@{/assets/images/lens-24px-yellow.svg}" src="../../assets/images/lens-24px-yellow.svg">
+                                        <img th:case="'STARTED'" th:src="@{/assets/images/lens-24px-green.svg}" src="../../assets/images/lens-24px-green.svg">
+                                        <img th:case="'CLOSED'" th:src="@{/assets/images/lens-24px-red.svg}" src="../../assets/images/lens-24px-red.svg">
+                                    </th:block>
+                                    <span class="body-2" th:text="${#messages.msg('status.'+campaign.status)}">STARTED</span>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <footer>
+                        <a class="button text-button" th:text="#{open}" th:href="@{/add-annotation(id = ${campaign.id})}">Apri</a>
+                    </footer>
+                </li>
+            </ul>
+        </div>
+
+    </div>
 
 
 </body>

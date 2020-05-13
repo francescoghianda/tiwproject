@@ -19,19 +19,19 @@
         <ul id="stat-list">
             <li>
                 <span class="value" th:text="${imagesNumber}"></span>
-                <span class="label">Images</span>
+                <span class="label" th:text="${imagesNumber != 1} ? #{images} : #{image}">Images</span>
             </li>
             <li>
                 <span class="value" th:text="${annotationsNumber}"></span>
-                <span class="label">Annotations</span>
+                <span class="label" th:text="${annotationsNumber != 1} ? #{annotations} : #{annotation}">Annotations</span>
             </li>
             <li>
                 <span class="value" th:text="${avgAnnotations}"></span>
-                <span class="label">avg. annotations<br>per image</span>
+                <span class="label" th:utext="#{avg.annotations}">avg. annotations<br>per image</span>
             </li>
             <li>
                 <span class="value" th:text="${conflictsNumber}"></span>
-                <span class="label">conflicts</span>
+                <span class="label" th:text="${conflictsNumber != 1} ? #{conflicts} : #{conflict}">conflicts</span>
             </li>
         </ul>
     </div>
