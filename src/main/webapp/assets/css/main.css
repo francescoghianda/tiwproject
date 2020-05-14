@@ -551,6 +551,15 @@ fieldset:disabled label.text-button {
   padding-left: 32px;
 }
 
+.separator {
+  width: 100%;
+  height: 1px;
+  border: none;
+  background-color: #666666;
+  margin-top: 8px;
+  margin-bottom: 8px;
+}
+
 .form-container {
   width: 100%;
   height: 100%;
@@ -579,7 +588,7 @@ fieldset:disabled label.text-button {
 
 .input-container {
   position: relative;
-  height: 56px;
+  min-height: 56px;
   margin-top: 8px;
   margin-bottom: 22px;
   min-width: 100px;
@@ -588,9 +597,73 @@ fieldset:disabled label.text-button {
   height: unset;
   min-height: 56px;
 }
+.input-container .checkbox-input {
+  position: relative;
+  width: 100%;
+  height: 56px;
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid rgba(0, 0, 0, 0.6);
+  border-radius: 4px;
+  padding-left: 8px;
+  padding-right: 16px;
+}
+.input-container .checkbox-input input[type=checkbox] {
+  position: absolute;
+  visibility: hidden;
+  width: 0.1px;
+  height: 0.1px;
+}
+.input-container .checkbox-input input[type=checkbox] ~ .checkbox {
+  display: block;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: #ffffff;
+  border: 1px solid #808080;
+  transition: all 0.2s;
+}
+.input-container .checkbox-input input[type=checkbox]:checked ~ .checkbox {
+  border-color: #0d47a1;
+  background-color: #0d47a1;
+  background-image: url("../images/done-24px.svg");
+  background-size: 20px 20px;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+.input-container textarea {
+  resize: none;
+  width: 100%;
+  height: 200px;
+  border: 1px solid rgba(0, 0, 0, 0.6);
+  border-radius: 4px;
+  font-family: "Raleway", sans-serif;
+  font-weight: 500;
+  font-size: 16px;
+  padding: 16px 8px;
+  outline: none;
+}
+.input-container textarea:not(.error):focus {
+  border: 2px solid #0d47a1;
+}
+.input-container textarea ~ .placeholder {
+  color: #0d47a1;
+  background-color: white;
+  padding-right: 6px;
+  padding-left: 6px;
+  transform: scale(0.75);
+  bottom: unset;
+  top: -11px;
+  transform-origin: bottom left;
+}
+.input-container textarea:disabled, .input-container textarea:disabled ~ .placeholder {
+  color: #aaaaaa;
+}
 .input-container input, .input-container select {
   width: 100%;
-  height: 100%;
+  height: 56px;
   background-color: transparent;
   border: 1px solid rgba(0, 0, 0, 0.6);
   border-radius: 4px;
@@ -621,10 +694,10 @@ fieldset:disabled label.text-button {
 .input-container option:disabled {
   color: rgba(0, 0, 0, 0.6);
 }
-.input-container.error input, .input-container.error select {
+.input-container.error input, .input-container.error select, .input-container.error textarea {
   border: 2px solid #ff0000;
 }
-.input-container.error input:focus ~ .placeholder, .input-container.error input:not(:placeholder-shown) ~ .placeholder, .input-container.error select:focus ~ .placeholder, .input-container.error select:not(:placeholder-shown) ~ .placeholder {
+.input-container.error input:focus ~ .placeholder, .input-container.error input:not(:placeholder-shown) ~ .placeholder, .input-container.error select:focus ~ .placeholder, .input-container.error select:not(:placeholder-shown) ~ .placeholder, .input-container.error textarea:focus ~ .placeholder, .input-container.error textarea:not(:placeholder-shown) ~ .placeholder {
   color: #ff0000;
 }
 .input-container.error select {
@@ -926,12 +999,13 @@ fieldset:disabled label.text-button {
 }
 .popup .pbody {
   display: grid;
-  grid-template-rows: minmax(0, 56px) auto minmax(0, 56px);
+  grid-template-rows: minmax(0, 56px) minmax(auto, calc(100% - 56px - 56px)) minmax(0, 56px);
   width: min-content;
   height: min-content;
   background-color: #ffffff;
   border-radius: 4px;
   margin-top: 56px;
+  max-height: calc(100% - 56px - 56px);
   box-shadow: 0 19px 38px rgba(0, 0, 0, 0.3), 0 15px 12px rgba(0, 0, 0, 0.22);
   overflow: hidden;
 }
@@ -956,6 +1030,10 @@ fieldset:disabled label.text-button {
   background-repeat: no-repeat;
   background-position: center;
   background-size: 24px;
+  margin-right: 8px;
+}
+.popup .pbody .pnav .popup-title {
+  color: #ffffff;
 }
 .popup .pbody .pcontent {
   grid-row: 2;
@@ -964,6 +1042,7 @@ fieldset:disabled label.text-button {
   align-items: center;
   padding: 32px;
   white-space: nowrap;
+  overflow: hidden;
 }
 .popup .pbody .pfooter {
   display: flex;
@@ -1150,6 +1229,17 @@ fieldset:disabled label.text-button {
   animation: marquee-animation 6s infinite linear;
 }
 
+.image-zoom {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+.image-zoom > img {
+  width: 100%;
+}
+
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,
@@ -1278,13 +1368,28 @@ select:-webkit-autofill:focus {
   }
 }
 
+.annotation-popup {
+  /*.annotation-notes{
+    width: 100%;
+    resize: none;
+    height: 250px;
+    min-height: 200px;
+    border: 1px solid rgba(0, 0, 0, 0.6);
+    border-radius: 4px;
+    overflow: auto;
+    font-family: "Open Sans", sans-serif;
+    font-size: 18px;
+    padding: 8px;
+  }*/
+}
 .annotation-popup .pcontent {
   display: flex;
   flex-direction: column;
-  width: 100%;
+  width: min-content;
 }
-.annotation-popup .pcontent * {
-  width: 100%;
+.annotation-popup .pcontent > div {
+  height: 100%;
+  overflow: auto;
 }
 .annotation-popup .image-container {
   position: relative;
@@ -1304,6 +1409,9 @@ select:-webkit-autofill:focus {
 .annotation-popup .image-container .image img {
   width: unset;
   max-height: 100%;
+}
+.annotation-popup .annotation-form {
+  width: 100%;
 }
 .annotation-popup .image-details {
   display: grid;
@@ -1620,6 +1728,8 @@ select:-webkit-autofill:focus {
   width: 100%;
   height: 100%;
   border-top: 1px solid #666666;
+  margin: 0;
+  background: transparent;
 }
 .manager-images-window-content .separator .nav-controller {
   grid-column: 1;

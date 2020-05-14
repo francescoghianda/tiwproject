@@ -24,6 +24,18 @@ $(() =>
         $('.user-menu').removeClass('visible');
     })
 
+    let zoomedImage;
+
+    $('img.zommable').on('mouseover', function () {
+        let img = $(this).attr('src');
+        zoomedImage = `<div class="image-zoom"><img src="${img}"></div>`;
+        $('body').append(zoomedImage)
+    });
+
+    $('img.zoomable').on('mouseexit', function () {
+        zoomedImage.delete();
+    })
+
     $('form').submit(function (event) {
 
         event.preventDefault();
@@ -33,20 +45,30 @@ $(() =>
         {
             let popup = $(`#${popupId}`);
             let form = $(this);
-            popup.on('close', function () {
+            popup.on('close', function (e) {
                 console.log($(this));
-                if($(this).data('result') === 'ok')postForm(form);
+                if(e.popupResult.ok())postForm(form);
             });
             popup.addClass('show');
         }
         else postForm($(this));
     });
 
+    function PopupResult(result)
+    {
+        this.ok = function () {
+            return result === 'ok';
+        }
+        this.result = result;
+    }
+
     $('.popup .ok-btn, .popup .cancel-btn, .popup .popup-close-btn').on('click', function () {
         let popup = $(this).closest('.popup');
-        popup.data('result', $(this).val())
+        let closeEvent = $.Event('close');
+        closeEvent.popupResult = new PopupResult($(this).val());
+        popup.trigger(closeEvent);
+        if(closeEvent.isDefaultPrevented())return;
         popup.removeClass('show');
-        popup.trigger('close');
     });
 
     function postForm(form)

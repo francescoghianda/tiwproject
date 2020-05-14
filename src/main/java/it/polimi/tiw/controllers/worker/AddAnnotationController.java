@@ -2,6 +2,7 @@ package it.polimi.tiw.controllers.worker;
 
 import it.polimi.tiw.Application;
 import it.polimi.tiw.beans.*;
+import it.polimi.tiw.beans.validation.InvalidBeanException;
 import it.polimi.tiw.dao.AnnotationDao;
 import it.polimi.tiw.dao.CampaignDao;
 import it.polimi.tiw.dao.LocationImageDao;
@@ -89,6 +90,10 @@ public class AddAnnotationController extends HttpServlet
         catch (NumberFormatException e)
         {
             resp.sendError(400);
+        }
+        catch (InvalidBeanException e)
+        {
+            resp.sendError(400, e.toString());
         }
         catch (SQLException e)
         {

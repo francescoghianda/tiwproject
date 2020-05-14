@@ -60,8 +60,9 @@ public class AnnotationDao extends Dao<Annotation>
         return findBy("user_id", userId);
     }
 
-    public boolean insertAnnotation(Annotation annotation) throws SQLException
+    public boolean insertAnnotation(Annotation annotation) throws SQLException, InvalidBeanException
     {
+        if(!annotation.isValid()) throw new InvalidBeanException(annotation.getValidation().orElseGet(null));
         try(PooledConnection connection = ConnectionManager.getInstance().getConnection();
             PreparedStatement statement = connection.getConnection().prepareStatement("INSERT INTO annotation (user_id, image_id, date, valid, trust, notes) values (?, ?, ?, ?, ?::gml_enum, ?) ON CONFLICT DO NOTHING"))
         {

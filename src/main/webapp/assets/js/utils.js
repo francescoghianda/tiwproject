@@ -21,6 +21,7 @@ function postFormIfValid($form)
         checkFormValidity($form[0]).then(valid =>
         {
             if(valid)postForm($form.attr('action'), $form).then(response => resolve(response)).catch(response => reject(response));
+            else reject(new Error('invalid form'));
         });
     }));
 }

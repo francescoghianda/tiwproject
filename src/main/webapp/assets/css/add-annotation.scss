@@ -7,10 +7,11 @@
   .pcontent{
     display: flex;
     flex-direction: column;
-    width: 100%;
+    width: min-content;
 
-    *{
-      width: 100%;
+    & > div{
+      height: 100%;
+      overflow: auto;
     }
   }
 
@@ -34,7 +35,10 @@
         max-height: 100%;
       }
     }
+  }
 
+  .annotation-form{
+    width: 100%;
   }
 
   .image-details{
@@ -53,4 +57,17 @@
       }
     }
   }
+
+  /*.annotation-notes{
+    width: 100%;
+    resize: none;
+    height: 250px;
+    min-height: 200px;
+    border: 1px solid rgba(0, 0, 0, 0.6);
+    border-radius: 4px;
+    overflow: auto;
+    font-family: "Open Sans", sans-serif;
+    font-size: 18px;
+    padding: 8px;
+  }*/
 }

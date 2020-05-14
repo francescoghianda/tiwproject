@@ -15,7 +15,7 @@
             integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
             crossorigin=""></script>
     <script src="../../assets/js/main.js" type="module" th:src="@{/assets/js/main.js}"></script>
-    <script src="../../assets/js/add-annotation.js" th:src="@{/assets/js/add-annotation.js}"></script>
+    <script src="../../assets/js/add-annotation.js" type="module" th:src="@{/assets/js/add-annotation.js}"></script>
 
 </head>
 <body>
@@ -65,63 +65,67 @@
 
 </div>
 
-<div th:each="imageEntry : ${imageMap.entrySet()}" th:with="image=${imageEntry.getKey()},annotation=${imageEntry.getValue()}" th:id="'popup-'+${image.id}" class="popup">
+<div th:each="imageEntry : ${imageMap.entrySet()}" th:with="image=${imageEntry.getKey()},annotation=${imageEntry.getValue()}" th:id="'popup-'+${image.id}" th:annotation-present="${annotation.isPresent()}" class="popup">
     <div class="pbody annotation-popup">
         <div class="pnav">
             <button class="popup-close-btn"></button>
-            <span th:text="#{photo}+' '+${image.id}">Image 00</span>
+            <span class="popup-title" th:text="#{photo}+' '+${image.id}">Image 00</span>
         </div>
         <div class="pcontent">
-            <div class="image-container">
-                <div class="image">
-                    <img style="width: 24px" src="../../assets/images/puff.svg" th:src="@{/assets/images/puff.svg}">
+            <div>
+                <div class="image-container">
+                    <div class="image">
+                        <img class="zommable" style="width: 24px" src="../../assets/images/puff.svg" th:src="@{/assets/images/puff.svg}">
+                    </div>
+                    <div class="image-details">
+                        <section class="light">
+                            <h5 th:text="#{latitude}">Latitude</h5>
+                            <h5 th:text="#{longitude}">Longitude</h5>
+                            <h5 th:text="#{municipality}">Municipality</h5>
+                            <h5 th:text="#{region}">Region</h5>
+                            <h5 th:text="#{date}">Date</h5>
+                            <h5 th:text="#{resolution}">Resolution</h5>
+                        </section>
+                        <section>
+                            <h5 th:text="${image.location.latitude}">45.956295023</h5>
+                            <h5 th:text="${image.location.longitude}">9.4638563802</h5>
+                            <h5 th:text="${image.municipality}">Milano</h5>
+                            <h5 th:text="${image.region}">Lombardia</h5>
+                            <h5 th:text="${#dates.format(image.date, 'dd-MM-yyyy')}">11-04-2020</h5>
+                            <h5 th:text="${#messages.msg('resolution.'+image.resolution)}">Good</h5>
+                        </section>
+                    </div>
                 </div>
-                <div class="image-details">
-                    <section class="light">
-                        <h5 th:text="#{latitude}">Latitude</h5>
-                        <h5 th:text="#{longitude}">Longitude</h5>
-                        <h5 th:text="#{municipality}">Municipality</h5>
-                        <h5 th:text="#{region}">Region</h5>
-                        <h5 th:text="#{date}">Date</h5>
-                        <h5 th:text="#{resolution}">Resolution</h5>
-                    </section>
-                    <section>
-                        <h5 th:text="${image.location.latitude}">45.956295023</h5>
-                        <h5 th:text="${image.location.longitude}">9.4638563802</h5>
-                        <h5 th:text="${image.municipality}">Milano</h5>
-                        <h5 th:text="${image.region}">Lombardia</h5>
-                        <h5 th:text="${#dates.format(image.date, 'dd-MM-yyyy')}">11-04-2020</h5>
-                        <h5 th:text="${#messages.msg('resolution.'+image.resolution)}">Good</h5>
-                    </section>
-                </div>
-            </div>
-            <fieldset th:disabled="${annotation.isPresent()}">
-                <form method="post" action="/add-annotation">
-                    <input type="hidden" name="id" th:value="${campaign.id}">
-                    <input type="hidden" name="image-id" th:value="${image.id}">
-                    <div class="input-container">
-                        <div class="checkbox">
-                            <input id="valid-check" th:id="'valid-check-'+${image.id}" type="checkbox" name="valid">
-                            <label for="valid-check" th:for="'valid-check-'+${image.id}" th:text="#{valid}">Valid</label>
+                <div class="separator"></div>
+                <form class="annotation-form" method="post" action="/add-annotation">
+                    <h5 th:text="${annotation.isPresent()} ? #{'your-annotation'} : #{'insert-annotation'}">Insert an annotation</h5>
+                    <fieldset th:disabled="${annotation.isPresent()}">
+                        <input type="hidden" name="id" th:value="${campaign.id}">
+                        <input type="hidden" name="image-id" th:value="${image.id}">
+                        <div class="input-container">
+                            <div class="checkbox-input">
+                                <input id="valid-check" th:id="'valid-check-'+${image.id}" type="checkbox" name="valid" checked th:checked="${!annotation.isPresent() || annotation.get().valid}">
+                                <label class="checkbox" for="valid-check" th:for="'valid-check-'+${image.id}"></label>
+                                <label class="checkbox-label" for="valid-check" th:for="'valid-check-'+${image.id}" th:utext="#{valid}">Valid</label>
+                            </div>
                         </div>
-                    </div>
-                    <div class="input-container">
-                        <select id="trust-select" th:id="'trust-select-'+${image.id}" name="role" required>
-                            <option value="" th:text="#{select-trust}" hidden disabled selected>Select a trust level</option>
-                            <option value="GOOD" th:text="#{trust.high}">High</option>
-                            <option value="MEDIUM" th:text="#{trust.medium}">Medium</option>
-                            <option value="LOW" th:text="#{trust.low}">Low</option>
-                        </select>
-                        <label for="trust-select" th:for="'trust-select-'+${image.id}" class="placeholder" th:text="#{trust}">Trust</label>
-                        <label class="form-error-message" th:for="'trust-select-'+${image.id}" th:text="#{error.trust-invalid}">Select a trust level</label>
-                    </div>
-                    <div class="input-container">
-                        <textarea name="notes">
-
-                        </textarea>
-                    </div>
+                        <div class="input-container">
+                            <select id="trust-select" th:id="'trust-select-'+${image.id}" name="trust" required>
+                                <option value="" th:text="#{select-trust}" hidden disabled selected th:selected="${!annotation.isPresent()}">Select a trust level</option>
+                                <option value="GOOD" th:text="#{trust.high}" th:selected="${annotation.isPresent() && annotation.get().trust.equals('GOOD')}">High</option>
+                                <option value="MEDIUM" th:text="#{trust.medium}" th:selected="${annotation.isPresent() && annotation.get().trust.equals('MEDIUM')}">Medium</option>
+                                <option value="LOW" th:text="#{trust.low}" th:selected="${annotation.isPresent() && annotation.get().trust.equals('LOW')}">Low</option>
+                            </select>
+                            <label for="trust-select" th:for="'trust-select-'+${image.id}" class="placeholder" th:text="#{trust}">Trust</label>
+                            <label class="form-error-message" th:for="'trust-select-'+${image.id}" th:text="#{error.trust-invalid}">Select a trust level</label>
+                        </div>
+                        <div class="input-container">
+                            <textarea id="notes" th:id="'notes-'+${image.id}" placeholder=" " class="annotation-notes" name="notes" th:text="${annotation.isPresent()} ? ${annotation.get().notes} : ''"></textarea>
+                            <label for="notes" th:for="'notes-'+${image.id}" class="placeholder" th:text="#{notes}">Notes</label>
+                        </div>
+                    </fieldset>
                 </form>
-            </fieldset>
+            </div>
         </div>
         <div class="pfooter">
             <button class="cancel-btn" value="cancel">Cancel</button>

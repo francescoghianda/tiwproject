@@ -1,5 +1,7 @@
 package it.polimi.tiw.beans.validation;
 
+import com.sun.istack.internal.Nullable;
+
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,17 +13,18 @@ public class InvalidBeanException extends Exception
 
     public InvalidBeanException()
     {
+        super();
         validations = new ArrayList<>();
     }
 
-    public InvalidBeanException(List<Validation> validations)
+    public InvalidBeanException(@Nullable List<Validation> validations)
     {
         super();
         if(validations != null)this.validations = validations;
         else this.validations = new ArrayList<>();
     }
 
-    public InvalidBeanException(Validation validation)
+    public InvalidBeanException(@Nullable Validation validation)
     {
         super();
         this.validations = new ArrayList<>();

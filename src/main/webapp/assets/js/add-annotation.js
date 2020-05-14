@@ -1,3 +1,5 @@
+import * as Utils from "./utils.js";
+
 $(() =>
 {
     let lat = 45.4645075;
@@ -61,6 +63,16 @@ function loadImages(map) {
             let imageHash = await response.text();
             $(image).find('img').attr('src', imageHash).removeAttr('style');
             popup.find(".pcontent .image-container .image img").attr('src', imageHash).removeAttr('style');
+
+            popup.on('close',   (e) => {
+                if(!e.popupResult.ok())return;
+                if(popup.attr('annotation-present') === 'true')return;
+                let form = popup.find('.pcontent .annotation-form');
+                Utils.postFormIfValid(form).then(() => popup.removeClass('show')).catch(reason => {
+                    console.log(reason);
+                });
+                e.preventDefault();
+            });
         })
     });
 

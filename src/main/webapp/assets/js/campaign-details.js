@@ -88,7 +88,7 @@ $(() =>
     let sliders = $(".slider");
     sliders.each(i =>
     {
-        let slider = new Slider(sliders[i].id, 'slideX', 400);
+        let slider = new Slider(sliders[i].id);
         slider.onSlideChange((index, slide) =>
         {
             console.log(slide);
