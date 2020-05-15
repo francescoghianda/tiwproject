@@ -24,17 +24,23 @@ $(() =>
         $('.user-menu').removeClass('visible');
     })
 
-    let zoomedImage;
+    /*let zoomedImage;
 
-    $('img.zommable').on('mouseover', function () {
+    $('img.zommable').on('mouseenter', function () {
         let img = $(this).attr('src');
         zoomedImage = `<div class="image-zoom"><img src="${img}"></div>`;
-        $('body').append(zoomedImage)
+        $('body').append(zoomedImage);
     });
 
-    $('img.zoomable').on('mouseexit', function () {
-        zoomedImage.delete();
-    })
+    $('img.zoomed').on('mouseleave', function () {
+        console.log($(this));
+        $(this).removeClass("zoomed");
+        if(zoomedImage)
+        {
+            zoomedImage.delete();
+            zoomedImage = undefined;
+        }
+    })*/
 
     $('form').submit(function (event) {
 
