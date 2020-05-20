@@ -681,7 +681,7 @@ fieldset{
     color: rgba(0, 0, 0, 0.6);
   }
 
-  &.error{
+  &.error:not([disabled]){
     input, select, textarea{
       border: 2px solid #ff0000;
 
@@ -705,13 +705,13 @@ fieldset{
 
   }
 
-  &.local-error{
+  &.local-error:not([disabled]){
     .form-error-message{
       display: flex;
     }
   }
 
-  &.online-error{
+  &.online-error:not([disabled]){
     .form-error-message-online{
       display: flex;
     }

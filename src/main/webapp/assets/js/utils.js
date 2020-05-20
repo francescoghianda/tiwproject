@@ -28,7 +28,7 @@ function postFormIfValid($form)
 
 function postForm(input, $form)
 {
-    return new Promise(((resolve, reject) =>
+    /*return new Promise(((resolve, reject) =>
     {
         let request =  new XMLHttpRequest();
         request.onreadystatechange = function()
@@ -42,13 +42,6 @@ function postForm(input, $form)
                 else resolve(request);
             }
         }
-
-        /*request.upload.onprogress = function (e)
-        {
-            if (e.lengthComputable) {
-                console.log(e.loaded / e.total);
-            }
-        }*/
 
         request.open("POST", input, true);
 
@@ -65,16 +58,16 @@ function postForm(input, $form)
         }
 
 
-    }));
+    }));*/
+    let enctype = !$form.attr('enctype') ? 'application/x-www-form-urlencoded' : $form.attr('enctype');
 
-
-    /*return fetch(input, {
+    return fetch(input, {
         method: 'post',
         headers:{
-            'Content-Type': 'application/x-www-form-urlencoded'
+            'Content-Type': enctype
         },
-        body: $form.serialize()
-    })*/
+        body: enctype === 'multipart/form-data' ? new FormData($form[0]) : $form.serialize()
+    })
 }
 
 function post(input, jsonData)
@@ -93,10 +86,15 @@ function checkElementValidity(element)
     let validationBinding = element.dataset.bind_validation;
     if(validationBinding)checkElementValidity(document.getElementById(validationBinding));
 
-    if(element.dataset.novalidate)return true;
-
     return new Promise((resolve, reject) =>
     {
+        if(element.dataset.novalidate || element.disabled)
+        {
+            setValidity(element, true, true);
+            resolve({local: true, online: true});
+            return;
+        }
+
         let readOnly = false;
         if(element.readOnly)
         {
@@ -112,17 +110,27 @@ function checkElementValidity(element)
             setValidity(element, true, false);
             let name = element.getAttribute('name');
 
-            fetch(`${onlineValidation}?${name}=${element.value}`).then(async response =>
+            let exceptions = element.dataset.exceptions ? element.dataset.exceptions.split(',') : [];
+
+            if(exceptions.includes(element.value))
             {
-                if(response.status === 200)
+                setValidity(element, true, true);
+                resolve({local: localValidity, online: true});
+            }
+            else
+            {
+                fetch(`${onlineValidation}?${name}=${element.value}`).then(async response =>
                 {
-                    let json = await response.json();
-                    let onlineValidity = json[`valid-${name}`];
-                    setValidity(element, onlineValidity, true);
-                    resolve({local: localValidity, online: onlineValidity});
-                }
-                else if(response.status !== 200) resolve({local: localValidity, online: undefined});
-            });
+                    if(response.status === 200)
+                    {
+                        let json = await response.json();
+                        let onlineValidity = json[`valid-${name}`];
+                        setValidity(element, onlineValidity, true);
+                        resolve({local: localValidity, online: onlineValidity});
+                    }
+                    else if(response.status !== 200) resolve({local: localValidity, online: undefined});
+                });
+            }
         }
         else
         {
@@ -168,7 +176,8 @@ function checkFormValidity(form)
     return new Promise((resolve, reject) =>
     {
         let promises = [];
-        Array.from(form.querySelectorAll('input, select')).filter(element => !element.disabled && !element.dataset.novalidate).forEach(element => promises.push(checkElementValidity(element)));
+        //.filter(element => !element.disabled && !element.dataset.novalidate)
+        Array.from(form.querySelectorAll('input, select')).forEach(element => promises.push(checkElementValidity(element)));
         Promise.all(promises).then(values =>
             resolve(values.reduce((result, validity) =>
             {

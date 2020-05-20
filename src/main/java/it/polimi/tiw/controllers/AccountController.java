@@ -11,37 +11,38 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+
 import java.io.IOException;
 import java.sql.SQLException;
 
-@WebServlet("/settings")
-public class SettingsController extends HttpServlet
+@WebServlet("/account")
+public class AccountController extends HttpServlet
 {
-    private UserDao userDAO;
+
+    private UserDao userDao;
+
+    public AccountController()
+    {
+        super();
+    }
 
     @Override
-    public void init() throws ServletException
+    public void init()
     {
-        userDAO = new UserDao();
+        userDao = new UserDao();
     }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
     {
-        HttpSession session = req.getSession();
-
-        WebContext webContext = new WebContext(req, resp, getServletContext(), req.getLocale());
-
-        User user = (User) session.getAttribute("user");
-        if(user == null)throw new ServletException();
+        User user = (User) req.getSession().getAttribute("user");
 
         try
         {
+            WebContext webContext = new WebContext(req, resp, getServletContext(), req.getLocale());
             webContext.setVariable("user", user);
-            webContext.setVariable("worker", userDAO.findWorkerByUserId(user.getId()).orElse(null));
-
-            Application.getTemplateEngine().process("settings", webContext, resp.getWriter());
+            webContext.setVariable("worker", userDao.findWorkerByUserId(user.getId()).orElse(null));
+            Application.getTemplateEngine().process("account", webContext, resp.getWriter());
         }
         catch (SQLException e)
         {

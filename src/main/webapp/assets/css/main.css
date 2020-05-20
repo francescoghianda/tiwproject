@@ -66,6 +66,102 @@ html, body {
   padding-bottom: 24px;
 }
 
+#image-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  overflow: hidden;
+  grid-column: 1/span 4;
+}
+@media (min-width: 840px) {
+  #image-form {
+    display: block;
+    grid-column: 4/span 2;
+  }
+}
+#image-form > div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 176px;
+}
+@media (min-width: 840px) {
+  #image-form > div {
+    float: right;
+  }
+}
+#image-form > div > input[type=file] {
+  position: absolute;
+  width: 0.1px;
+  height: 0.1px;
+  visibility: hidden;
+}
+#image-form > div > img {
+  height: 176px;
+  clip-path: circle(85px at center);
+}
+#image-form > div > a {
+  margin-top: 8px;
+  display: inline-block;
+  width: 100%;
+  text-align: center;
+}
+#image-form > div > a:hover {
+  text-decoration: underline;
+}
+#image-form > div > div {
+  display: flex;
+  width: 100%;
+  margin-top: 8px;
+  justify-content: space-evenly;
+}
+
+#account-info-form {
+  grid-column: 1/span 4;
+}
+@media (min-width: 840px) {
+  #account-info-form {
+    grid-column: 6/span 4;
+  }
+}
+#account-info-form #form-buttons {
+  width: 100%;
+  height: 82px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+#account-info-form #form-buttons > button {
+  margin-right: 16px;
+}
+
+#account-info {
+  width: 100%;
+  grid-column: 1/span 4;
+}
+@media (min-width: 840px) {
+  #account-info {
+    grid-column: 6/span 4;
+  }
+}
+#account-info > tbody > tr {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 82px;
+}
+#account-info > tbody > tr > td {
+  float: left;
+}
+#account-info > tbody > tr > td > img {
+  display: inherit;
+  padding-right: 32px;
+}
+#account-info > tbody > tr > td > button > img {
+  padding-right: 8px;
+}
+
 .container {
   position: relative;
   display: grid;
@@ -694,26 +790,26 @@ fieldset:disabled label.text-button {
 .input-container option:disabled {
   color: rgba(0, 0, 0, 0.6);
 }
-.input-container.error input, .input-container.error select, .input-container.error textarea {
+.input-container.error:not([disabled]) input, .input-container.error:not([disabled]) select, .input-container.error:not([disabled]) textarea {
   border: 2px solid #ff0000;
 }
-.input-container.error input:focus ~ .placeholder, .input-container.error input:not(:placeholder-shown) ~ .placeholder, .input-container.error select:focus ~ .placeholder, .input-container.error select:not(:placeholder-shown) ~ .placeholder, .input-container.error textarea:focus ~ .placeholder, .input-container.error textarea:not(:placeholder-shown) ~ .placeholder {
+.input-container.error:not([disabled]) input:focus ~ .placeholder, .input-container.error:not([disabled]) input:not(:placeholder-shown) ~ .placeholder, .input-container.error:not([disabled]) select:focus ~ .placeholder, .input-container.error:not([disabled]) select:not(:placeholder-shown) ~ .placeholder, .input-container.error:not([disabled]) textarea:focus ~ .placeholder, .input-container.error:not([disabled]) textarea:not(:placeholder-shown) ~ .placeholder {
   color: #ff0000;
 }
-.input-container.error select {
+.input-container.error:not([disabled]) select {
   color: #ff0000;
 }
-.input-container.error .placeholder {
+.input-container.error:not([disabled]) .placeholder {
   color: #ff0000;
   user-select: none;
 }
-.input-container.error .photo-selector .clip-path-border {
+.input-container.error:not([disabled]) .photo-selector .clip-path-border {
   background-color: #ff0000;
 }
-.input-container.local-error .form-error-message {
+.input-container.local-error:not([disabled]) .form-error-message {
   display: flex;
 }
-.input-container.online-error .form-error-message-online {
+.input-container.online-error:not([disabled]) .form-error-message-online {
   display: flex;
 }
 .input-container .placeholder {

@@ -5,6 +5,7 @@ import it.polimi.tiw.beans.User;
 import it.polimi.tiw.beans.UserWorker;
 import it.polimi.tiw.beans.Worker;
 import it.polimi.tiw.beans.validation.InvalidBeanException;
+import it.polimi.tiw.beans.validation.validators.Image64Validator;
 import it.polimi.tiw.utils.beans.BeanFactory;
 import it.polimi.tiw.utils.beans.UserBeanFactory;
 import it.polimi.tiw.utils.beans.WorkerBeanFactory;
@@ -15,6 +16,7 @@ import it.polimi.tiw.utils.sql.PooledConnection;
 import java.sql.*;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class UserDao extends Dao<User>
 {
@@ -81,16 +83,16 @@ public class UserDao extends Dao<User>
         return transaction(connection ->
         {
             int userId;
-            try (PreparedStatement query = connection.prepareStatement("INSERT INTO users (username, email, password, role) VALUES (?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS))
+            try (PreparedStatement statement = connection.prepareStatement("INSERT INTO users (username, email, password, role) VALUES (?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS))
             {
-                query.setString(1, user.getUsername());
-                query.setString(2, user.getEmail());
-                query.setString(3, PBKDF2WithHmacSHA512.getInstance().hashPassword(user.getPassword()));
-                query.setObject(4, user.getRole(), Types.OTHER);
+                statement.setString(1, user.getUsername());
+                statement.setString(2, user.getEmail());
+                statement.setString(3, PBKDF2WithHmacSHA512.getInstance().hashPassword(user.getPassword()));
+                statement.setObject(4, user.getRole(), Types.OTHER);
 
-                if(query.executeUpdate() == 0) rollback("User not inserted!");
+                if(statement.executeUpdate() == 0) rollback("User not inserted!");
 
-                try (ResultSet generatedKeys = query.getGeneratedKeys())
+                try (ResultSet generatedKeys = statement.getGeneratedKeys())
                 {
                     if (!generatedKeys.next()) rollback("User key not generated!");
                     userId = generatedKeys.getInt(1);
@@ -100,13 +102,13 @@ public class UserDao extends Dao<User>
             if(!user.getRole().equals("WORKER"))return;
             if(userId < 1) rollback();
 
-            try(PreparedStatement query = connection.prepareStatement("INSERT INTO worker (user_id, experience, photo) VALUES (?, ?, ?)"))
+            try(PreparedStatement statement = connection.prepareStatement("INSERT INTO worker (user_id, experience, photo) VALUES (?, ?, ?)"))
             {
-                query.setInt(1, userId);
-                query.setObject(2, worker.getExpLvl(), Types.OTHER);
-                query.setString(3, worker.getPhoto());
+                statement.setInt(1, userId);
+                statement.setObject(2, worker.getExpLvl(), Types.OTHER);
+                statement.setString(3, worker.getPhoto());
 
-                if(query.executeUpdate() == 0) rollback("Worker not inserted!");
+                if(statement.executeUpdate() == 0) rollback("Worker not inserted!");
             }
         });
     }
@@ -115,4 +117,56 @@ public class UserDao extends Dao<User>
     {
         return insertUser(user, null);
     }
+
+    public boolean updateUser(User user, Worker worker) throws SQLException, InvalidBeanException
+    {
+        AtomicBoolean changePassword = new AtomicBoolean(true);
+        if(user.getPassword().trim().isEmpty())
+        {
+            changePassword.set(false);
+            user.setPassword("******");
+        }
+
+        if(!user.isValid())throw new InvalidBeanException(user.getValidation().orElse(null));
+        if(user.getRole().equals("WORKER") && (worker == null || !worker.isValid()))
+            throw new InvalidBeanException(worker != null ? worker.getValidation().orElse(null) : null);
+
+        return transaction(connection ->
+        {
+            String sql = changePassword.get() ? "UPDATE users SET email = ?, password = ? WHERE id = ?" : "UPDATE users SET email = ? WHERE id = ?";
+            try (PreparedStatement statement = connection.prepareStatement(sql))
+            {
+                statement.setString(1, user.getEmail());
+                if(changePassword.get())statement.setString(2, PBKDF2WithHmacSHA512.getInstance().hashPassword(user.getPassword()));
+                statement.setInt(changePassword.get() ? 3 : 2, user.getId());
+
+                if(statement.executeUpdate() == 0) rollback("User not updated!");
+            }
+
+            if(!user.getRole().equals("WORKER") || worker == null)return;
+
+            try(PreparedStatement statement = connection.prepareStatement("UPDATE worker SET experience = ?::gml_enum WHERE user_id = ?"))
+            {
+                statement.setString(1, worker.getExpLvl());
+                statement.setInt(2, user.getId());
+
+                if(statement.executeUpdate() == 0) rollback("User not updated!");
+            }
+        });
+    }
+
+    public boolean updateUserPhoto(int userId, String photo) throws SQLException
+    {
+        if(!Image64Validator.pattern.matcher(photo).matches()) return false;
+
+        try (PooledConnection connection = ConnectionManager.getInstance().getConnection();
+             PreparedStatement statement = connection.getConnection().prepareStatement("UPDATE worker SET photo = ? where user_id = ?"))
+        {
+            statement.setString(1, photo);
+            statement.setInt(2, userId);
+
+            return statement.executeUpdate() == 1;
+        }
+    }
+
 }

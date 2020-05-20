@@ -60,14 +60,6 @@ $(() =>
         else postForm($(this));
     });
 
-    function PopupResult(result)
-    {
-        this.ok = function () {
-            return result === 'ok';
-        }
-        this.result = result;
-    }
-
     $('.popup .ok-btn, .popup .cancel-btn, .popup .popup-close-btn').on('click', function () {
         let popup = $(this).closest('.popup');
         let closeEvent = $.Event('close');
@@ -76,21 +68,6 @@ $(() =>
         if(closeEvent.isDefaultPrevented())return;
         popup.removeClass('show');
     });
-
-    function postForm(form)
-    {
-        Utils.postFormIfValid(form).then(response => {
-            form.find('.form-error').removeClass('visible');
-            if(response.responseURL)window.location.href = response.responseURL;
-        })
-            .catch(response => form.find('.form-error').addClass('visible'));
-    }
-
-    /*$('form')[0].querySelectorAll('input, select').forEach(element => {
-        element.addEventListener('blur', () => {
-            Utils.checkElementValidity(element);
-        });
-    });*/
 
     $('form').find('input, select').on('blur', function () {
         Utils.checkElementValidity($(this).get(0));
@@ -232,28 +209,59 @@ $(() =>
         $(this).find(".overflow-marquee").stop();
     })
 
-    function startMarquee($element){
-        let width = $element.data("width");
-
-        let currentTextIndent = $element.css("text-indent");
-        currentTextIndent = currentTextIndent.substring(0, currentTextIndent.length-2);
-        let animationSpeed;
-        if(currentTextIndent < 0)
-        {
-            currentTextIndent = Math.abs(currentTextIndent);
-            animationSpeed = (width-currentTextIndent)*10;
-        }
-        else animationSpeed = width*10;
-
-        $element.animate({
-            'text-indent': -width
-        }, animationSpeed, "linear", () => marqueeLoop($element));
-    }
-
-    function marqueeLoop($element) {
-        let width = $element.data("width");
-        $element.css("text-indent", `${width}px`).animate({
-            'text-indent': -width
-        }, width*10*2, "linear", () => marqueeLoop($element));
-    }
 });
+
+function PopupResult(result)
+{
+    this.ok = function () {
+        return result === 'ok';
+    }
+    this.result = result;
+}
+
+function startMarquee($element){
+    let width = $element.data("width");
+
+    let currentTextIndent = $element.css("text-indent");
+    currentTextIndent = currentTextIndent.substring(0, currentTextIndent.length-2);
+    let animationSpeed;
+    if(currentTextIndent < 0)
+    {
+        currentTextIndent = Math.abs(currentTextIndent);
+        animationSpeed = (width-currentTextIndent)*10;
+    }
+    else animationSpeed = width*10;
+
+    $element.animate({
+        'text-indent': -width
+    }, animationSpeed, "linear", () => marqueeLoop($element));
+}
+
+function marqueeLoop($element) {
+    let width = $element.data("width");
+    $element.css("text-indent", `${width}px`).animate({
+        'text-indent': -width
+    }, width*10*2, "linear", () => marqueeLoop($element));
+}
+
+function postForm(form)
+{
+    Utils.postFormIfValid(form).then(response => {
+        form.find('.form-error').removeClass('visible');
+        let event = $.Event('response');
+        event.response = response;
+        form.trigger(event);
+        if(event.isDefaultPrevented())return;
+        if(response.redirected)window.location.href = response.url;
+    })
+        .catch(response =>
+        {
+            let event = $.Event('error');
+            event.error = response;
+            form.trigger(event);
+            if(event.isDefaultPrevented())return;
+            form.find('.form-error').addClass('visible');
+        });
+}
+
+export {postForm};

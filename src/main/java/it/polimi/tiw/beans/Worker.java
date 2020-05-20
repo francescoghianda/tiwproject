@@ -1,6 +1,7 @@
 package it.polimi.tiw.beans;
 
 import it.polimi.tiw.beans.validation.annotations.Enum;
+import it.polimi.tiw.beans.validation.annotations.Image64;
 import it.polimi.tiw.beans.validation.annotations.IntRange;
 import it.polimi.tiw.beans.validation.annotations.Size;
 
@@ -12,7 +13,7 @@ public class Worker extends Bean
     @Enum({"GOOD", "MEDIUM", "LOW"})
     private String expLvl;
 
-    @Size(min = 1)
+    @Image64
     private String photo;
 
     public Worker(int userId, String expLvl, String photo)

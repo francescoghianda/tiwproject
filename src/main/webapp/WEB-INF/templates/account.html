@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+
+    <meta content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings</title>
+
+    <link rel="stylesheet" type="text/css" href="../../assets/css/main.css" th:href="@{/assets/css/main.css}">
+
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="../../assets/js/main.js" type="module" th:src="@{/assets/js/main.js}"></script>
+
+    <script src="../../assets/js/account.js" th:src="@{/assets/js/account.js}"></script>
+
+</head>
+
+<body>
+
+    <nav class="navbar" th:replace="fragments/navbar :: navbar"></nav>
+    <div class="container">
+
+            <form id="image-form" action="/edit-photo" method="post" >
+                <div>
+                    <input type="file" accept="image/*">
+                    <input type="hidden" name="photo-base64">
+                    <img src="../../assets/images/manager_icon.svg" th:src="${worker != null} ? ${worker.photo} : '/assets/images/manager_icon.svg'">
+                    <a href="#" th:text="#{change-photo}">Change photo</a>
+                    <div style="display: none">
+                        <button type="button" th:text="#{cancel}">Cancel</button>
+                        <input type="submit" value="Save" th:value="#{save}">
+                    </div>
+                </div>
+            </form>
+
+            <table id="account-info">
+                <tbody>
+                    <tr>
+                        <td style="float: left"><button id="edit-btn" th:text="#{edit}"><img src="../../assets/images/edit-24px.svg">Edit</button></td>
+                    </tr>
+                    <tr>
+                        <td><img th:alt="#{username}" alt="Username" th:title="#{username}" title="Username" src="../../assets/images/account_circle_outlined-24px.svg"></td>
+                        <td><span class="body-1" th:text="${user.username}">Username</span></td>
+                    </tr>
+
+                    <tr>
+                        <td><img alt="Email" title="Email" src="../../assets/images/email-24px.svg"></td>
+                        <td><span id="email-span" class="body-1" th:text="${user.email}">email@email.com</span></td>
+                    </tr>
+
+                    <tr>
+                        <td><img alt="Password" title="Password" src="../../assets/images/security-24px.svg"></td>
+                        <td><span class="body-1">&middot;&middot;&middot;&middot;&middot;&middot;&middot;&middot;</span></td>
+                    </tr>
+
+                    <tr>
+                        <td><img th:alt="#{role}" alt="Role" th:title="#{role}" title="Role" src="../../assets/images/group_work-24px.svg"></td>
+                        <td><span class="body-1" th:text="${#messages.msg('role.'+user.role)}">Worker</span></td>
+                    </tr>
+
+                    <tr th:if="${worker != null}">
+                        <td><img th:alt="#{exp-lvl}" alt="Experience level" th:title="#{exp-lvl}" title="Experience level" src="../../assets/images/verified_user-24px.svg"></td>
+                        <td><span id="exp-lvl-span" class="body-1" th:text="${#messages.msg('exp-lvl.'+worker.expLvl)}">High</span></td>
+                    </tr>
+                </tbody>
+
+            </table>
+
+            <form id="account-info-form" action="/update-account" method="post" style="display: none">
+
+                <div id="form-buttons">
+                    <button type="button" id="cancel-btn" th:text="#{cancel}">Cancel</button>
+                    <input type="submit" value="Save" th:value="#{save}">
+                </div>
+
+                <div class="input-container">
+                    <input id="username-input" type="text" placeholder=" " name="username" th:value="${user.username}" data-validation="/api/v1/validate-data" minlength="4" maxlength="20" required disabled>
+                    <label class="placeholder" for="username-input" th:text="#{username}">Username</label>
+                    <label class="form-error-message" for="username-input" th:text="#{error.username-invalid}">Invalid username
+                        <button type="button" class="popover form-error-helper" th:text="#{error-helper.username}">
+                            <div class="popover-content">The username must be between 4 and 20 characters long</div>
+                        </button>
+                    </label>
+                    <label class="form-error-message-online" for="username-input" th:utext="#{error.username-unavailable}">Username not available</label>
+                </div>
+
+                <div class="input-container">
+                    <input id="email-input" type="email" placeholder=" " name="email" th:value="${user.email}" th:data-exceptions="${user.email}" data-validation="/api/v1/validate-data" required>
+                    <label class="placeholder" for="email-input">Email</label>
+                    <label class="form-error-message" for="email-input" th:text="#{error.email-invalid}">Invalid email</label>
+                    <label class="form-error-message-online" for="email-input" th:utext="#{error.email-unavailable}">Email not available</label>
+                </div>
+
+
+                <button type="button" id="change-password-btn" class="text-button" th:text="#{change-password}">Change password</button>
+                <button type="button" id="disable-change-password-btn" class="text-button" style="display:none" th:text="#{cancel}">Annulla</button>
+
+                <div class="input-container">
+                    <input id="password-input" autocomplete="new-password" type="password" placeholder=" " name="password" minlength="6" data-bind_validation="password-confirmation-input" required disabled value="&middot;&middot;&middot;&middot;&middot;&middot;">
+                    <label class="placeholder" for="password-input" th:text="#{new-password}">New password</label>
+                    <label class="form-error-message" for="password-input" th:text="#{error.password-invalid}">Invalid password</label>
+                    <span class="password-eye"></span>
+                </div>
+                <div class="input-container">
+                    <input id="password-confirmation-input" autocomplete="off" type="password" placeholder=" " data-equals_to="password-input" required disabled value="&middot;&middot;&middot;&middot;&middot;&middot;">
+                    <label class="placeholder" for="password-confirmation-input" th:text="#{confirm}">Confirm the password</label>
+                    <label class="form-error-message" for="password-confirmation-input" th:text="#{error.password-invalid}"></label>
+                    <span class="password-eye"></span>
+                </div>
+
+                <div class="input-container">
+                    <select id="role-input" name="role" disabled>
+                        <option value="WORKER" th:text="#{role.WORKER}" th:selected="${user.role.equals('WORKER')}">Worker</option>
+                        <option value="MANAGER" th:text="#{role.MANAGER}" th:selected="${user.role.equals('MANAGER')}">Manager</option>
+                    </select>
+                    <label for="role-input" class="placeholder" th:text="#{role}">Role</label>
+                </div>
+
+                <div class="input-container" th:if="${worker != null}">
+                    <select id="exp-lvl-input" name="exp-lvl" required>
+                        <option value="GOOD" th:text="#{exp-lvl.GOOD}" th:selected="${worker.expLvl.equals('GOOD')}">Good</option>
+                        <option value="MEDIUM" th:text="#{exp-lvl.MEDIUM}" th:selected="${worker.expLvl.equals('MEDIUM')}">Medium</option>
+                        <option value="LOW" th:text="#{exp-lvl.LOW}" th:selected="${worker.expLvl.equals('LOW')}">Low</option>
+                    </select>
+                    <label for="exp-lvl-input" class="placeholder" th:text="#{exp-lvl}">Experience level</label>
+                </div>
+
+            </form>
+
+
+    </div>
+</body>
+</html>

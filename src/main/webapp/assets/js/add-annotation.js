@@ -1,4 +1,6 @@
 import * as Utils from "./utils.js";
+import * as Main from "./main.js";
+
 
 $(() =>
 {
@@ -68,9 +70,13 @@ function loadImages(map) {
                 if(!e.popupResult.ok())return;
                 if(popup.attr('annotation-present') === 'true')return;
                 let form = popup.find('.pcontent .annotation-form');
-                Utils.postFormIfValid(form).then(() => popup.removeClass('show')).catch(reason => {
-                    console.log(reason);
-                });
+
+                form.on('response', function (responseEvent) {
+                    if(responseEvent.response.status === 200)popup.removeClass('show');
+                })
+
+                Main.postForm(form);
+
                 e.preventDefault();
             });
         })

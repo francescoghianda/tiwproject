@@ -84,7 +84,12 @@ public class AddAnnotationController extends HttpServlet
             String notes = req.getParameter("notes");
 
             Annotation annotation = new Annotation(0, user.getId(), imageId, currentDate, valid, trust, notes);
-            if(!annotationDao.insertAnnotation(annotation))resp.sendError(409);
+            if(!annotationDao.insertAnnotation(annotation))
+            {
+                resp.sendError(409);
+                return;
+            }
+
             resp.sendRedirect("/add-annotation?id="+campaign.get().getId());
         }
         catch (NumberFormatException e)

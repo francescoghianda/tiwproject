@@ -5,6 +5,8 @@ import it.polimi.tiw.beans.User;
 import it.polimi.tiw.beans.Worker;
 import it.polimi.tiw.beans.validation.InvalidBeanException;
 import it.polimi.tiw.dao.UserDao;
+import it.polimi.tiw.utils.ProfilePictureGenerator;
+import it.polimi.tiw.utils.beans.UserRoles;
 import org.thymeleaf.context.WebContext;
 
 import javax.servlet.ServletException;
@@ -14,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Base64;
 import java.util.Objects;
 
 @WebServlet("/create-user")
@@ -48,6 +51,8 @@ public class CreateUserController extends HttpServlet
         String role = Objects.toString(req.getParameter("role"), "");
         String expLvl = Objects.toString(req.getParameter("exp-lvl"), "");
         String photo = Objects.toString(req.getParameter("photo-base64"), "");
+
+        if(photo.isEmpty() && role.equals(UserRoles.WORKER))photo = ProfilePictureGenerator.generateImage(username.charAt(0));
 
         User user = new User(username, email, password, role);
         Worker worker = null;
