@@ -1,4 +1,4 @@
-package it.polimi.tiw.controllers.api.v1;
+package it.polimi.tiw.controllers;
 
 import it.polimi.tiw.dao.CampaignDao;
 import it.polimi.tiw.dao.UserDao;
@@ -12,11 +12,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
 
-@WebServlet("/api/v1/validate-data")
+@WebServlet("/validate-data")
 public class ValidateDataController extends HttpServlet
 {
     private UserDao userDao;
@@ -43,7 +40,7 @@ public class ValidateDataController extends HttpServlet
 
         try(JsonGenerator generator = Json.createGenerator(resp.getWriter()))
         {
-            generator.writeStartObject(); ///inizi a scrivere l'oggeto json
+            generator.writeStartObject();
             if(username != null) generator.write("valid-username", !userDao.usernameExist(username) && !username.isEmpty());
             if(email != null) generator.write("valid-email", !userDao.emailExist(email) && !email.isEmpty());
             if(campaignName != null) generator.write("valid-campaign-name", !campaignDao.campaignNameExist(campaignName) && !campaignName.isEmpty());

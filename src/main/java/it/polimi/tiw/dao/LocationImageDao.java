@@ -27,7 +27,7 @@ public class LocationImageDao extends Dao<LocationImage>
 
     public Optional<LocationImage> findLocationImageById(int locationImageId) throws SQLException
     {
-        return get("SELECT img.*, ST_AsText(img.location) location_coordinates from location_image img where id = ?", locationImageId).stream().findFirst();
+        return rawGet("SELECT img.*, ST_AsText(img.location) location_coordinates from location_image img where id = ?", locationImageId).stream().findFirst();
     }
 
     public List<LocationImage> findImagesByCampaignId(int campaignId) throws SQLException
@@ -37,8 +37,8 @@ public class LocationImageDao extends Dao<LocationImage>
 
     public List<LocationImage> findImagesByCampaignId(int campaignId, boolean media) throws SQLException
     {
-        if(media)return get("SELECT img.*, ST_AsText(img.location) location_coordinates from location_image img where campaign_id = ?", campaignId);
-        return get("SELECT img.id, img.campaign_id, img.municipality, img.region, img.source, img.date, img.resolution, ST_AsText(img.location) location_coordinates from location_image img where campaign_id = ?", campaignId);
+        if(media)return rawGet("SELECT img.*, ST_AsText(img.location) location_coordinates from location_image img where campaign_id = ?", campaignId);
+        return rawGet("SELECT img.id, img.campaign_id, img.municipality, img.region, img.source, img.date, img.resolution, ST_AsText(img.location) location_coordinates from location_image img where campaign_id = ?", campaignId);
     }
 
     public Map<LocationImage, List<Annotation>> findImagesAndAnnotationsByCampaignId(int campaignId) throws SQLException

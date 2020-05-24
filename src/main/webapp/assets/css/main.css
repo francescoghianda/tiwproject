@@ -233,6 +233,7 @@ html, body {
   cursor: pointer;
   margin-left: 16px;
   margin-right: 16px;
+  background-color: #ffffff;
   clip-path: circle(21px at center);
 }
 .navbar .user-menu {
@@ -479,6 +480,18 @@ button, input[type=submit], input[type=button], .button {
   background-color: #929292 !important;
   border-color: #666666 !important;
   cursor: not-allowed !important;
+}
+
+.icon-button {
+  min-width: unset;
+}
+.icon-button > img {
+  width: 24px;
+  height: 24px;
+}
+.icon-button:disabled {
+  filter: grayscale(100%) contrast(50%);
+  cursor: not-allowed;
 }
 
 fieldset {
@@ -977,7 +990,7 @@ fieldset:disabled label.text-button {
   display: flex;
   align-items: center;
   width: 100%;
-  height: 100%;
+  height: 56px;
   padding: 0;
   margin: 0;
 }
@@ -1009,24 +1022,37 @@ fieldset:disabled label.text-button {
 .window {
   position: fixed;
   z-index: 20;
-  top: calc(50% - 300px);
-  left: calc(50% - 555px);
-  width: 1110px;
-  height: 600px;
-  min-width: 1110px;
-  min-height: 600px;
-  resize: both;
+  top: 2.5%;
+  left: 2.5%;
+  width: 95%;
+  height: 95%;
+  resize: none;
   transform: scale(1);
   display: grid;
   grid-template-rows: 56px auto;
+  grid-auto-columns: 100%;
   background-color: #ffffff;
   box-shadow: 0 19px 38px rgba(0, 0, 0, 0.3), 0 15px 12px rgba(0, 0, 0, 0.22);
   border-radius: 4px;
   overflow: hidden;
   transition: transform 0.2s;
 }
+@media (min-width: 840px) {
+  .window {
+    top: calc(50% - 300px);
+    left: calc(50% - 555px);
+    width: 1110px;
+    height: 600px;
+    min-width: 1110px;
+    min-height: 600px;
+    resize: both;
+  }
+}
 .window.draggable {
   opacity: 0.4;
+}
+.window .wcontent {
+  width: 100%;
 }
 .window .wnav {
   grid-row: 1;
@@ -1042,16 +1068,18 @@ fieldset:disabled label.text-button {
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   cursor: grab;
 }
-.window .wnav::after {
-  content: "";
-  position: absolute;
-  right: 0;
-  top: 0;
-  width: 56px;
-  height: 56px;
-  background-image: url("../images/drag_indicator-24px.svg");
-  background-repeat: no-repeat;
-  background-position: center;
+@media (min-width: 840px) {
+  .window .wnav::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 56px;
+    height: 56px;
+    background-image: url("../images/drag_indicator-24px.svg");
+    background-repeat: no-repeat;
+    background-position: center;
+  }
 }
 .window .window-close-btn {
   width: 24px;
@@ -1096,7 +1124,8 @@ fieldset:disabled label.text-button {
 .popup .pbody {
   display: grid;
   grid-template-rows: minmax(0, 56px) minmax(auto, calc(100% - 56px - 56px)) minmax(0, 56px);
-  width: min-content;
+  width: 95%;
+  max-width: 95%;
   height: min-content;
   background-color: #ffffff;
   border-radius: 4px;
@@ -1104,6 +1133,11 @@ fieldset:disabled label.text-button {
   max-height: calc(100% - 56px - 56px);
   box-shadow: 0 19px 38px rgba(0, 0, 0, 0.3), 0 15px 12px rgba(0, 0, 0, 0.22);
   overflow: hidden;
+}
+@media (min-width: 840px) {
+  .popup .pbody {
+    width: min-content;
+  }
 }
 .popup .pbody .pnav {
   grid-row: 1;
@@ -1138,7 +1172,13 @@ fieldset:disabled label.text-button {
   align-items: center;
   padding: 32px;
   white-space: nowrap;
+  width: 100%;
   overflow: hidden;
+}
+@media (min-width: 840px) {
+  .popup .pbody .pcontent {
+    width: min-content;
+  }
 }
 .popup .pbody .pfooter {
   display: flex;
@@ -1212,14 +1252,12 @@ fieldset:disabled label.text-button {
   height: 56px;
   min-height: 56px;
   padding: 8px;
-  display: flex;
-  align-items: center;
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
   color: #ffffff;
   background-color: #0d47a1;
 }
 .list-container .list-header .list-close-btn {
-  justify-self: flex-end;
+  float: right;
   margin-left: auto;
   top: 8px;
   right: 8px;
@@ -1237,6 +1275,14 @@ fieldset:disabled label.text-button {
 .list-container .list-header .list-close-btn.toggled {
   transform: rotate(180deg);
 }
+.list-container .list-header .list-filter, .list-container .list-header .list-order {
+  float: right;
+  background: transparent;
+  border: none;
+  height: 100%;
+  color: #ffffff;
+  font-size: 16px;
+}
 .list-container .list {
   grid-row: 2;
   width: 100%;
@@ -1252,6 +1298,7 @@ fieldset:disabled label.text-button {
   grid-row-gap: 16px;
 }
 .list-container .list .list-item {
+  will-change: width;
   width: 100%;
 }
 .list-container .list .list-item:last-child {
@@ -1264,7 +1311,7 @@ fieldset:disabled label.text-button {
   border-radius: 4px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   overflow: hidden;
-  transition: all 0.2s;
+  transition: box-shadow 0.2s;
 }
 .list-container .list .list-item.card:hover {
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
@@ -1334,6 +1381,56 @@ fieldset:disabled label.text-button {
 }
 .image-zoom > img {
   width: 100%;
+}
+
+.error-container {
+  grid-column: 1/span 4;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+@media (min-width: 840px) {
+  .error-container {
+    grid-column: 2/span 10;
+  }
+}
+.error-container .error-image {
+  position: relative;
+  width: 90%;
+}
+@media (min-width: 840px) {
+  .error-container .error-image {
+    width: 50%;
+    max-width: 480px;
+  }
+}
+.error-container .error-image .error-code {
+  font-family: "M PLUS Rounded 1c", sans-serif;
+  position: absolute;
+  width: 100%;
+  left: 0;
+  text-align: center;
+  color: #302e2e;
+  top: calc(54% - 5rem);
+  font-size: 20vw;
+  line-height: 10rem;
+  user-select: none;
+}
+@media (min-width: 840px) {
+  .error-container .error-image .error-code {
+    font-size: 10vh;
+  }
+}
+.error-container .error-message {
+  margin-top: 1rem;
+  font-size: 1.4rem;
+  text-align: center;
+}
+@media (min-width: 840px) {
+  .error-container .error-message {
+    font-size: 2rem;
+  }
 }
 
 input:-webkit-autofill,
@@ -1543,7 +1640,9 @@ select:-webkit-autofill:focus {
   row-gap: 4px;
   grid-template-rows: 60px 24px 24px auto;
   grid-template-columns: min-content 1fr;
-  grid-column-gap: 32px;
+  grid-column-gap: 16px;
+  white-space: nowrap;
+  overflow: hidden;
   height: 100%;
 }
 #campaign-details form h4 {
@@ -1636,6 +1735,7 @@ select:-webkit-autofill:focus {
   background-position: center;
   background-repeat: no-repeat;
   background-size: 24px;
+  background-origin: border-box;
   border: none;
 }
 #image-list-container #campaign-image-list ul li .image-buttons .delete-image-btn {

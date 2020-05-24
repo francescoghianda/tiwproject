@@ -90,7 +90,8 @@ public class AddAnnotationController extends HttpServlet
                 return;
             }
 
-            resp.sendRedirect("/add-annotation?id="+campaign.get().getId());
+            //resp.sendRedirect("/add-annotation?id="+campaign.get().getId());
+            resp.setStatus(200);
         }
         catch (NumberFormatException e)
         {

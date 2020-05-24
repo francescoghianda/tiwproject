@@ -7,7 +7,7 @@
     <link rel="stylesheet" type="text/css" href="../../assets/css/main.css" th:href="@{/assets/css/main.css}"/>
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script type="module" src="../../assets/js/main.js" th:src="@{/assets/js/main.js}"></script>
-    <script src="../../assets/js/create_user.js" type="module" th:src="@{/assets/js/create_user.js}"></script>
+    <script src="../../assets/js/create-user.js" type="module" th:src="@{/assets/js/create-user.js}"></script>
 </head>
 <body>
 
@@ -22,7 +22,7 @@
                 </div>
                 <section class="form-row">
                     <div class="input-container">
-                        <input id="username-input" type="text" placeholder=" " name="username" data-validation="/api/v1/validate-data" minlength="4" maxlength="20" required>
+                        <input id="username-input" type="text" placeholder=" " name="username" data-validation="/validate-data" minlength="4" maxlength="20" required>
                         <label class="placeholder" for="username-input" th:text="#{username}">Username</label>
                         <label class="form-error-message" for="username-input" th:text="#{error.username-invalid}">Invalid username
                             <button class="popover form-error-helper" th:text="error-helper.username">
@@ -33,7 +33,7 @@
                     </div>
 
                     <div class="input-container">
-                        <input id="email-input" type="email" placeholder=" " name="email" data-validation="/api/v1/validate-data" required>
+                        <input id="email-input" type="email" placeholder=" " name="email" data-validation="/validate-data" required>
                         <label class="placeholder" for="email-input">Email</label>
                         <label class="form-error-message" for="email-input" th:text="#{error.email-invalid}">Invalid email</label>
                         <label class="form-error-message-online" for="email-input" th:text="#{error.email-unavailable}">Email not available</label>

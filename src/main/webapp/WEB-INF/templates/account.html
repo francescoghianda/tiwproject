@@ -24,11 +24,13 @@
                 <div>
                     <input type="file" accept="image/*">
                     <input type="hidden" name="photo-base64">
-                    <img src="../../assets/images/manager_icon.svg" th:src="${worker != null} ? ${worker.photo} : '/assets/images/manager_icon.svg'">
-                    <a href="#" th:text="#{change-photo}">Change photo</a>
-                    <div style="display: none">
-                        <button type="button" th:text="#{cancel}">Cancel</button>
-                        <input type="submit" value="Save" th:value="#{save}">
+                    <img id="image-preview" src="../../assets/images/manager_icon.svg" th:src="${worker != null} ? ${worker.photo} : '/assets/images/manager_icon.svg'">
+                    <a th:if="${user.role.equals('WORKER')}" id="change-photo-bnt" href="#" th:text="#{change-photo}">Change photo</a>
+                    <div id="image-form-buttons" style="display: none">
+                        <button class="icon-button" id="generate-image-btn" type="button"><img src="../../assets/images/refresh-24px.svg" th:src="@{/assets/images/refresh-24px.svg}"></button>
+                        <button class="icon-button" id="select-image-btn" type="button" th:title="#{select}"><img src="../../assets/images/folder-24px.svg" th:src="@{/assets/images/folder-24px.svg}"></button>
+                        <button class="icon-button" id="cancel-image-btn" type="button" th:title="#{cancel}"><img src="../../assets/images/clear-24px.svg" th:src="@{/assets/images/clear-24px.svg}"></button>
+                        <button class="icon-button" id="save-image-btn" type="submit" th:title="#{save}" disabled><img src="../../assets/images/save-24px.svg" th:src="@{/assets/images/save-24px.svg}"></button>
                     </div>
                 </div>
             </form>

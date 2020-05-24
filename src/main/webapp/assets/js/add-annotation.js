@@ -55,10 +55,12 @@ function loadImages(map) {
         let hasAnnotation = image.dataset.hasAnnotation;
         let popup = $(`.popup[id=popup-${imageId}]`);
 
-        L.marker([image.dataset.latitude, image.dataset.longitude]).addTo(map).on('click', () =>
+        let marker = L.marker([image.dataset.latitude, image.dataset.longitude]).addTo(map).on('click', () =>
         {
             popup.addClass('show');
-        }).setIcon(hasAnnotation === 'true' ? greenMarkerIcon : redMarkerIcon);
+        });
+
+        marker.setIcon(hasAnnotation === 'true' ? greenMarkerIcon : redMarkerIcon)
 
         fetch(`/get-image?id=${imageId}`).then(async response =>
         {
@@ -72,7 +74,12 @@ function loadImages(map) {
                 let form = popup.find('.pcontent .annotation-form');
 
                 form.on('response', function (responseEvent) {
-                    if(responseEvent.response.status === 200)popup.removeClass('show');
+                    if(responseEvent.response.status === 200)
+                    {
+                        popup.removeClass('show');
+                        form.find('fieldset').attr('disabled', true);
+                        marker.setIcon(greenMarkerIcon);
+                    }
                 })
 
                 Main.postForm(form);

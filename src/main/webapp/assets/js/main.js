@@ -3,12 +3,14 @@ import * as Utils from "./utils.js";
 $(() =>
 {
    $('.input-container .password-eye').on('click', function () {
+       if($(this).closest('.input-container').find(':input').is(":disabled"))return;
        $(this).toggleClass('toggled');
        let input = $(this).parents('.input-container').find('input[type=password], input[type=text]');
        input.attr('type', $(this).hasClass('toggled') ? 'text' : 'password');
    });
 
     $('.input-container .input-lock').on('click', function () {
+        if($(this).closest('.input-container').find(':input').is(":disabled"))return;
         $(this).toggleClass('toggled');
         let input = $(this).parents('.input-container').find(':input');
         $(this).hasClass('toggled') ? input.removeAttr('readonly') : input.attr('readonly', 'readonly');
@@ -169,12 +171,6 @@ $(() =>
                 left: e.pageX - dragOffsetX
             })
         }
-    });
-
-
-    $('.list-close-btn').on('click', function () {
-        $(this).toggleClass('toggled');
-        $(this).closest('.list-container').toggleClass('closed');
     });
 
 

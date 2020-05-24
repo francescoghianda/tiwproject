@@ -26,7 +26,7 @@
 
     <context-param>
         <param-name>loginFilterExclusions</param-name>
-        <param-value>/test,/login,/logout,/create-user,/assets,/api</param-value>
+        <param-value>/test,/login,/logout,/create-user,/assets,/validate-data</param-value>
     </context-param>
 
     <context-param>
@@ -37,6 +37,16 @@
     <welcome-file-list>
         <welcome-file></welcome-file>
     </welcome-file-list>
+
+    <error-page>
+        <error-code>409</error-code>
+        <location>/error</location>
+    </error-page>
+
+    <error-page>
+        <error-code>401</error-code>
+        <location>/error</location>
+    </error-page>
 
     <error-page>
         <error-code>404</error-code>

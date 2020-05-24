@@ -9,6 +9,8 @@
 
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="../../assets/js/main.js" type="module" th:src="@{/assets/js/main.js}"></script>
+    <script src="../../assets/js/manager-home.js" th:src="@{/assets/js/manager-home.js}"></script>
+    <script src="../../assets/js/list.js" th:src="@{/assets/js/list.js}"></script>
 
 </head>
 <body>
@@ -58,7 +60,7 @@
                         <span th:text="#{form-error}">An error occurred.</span>
                     </div>
                     <div class="input-container">
-                        <input id="campaign-name-input" type="text" placeholder=" " name="campaign-name" data-validation="/api/v1/validate-data" required>
+                        <input id="campaign-name-input" type="text" placeholder=" " name="campaign-name" data-validation="/validate-data" required>
                         <label for="campaign-name-input" class="placeholder" th:text="#{campaign-name}">Campaign name</label>
                         <label for="campaign-name-input" class="form-error-message" th:text="#{error.missing-name}">Insert a campaign name</label>
                     </div>
@@ -76,10 +78,16 @@
     <div id="campaign-list" class="list-container">
         <div class="list-header">
             <h5 th:text="#{campaign-list-title}">Campaign list</h5>
+            <select class="list-filter">
+                <option value="all" th:text="#{all}" selected>All</option>
+                <option value="CREATED" th:text="#{status.CREATED}">Created</option>
+                <option value="STARTED" th:text="#{status.STARTED}">Started</option>
+                <option value="CLOSED" th:text="#{status.CLOSED}">Closed</option>
+            </select>
         </div>
         <span class="body-2 empty-message" th:if="${campaigns.isEmpty()}" th:text="#{empty-list-message}">Create a campaign to start.</span>
         <ul th:unless="${campaigns.isEmpty()}" class="list" th:remove="all-but-first">
-            <li class="list-item card" th:each="campaign : ${campaigns}">
+            <li class="list-item card" th:each="campaign : ${campaigns}" th:data-filter="${campaign.status}">
                 <header>
                     <h5 class="overflow-marquee" th:text="${campaign.name}">Campaign name 1</h5>
                 </header>
@@ -101,7 +109,10 @@
                 <footer>
                     <a class="button text-button" th:href="@{/campaign/details(id=${campaign.id})}" th:text="#{details}">Dettagli</a>
                     <a class="button text-button" th:href="@{/campaign/stat(id=${campaign.id})}" th:text="#{statistics}">Statistics</a>
-                    <a class="button text-button" th:text="#{delete}">Delete</a>
+                    <form class="delete-campaign-form" action="/campaign/delete" method="post" th:unless="${campaign.status.equals('STARTED')}">
+                        <input type="hidden" name="id" th:value="${campaign.id}">
+                        <button type="submit" class="button text-button" th:text="#{delete}">Delete</button>
+                    </form>
                 </footer>
             </li>
         </ul>

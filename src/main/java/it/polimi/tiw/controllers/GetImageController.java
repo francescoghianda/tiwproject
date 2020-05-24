@@ -1,4 +1,4 @@
-package it.polimi.tiw.controllers.api.v1;
+package it.polimi.tiw.controllers;
 
 import it.polimi.tiw.beans.Campaign;
 import it.polimi.tiw.beans.LocationImage;

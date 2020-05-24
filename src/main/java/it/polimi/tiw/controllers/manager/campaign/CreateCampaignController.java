@@ -40,7 +40,7 @@ public class CreateCampaignController extends HttpServlet
         try
         {
             if(!campaignDao.insertCampaign(campaign))resp.sendError(500);
-            else resp.sendRedirect("/");
+            else resp.sendRedirect("/campaign/details?id="+campaign.getId());
         }
         catch (SQLException e)
         {

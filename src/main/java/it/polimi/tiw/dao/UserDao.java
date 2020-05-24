@@ -96,6 +96,8 @@ public class UserDao extends Dao<User>
                 {
                     if (!generatedKeys.next()) rollback("User key not generated!");
                     userId = generatedKeys.getInt(1);
+                    user.setId(userId);
+                    worker.setUserId(userId);
                 }
             }
 

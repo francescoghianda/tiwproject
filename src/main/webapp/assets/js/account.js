@@ -1,6 +1,6 @@
 $(() =>
 {
-    let photo;
+    let photo = $('#image-preview').attr('src');
 
     function hideInfoForm()
     {
@@ -24,41 +24,54 @@ $(() =>
     });
 
 
-    $('#image-form a').on('click', function () {
+    $('#change-photo-bnt').on('click', function () {
+        $(this).hide();
+        $('#image-form-buttons').show();
+    });
+
+    $('#generate-image-btn').on('click', function () {
+        fetch('/generate-user-picture').then(response => response.text()).then(image =>
+        {
+            $('#image-form input[type=hidden]').val(image);
+            $(`#image-preview`).attr('src', image);
+            $('#save-image-btn').attr('disabled', false);
+        });
+    });
+
+    $('#cancel-image-btn').on('click', function () {
+        $('#image-preview').attr('src', photo);
+        $('#image-form-buttons').hide();
+        $('#save-image-btn').attr('disabled', true);
+        $('#change-photo-bnt').show();
+    });
+
+    $('#select-image-btn').on('click', function () {
         $('#image-form input[type=file]').trigger('click');
     });
 
     $('#image-form input[type=file]').on('change', function () {
         if(this.files.length <= 0)return;
 
-        photo = $('#image-form img').attr('src');
-
         let reader = new FileReader();
         reader.onloadend = function () {
             $('#image-form input[type=hidden]').val(reader.result);
-            $(`#image-form img`).attr('src', reader.result);
+            $(`#image-preview`).attr('src', reader.result);
         };
         reader.readAsDataURL(this.files[0]);
 
-        $('#image-form a').hide();
-        $('#image-form > div > div').show();
+        $('#save-image-btn').attr('disabled', false);
     });
 
     $('#image-form').on('response', function (e) {
         if(e.response.status === 200)
         {
-            $('#image-form > div > div').hide();
-            $('#image-form a').show();
-            let image = $(`#image-form img`).attr('src');
-            $('.navbar .user-image img').attr('src', image);
-            $('.navbar .profile-picture').attr('src', image);
+            $('#image-form-buttons').hide();
+            $('#save-image-btn').attr('disabled', false);
+            $('#change-photo-bnt').show();
+            photo = $(`#image-preview`).attr('src');
+            $('.navbar .user-image img').attr('src', photo);
+            $('.navbar .profile-picture').attr('src', photo);
         }
-    });
-
-    $('#image-form > div > div > button').on('click', function () {
-        $('#image-form img').attr('src', photo);
-        $('#image-form > div > div').hide();
-        $('#image-form a').show();
     });
 
     $('#account-info-form').on('response', function (e) {

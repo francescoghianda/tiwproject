@@ -2,100 +2,105 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title th:text="${#messages.msg('title.'+errorCode)}">Error</title>
-    <link rel="stylesheet" href="/assets/css/main-old.css" th:href="@{/assets/css/main-old.css}">
+    <link rel="stylesheet" href="/assets/css/main.css" th:href="@{/assets/css/main.css}">
 </head>
 <body>
-    <header></header>
 
-    <div class="centered-content-container">
-        <div class="error-image">
 
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 73 50">
-                <defs>
-                    <style>
-                        .cls-1 {
-                            fill: var(--font-color);
-                        }
+    <div class="container">
+        <div class="error-container">
+            <div class="error-image">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 73 50">
+                    <defs>
+                        <style>
+                            .cls-1 {
+                                fill: #302e2e;
+                            }
 
-                        .cls-2, .cls-6, .cls-7, .cls-8 {
-                            fill: none;
-                            stroke-linecap: round;
-                            stroke-linejoin: round;
-                        }
+                            .cls-2, .cls-6, .cls-7, .cls-8 {
+                                fill: none;
+                                stroke-linecap: round;
+                                stroke-linejoin: round;
+                            }
 
-                        .cls-2 {
-                            stroke: var(--font-color);
-                            stroke-width: 2px;
-                        }
+                            .cls-2 {
+                                stroke: #302e2e;
+                                stroke-width: 2px;
+                            }
 
-                        .cls-3 {
-                            fill: #fa4032;
-                        }
+                            .cls-3 {
+                                fill: #fa4032;
+                            }
 
-                        .cls-4 {
-                            fill: #fdbd41;
-                        }
+                            .cls-4 {
+                                fill: #fdbd41;
+                            }
 
-                        .cls-5 {
-                            fill: #42cc4b;
-                        }
+                            .cls-5 {
+                                fill: #42cc4b;
+                            }
 
-                        .cls-6 {
-                            stroke: #fa4032;
-                        }
+                            .cls-6 {
+                                stroke: #fa4032;
+                            }
 
-                        .cls-6, .cls-7, .cls-8 {
-                            stroke-width: 0.2px;
-                        }
+                            .cls-6, .cls-7, .cls-8 {
+                                stroke-width: 0.2px;
+                            }
 
-                        .cls-7 {
-                            stroke: #fdbd41;
-                        }
+                            .cls-7 {
+                                stroke: #fdbd41;
+                            }
 
-                        .cls-8 {
-                            stroke: #42cc4b;
-                        }
+                            .cls-8 {
+                                stroke: #42cc4b;
+                            }
 
-                        .red-dot:hover .cls-6{
-                            stroke: #302e2e;
-                        }
+                            .red-dot:hover .cls-6{
+                                stroke: #302e2e;
+                            }
 
-                        .yellow-dot:hover .cls-7{
-                            stroke: #302e2e;
-                        }
+                            .yellow-dot:hover .cls-7{
+                                stroke: #302e2e;
+                            }
 
-                        .green-dot:hover .cls-8{
-                            stroke: #302e2e;
-                        }
-                    </style>
-                </defs>
-                <path class="cls-1" d="M70.353,2A.647.647,0,0,1,71,2.647V47.353a.647.647,0,0,1-.647.647H2.647A.647.647,0,0,1,2,47.353V2.647A.647.647,0,0,1,2.647,2H70.353m0-2H2.647A2.647,2.647,0,0,0,0,2.647V47.353A2.647,2.647,0,0,0,2.647,50H70.353A2.647,2.647,0,0,0,73,47.353V2.647A2.647,2.647,0,0,0,70.353,0Z"/>
-                <line class="cls-2" x1="1" y1="9" x2="60" y2="9"/>
-                <g class="red-dot">
-                    <circle class="cls-3" cx="4" cy="5" r="1"/>
-                    <line id="x2" class="cls-6" x1="4.4" y1="5.4" x2="3.6" y2="4.6"/>
-                    <line id="x1" class="cls-6" x1="4.4" y1="4.6" x2="3.6" y2="5.4"/>
-                </g>
+                            .green-dot:hover .cls-8{
+                                stroke: #302e2e;
+                            }
+                        </style>
+                    </defs>
+                    <path class="cls-1" d="M70.353,2A.647.647,0,0,1,71,2.647V47.353a.647.647,0,0,1-.647.647H2.647A.647.647,0,0,1,2,47.353V2.647A.647.647,0,0,1,2.647,2H70.353m0-2H2.647A2.647,2.647,0,0,0,0,2.647V47.353A2.647,2.647,0,0,0,2.647,50H70.353A2.647,2.647,0,0,0,73,47.353V2.647A2.647,2.647,0,0,0,70.353,0Z"/>
+                    <line class="cls-2" x1="1" y1="9" x2="60" y2="9"/>
+                    <g class="red-dot">
+                        <circle class="cls-3" cx="4" cy="5" r="1"/>
+                        <line id="x2" class="cls-6" x1="4.4" y1="5.4" x2="3.6" y2="4.6"/>
+                        <line id="x1" class="cls-6" x1="4.4" y1="4.6" x2="3.6" y2="5.4"/>
+                    </g>
 
-                <g class="yellow-dot">
-                    <circle class="cls-4" cx="7" cy="5" r="1"/>
-                    <line id="minus" class="cls-7" x1="7.566" y1="5" x2="6.434" y2="5"/>
-                </g>
+                    <g class="yellow-dot">
+                        <circle class="cls-4" cx="7" cy="5" r="1"/>
+                        <line id="minus" class="cls-7" x1="7.566" y1="5" x2="6.434" y2="5"/>
+                    </g>
 
-                <g class="green-dot">
-                    <circle class="cls-5" cx="10" cy="5" r="1"/>
-                    <line id="plus1" class="cls-8" x1="10" y1="4.434" x2="10" y2="5.566"/>
-                    <line id="plus2" class="cls-8" x1="10.566" y1="5" x2="9.434" y2="5"/>
-                </g>
-            </svg>
-
-            <span class="error-code" th:text="${errorCode}">404</span>
+                    <g class="green-dot">
+                        <circle class="cls-5" cx="10" cy="5" r="1"/>
+                        <line id="plus1" class="cls-8" x1="10" y1="4.434" x2="10" y2="5.566"/>
+                        <line id="plus2" class="cls-8" x1="10.566" y1="5" x2="9.434" y2="5"/>
+                    </g>
+                </svg>
+                <span class="error-code" th:text="${errorCode}">404</span>
+            </div>
+            <span class="error-message" th:text="${#messages.msg('msg.'+errorCode)}">Oops! Something went wrong!</span>
+            <span class="error-message"><a href="/" th:text="#{rethome}">Return to the home page</a></span>
         </div>
-        <!--<img class="error-image" src="/assets/images/errors/404.svg" th:src="@{'/assets/images/errors/'+${errorCode}+'.svg'}" alt="error image">-->
-        <span class="error-message" th:text="${#messages.msg('msg.'+errorCode)}">Oops! Something went wrong!</span>
-        <span class="error-message"><a href="/" th:text="#{rethome}">Return to the home page</a></span>
     </div>
+
+    <!--<button class="button text-button">Show details</button>
+    <div class="error-details">
+        <textarea></textarea>
+    </div>-->
 
 </body>
 </html>

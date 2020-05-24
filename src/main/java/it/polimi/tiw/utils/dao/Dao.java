@@ -10,24 +10,56 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class Dao<T extends Bean>
 {
     protected final BeanFactory<T> beanFactory;
     private final String tableName;
+    private final List<SelectOrder> selectOrderList;
+    private String orderString;
+    private boolean computeOrderString;
 
     public Dao(String tableName, BeanFactory<T> beanFactory)
     {
         this.tableName = tableName;
         this.beanFactory = beanFactory;
+        selectOrderList = new ArrayList<>();
+    }
+
+    public void addSelectOrder(SelectOrder selectOrder)
+    {
+        selectOrderList.add(selectOrder);
+        computeOrderString = true;
+    }
+
+    public void removeSelectOrder(SelectOrder selectOrder)
+    {
+        selectOrderList.remove(selectOrder);
+        computeOrderString = true;
+    }
+
+    public void clearSelectOrderList()
+    {
+        selectOrderList.clear();
+        computeOrderString = true;
+    }
+
+    private String getOrderString()
+    {
+        if(orderString == null || computeOrderString)
+            orderString = selectOrderList.isEmpty() ? "" : " ORDER BY " + selectOrderList.stream().map(SelectOrder::toString).collect(Collectors.joining(", "));
+        computeOrderString = false;
+        return orderString;
     }
 
     protected  <B extends Bean> List<B> getAll(String tableName, BeanFactory<B> beanFactory) throws SQLException
     {
         try (PooledConnection connection = ConnectionManager.getInstance().getConnection();
-             PreparedStatement query = connection.getConnection().prepareStatement("SELECT * FROM "+tableName);
+             PreparedStatement query = connection.getConnection().prepareStatement("SELECT * FROM "+tableName+getOrderString());
              ResultSet result = query.executeQuery())
         {
             return BeanFactory.getBeanList(beanFactory, result);
@@ -39,7 +71,7 @@ public class Dao<T extends Bean>
         return getAll(tableName, beanFactory);
     }
 
-    protected  <B extends Bean> List<B> get(BeanFactory<B> beanFactory, String sql, Object... parameters) throws SQLException
+    protected  <B extends Bean> List<B> rawGet(BeanFactory<B> beanFactory, String sql, Object... parameters) throws SQLException
     {
         try(PooledConnection connection = ConnectionManager.getInstance().getConnection();
             PreparedStatement statement = connection.getConnection().prepareStatement(sql))
@@ -52,15 +84,15 @@ public class Dao<T extends Bean>
         }
     }
 
-    protected List<T> get(String sql, Object... parameters) throws SQLException
+    protected List<T> rawGet(String sql, Object... parameters) throws SQLException
     {
-        return get(beanFactory, sql, parameters);
+        return rawGet(beanFactory, sql, parameters);
     }
 
     protected  <B extends Bean> List<B> findBy(String tableName, String columnName, Object value, BeanFactory<B> beanFactory) throws SQLException
     {
         try(PooledConnection connection = ConnectionManager.getInstance().getConnection();
-            PreparedStatement statement = connection.getConnection().prepareStatement("SELECT * from "+tableName+" where "+columnName+" = ?"))
+            PreparedStatement statement = connection.getConnection().prepareStatement("SELECT * from "+tableName+" where "+columnName+" = ?"+getOrderString()))
         {
             statement.setObject(1, value);
             try(ResultSet resultSet = statement.executeQuery())
