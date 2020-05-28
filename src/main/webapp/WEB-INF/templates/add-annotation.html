@@ -112,9 +112,9 @@
                         <div class="input-container">
                             <select id="trust-select" th:id="'trust-select-'+${image.id}" name="trust" required>
                                 <option value="" th:text="#{select-trust}" hidden disabled selected th:selected="${!annotation.isPresent()}">Select a trust level</option>
-                                <option value="GOOD" th:text="#{trust.high}" th:selected="${annotation.isPresent() && annotation.get().trust.equals('GOOD')}">High</option>
-                                <option value="MEDIUM" th:text="#{trust.medium}" th:selected="${annotation.isPresent() && annotation.get().trust.equals('MEDIUM')}">Medium</option>
-                                <option value="LOW" th:text="#{trust.low}" th:selected="${annotation.isPresent() && annotation.get().trust.equals('LOW')}">Low</option>
+                                <option value="GOOD" th:text="#{trust.GOOD}" th:selected="${annotation.isPresent() && annotation.get().trust.equals('GOOD')}">High</option>
+                                <option value="MEDIUM" th:text="#{trust.MEDIUM}" th:selected="${annotation.isPresent() && annotation.get().trust.equals('MEDIUM')}">Medium</option>
+                                <option value="LOW" th:text="#{trust.LOW}" th:selected="${annotation.isPresent() && annotation.get().trust.equals('LOW')}">Low</option>
                             </select>
                             <label for="trust-select" th:for="'trust-select-'+${image.id}" class="placeholder" th:text="#{trust}">Trust</label>
                             <label class="form-error-message" th:for="'trust-select-'+${image.id}" th:text="#{error.trust-invalid}">Select a trust level</label>

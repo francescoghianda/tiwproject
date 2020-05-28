@@ -196,7 +196,7 @@
                                     </section>
                                     <section>
                                         <h5 th:text="${joinedBean.getBean2().username}">Worker username</h5>
-                                        <h5 th:text="${joinedBean.getBean3().expLvl}">Worker experience</h5>
+                                        <h5 th:text="${#messages.msg('exp-lvl.'+joinedBean.getBean3().expLvl)}">Worker experience</h5>
                                         <br>
                                         <h5 th:text="${#dates.format(joinedBean.getBean1().date, 'dd-MM-yyyy')}">Date</h5>
                                         <h5 th:text="${#messages.msg('valid.'+joinedBean.getBean1().getValid())}">Valid</h5>

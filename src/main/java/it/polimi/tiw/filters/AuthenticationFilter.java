@@ -36,15 +36,11 @@ public class AuthenticationFilter extends HttpFilter
 
         if(!AuthenticationHelper.isAuthenticated(request.getSession(false)))
         {
-            if(requestURI.startsWith("/api"))response.sendError(401);
-            else
-            {
-                RequestDispatcher dispatcher = request.getRequestDispatcher("/login");
-                String query = request.getQueryString();
-                query = query == null ? "" : "?"+query;
-                request.setAttribute("redirect", requestURI+query);
-                dispatcher.forward(request, response);
-            }
+            RequestDispatcher dispatcher = request.getRequestDispatcher("/login");
+            String query = request.getQueryString();
+            query = query == null ? "" : "?"+query;
+            request.setAttribute("redirect", requestURI+query);
+            dispatcher.forward(request, response);
         }
         else filterChain.doFilter(request, response);
     }

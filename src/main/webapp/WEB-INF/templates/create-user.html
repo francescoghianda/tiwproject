@@ -58,8 +58,8 @@
                 <div class="input-container">
                     <select id="role-input" name="role" required>
                         <option value="" th:text="#{select-role}" hidden disabled selected>Select a role</option>
-                        <option value="WORKER" th:text="#{role.worker}">Worker</option>
-                        <option value="MANAGER" th:text="#{role.manager}">Manager</option>
+                        <option value="WORKER" th:text="#{role.WORKER}">Worker</option>
+                        <option value="MANAGER" th:text="#{role.MANAGER}">Manager</option>
                     </select>
                     <label for="role-input" class="placeholder" th:text="#{role}">Role</label>
                     <label class="form-error-message" for="role-input" th:text="#{error.role-invalid}">Select a role</label>
@@ -69,9 +69,9 @@
                     <div class="input-container">
                         <select id="exp-lvl-input" name="exp-lvl" required>
                             <option value="" th:text="#{select-exp-lvl}" hidden disabled selected>Select an experience level</option>
-                            <option value="GOOD" th:text="#{exp-lvl.good}">Good</option>
-                            <option value="MEDIUM" th:text="#{exp-lvl.medium}">Medium</option>
-                            <option value="LOW" th:text="#{exp-lvl.low}">Low</option>
+                            <option value="GOOD" th:text="#{exp-lvl.GOOD}">Good</option>
+                            <option value="MEDIUM" th:text="#{exp-lvl.MEDIUM}">Medium</option>
+                            <option value="LOW" th:text="#{exp-lvl.LOW}">Low</option>
                         </select>
                         <label for="exp-lvl-input" class="placeholder" th:text="#{exp-lvl}">Experience level</label>
                         <label class="form-error-message" for="exp-lvl-input" th:text="#{error.exp-lvl-invalid}">Select an experience level</label>
