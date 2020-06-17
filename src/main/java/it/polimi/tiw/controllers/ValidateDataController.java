@@ -5,7 +5,6 @@ import it.polimi.tiw.dao.UserDao;
 
 import javax.json.Json;
 import javax.json.stream.JsonGenerator;
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -25,7 +24,7 @@ public class ValidateDataController extends HttpServlet
     }
 
     @Override
-    public void init() throws ServletException
+    public void init()
     {
         userDao = new UserDao();
         campaignDao = new CampaignDao();

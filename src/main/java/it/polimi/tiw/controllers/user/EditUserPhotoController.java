@@ -47,7 +47,5 @@ public class EditUserPhotoController extends HttpServlet
             e.printStackTrace();
             resp.sendError(500);
         }
-
-
     }
 }

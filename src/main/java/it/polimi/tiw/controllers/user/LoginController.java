@@ -22,7 +22,6 @@ public class LoginController extends HttpServlet
         super();
     }
 
-
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)throws IOException
     {

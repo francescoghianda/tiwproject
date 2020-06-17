@@ -23,10 +23,4 @@ public class LogoutController extends HttpServlet
         AuthenticationHelper.invalidateAuthentication(request);
         response.sendRedirect("/");
     }
-
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException
-    {
-        response.sendError(405);
-    }
 }

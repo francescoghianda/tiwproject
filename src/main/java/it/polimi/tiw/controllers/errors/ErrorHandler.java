@@ -34,10 +34,4 @@ public class ErrorHandler extends HttpServlet
 
         Application.getTemplateEngine().process("error/error", webContext, response.getWriter());
     }
-
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
-    {
-
-    }
 }
