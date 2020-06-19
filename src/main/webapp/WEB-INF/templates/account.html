@@ -76,7 +76,7 @@
                 </div>
 
                 <div class="input-container">
-                    <input id="username-input" type="text" placeholder=" " name="username" th:value="${user.username}" data-validation="/api/v1/validate-data" minlength="4" maxlength="20" required disabled>
+                    <input id="username-input" type="text" placeholder=" " name="username" th:value="${user.username}" data-validation="/validate-data" minlength="4" maxlength="20" required disabled>
                     <label class="placeholder" for="username-input" th:text="#{username}">Username</label>
                     <label class="form-error-message" for="username-input" th:text="#{error.username-invalid}">Invalid username
                         <button type="button" class="popover form-error-helper" th:text="#{error-helper.username}">
@@ -87,7 +87,7 @@
                 </div>
 
                 <div class="input-container">
-                    <input id="email-input" type="email" placeholder=" " name="email" th:value="${user.email}" th:data-exceptions="${user.email}" data-validation="/api/v1/validate-data" required>
+                    <input id="email-input" type="email" placeholder=" " name="email" th:value="${user.email}" th:data-exceptions="${user.email}" data-validation="/validate-data" required>
                     <label class="placeholder" for="email-input">Email</label>
                     <label class="form-error-message" for="email-input" th:text="#{error.email-invalid}">Invalid email</label>
                     <label class="form-error-message-online" for="email-input" th:utext="#{error.email-unavailable}">Email not available</label>

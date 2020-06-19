@@ -59,15 +59,34 @@ function postForm(input, $form)
 
 
     }));*/
-    let enctype = !$form.attr('enctype') ? 'application/x-www-form-urlencoded' : $form.attr('enctype');
 
-    return fetch(input, {
-        method: 'post',
-        headers:{
+    return new Promise((resolve, reject) =>
+    {
+        let enctype = !$form.attr('enctype') ? 'application/x-www-form-urlencoded' : $form.attr('enctype');
+
+        let fetchData = enctype === 'multipart/form-data' ? {
+            method: 'post',
+            body:  new FormData($form[0])
+        } : {
+            method: 'post',
+            headers:{
+                'Content-Type': enctype
+            },
+            body: enctype === 'multipart/form-data' ? new FormData($form[0]) : $form.serialize()
+        }
+
+        fetch(input, fetchData).then(response =>
+        {
+            if(response.status < 400)resolve(response);
+            else reject(response);
+        }).catch(cause => reject(cause));
+    });
+
+    /*
+    headers:{
             'Content-Type': enctype
-        },
-        body: enctype === 'multipart/form-data' ? new FormData($form[0]) : $form.serialize()
-    })
+        }
+     */
 }
 
 function post(input, jsonData)

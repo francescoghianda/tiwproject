@@ -6,6 +6,7 @@ import it.polimi.tiw.dao.CampaignDao;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpFilter;
 import javax.servlet.http.HttpServletRequest;
@@ -16,6 +17,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 @WebFilter(filterName = "ManagerCampaignFilter")
+@MultipartConfig
 public class CampaignFilter extends HttpFilter
 {
     private CampaignDao campaignDao;

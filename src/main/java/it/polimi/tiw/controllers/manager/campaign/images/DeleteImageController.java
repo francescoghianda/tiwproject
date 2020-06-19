@@ -31,7 +31,7 @@ public class DeleteImageController extends HttpServlet
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
     {
-        Campaign campaign = (Campaign)req.getAttribute("capaign");
+        Campaign campaign = (Campaign)req.getAttribute("campaign");
         if(!campaign.getStatus().equals(CampaignStatus.CREATED))
         {
             resp.sendError(409, "Cannot modify a started or closed campaign.");

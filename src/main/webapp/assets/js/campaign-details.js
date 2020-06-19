@@ -170,7 +170,7 @@ $(() =>
     $(".delete-image-btn").on('click', function () {
         let campaignId = $('#campaign-id').val();
         let imageId = $(this).data('image_id');
-        fetch(`/campaign/remove_image?id=${campaignId}&image_id=${imageId}`).then(response =>
+        fetch(`/campaign/images/delete?id=${campaignId}&image-id=${imageId}`).then(response =>
         {
             if(response.ok)
             {
